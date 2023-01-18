@@ -1,0 +1,15 @@
+Pillow
+ftfy
+jinja2
+jupyter
+lxml
+matplotlib
+numpy
+pandas
+pytesseract
+regex
+rich
+scikit-image
+spacy==3.3.0
+tqdm
+scipy
