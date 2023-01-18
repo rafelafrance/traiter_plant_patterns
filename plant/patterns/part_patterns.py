@@ -14,7 +14,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 # ####################################################################################
 PART = MatcherPatterns(
     "part",
-    on_match="mimosa.part.v1",
+    on_match="plant.part.v1",
     decoder=DECODER,
     patterns=[
         "leader  part",
@@ -38,7 +38,7 @@ def on_part_match(ent):
 # ####################################################################################
 MISSING_PART = MatcherPatterns(
     "missing_part",
-    on_match="mimosa.missing_part.v1",
+    on_match="plant.missing_part.v1",
     decoder=DECODER,
     patterns=[
         "missing part",

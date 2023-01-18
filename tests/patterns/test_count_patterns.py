@@ -623,3 +623,207 @@ class TestCount(unittest.TestCase):
                 }
             ],
         )
+
+    def test_count_39(self):
+        self.assertEqual(
+            test(
+                """
+                Pistillate flowers: hyaline bristle at apex of hypanthial
+                aculei 0.5–1 times as long as opaque base."""
+            ),
+            [
+                {
+                    "sex": "pistillate",
+                    "trait": "sex",
+                    "start": 0,
+                    "end": 10,
+                },
+                {
+                    "flower_part": "flower",
+                    "trait": "flower_part",
+                    "start": 11,
+                    "end": 18,
+                    "sex": "pistillate",
+                },
+                {
+                    "subpart": "setae",
+                    "trait": "subpart",
+                    "start": 28,
+                    "end": 35,
+                    "subpart_as_loc": "at apex of hypanthial aculei",
+                    "flower_part": "flower",
+                },
+                {
+                    "subpart_as_loc": "at apex of hypanthial aculei",
+                    "trait": "subpart_as_loc",
+                    "start": 36,
+                    "end": 64,
+                },
+                {
+                    "subpart": "base",
+                    "trait": "subpart",
+                    "start": 95,
+                    "end": 99,
+                    "flower_part": "flower",
+                },
+            ],
+        )
+
+    def test_count_40(self):
+        self.assertEqual(
+            test("Seeds (1 or)2 or 3 per legume,"),
+            [
+                {"fruit_part": "seed", "trait": "fruit_part", "start": 0, "end": 5},
+                {
+                    "min": 1,
+                    "low": 2,
+                    "high": 3,
+                    "trait": "count",
+                    "start": 6,
+                    "end": 29,
+                    "per_part": "legume",
+                    "fruit_part": "seed",
+                },
+            ],
+        )
+
+    def test_count_41(self):
+        self.assertEqual(
+            test("blade lobes 0 or 1–4(or 5) per side"),
+            [
+                {"leaf_part": "leaf", "trait": "leaf_part", "start": 0, "end": 5},
+                {
+                    "subpart": "lobe",
+                    "trait": "subpart",
+                    "start": 6,
+                    "end": 11,
+                    "leaf_part": "leaf",
+                },
+                {
+                    "min": 0,
+                    "low": 1,
+                    "high": 4,
+                    "max": 5,
+                    "trait": "count",
+                    "start": 12,
+                    "end": 35,
+                    "count_group": "per side",
+                    "leaf_part": "leaf",
+                    "subpart": "lobe",
+                },
+            ],
+        )
+
+    def test_count_42(self):
+        self.assertEqual(
+            test("stems (11–16) pairs"),
+            [
+                {"part": "stem", "trait": "part", "start": 0, "end": 5},
+                {
+                    "low": 11,
+                    "high": 16,
+                    "count_group": "pairs",
+                    "trait": "count",
+                    "start": 6,
+                    "end": 19,
+                    "part": "stem",
+                },
+            ],
+        )
+
+    def test_count_43(self):
+        self.assertEqual(
+            test("blade lobes 0 or 1–4(–9) per side"),
+            [
+                {"leaf_part": "leaf", "trait": "leaf_part", "start": 0, "end": 5},
+                {
+                    "subpart": "lobe",
+                    "trait": "subpart",
+                    "start": 6,
+                    "end": 11,
+                    "leaf_part": "leaf",
+                },
+                {
+                    "min": 0,
+                    "low": 1,
+                    "high": 4,
+                    "max": 9,
+                    "count_group": "per side",
+                    "trait": "count",
+                    "start": 12,
+                    "end": 33,
+                    "leaf_part": "leaf",
+                    "subpart": "lobe",
+                },
+            ],
+        )
+
+    def test_count_44(self):
+        self.assertEqual(
+            test("sepals absent;"),
+            [
+                {"flower_part": "sepal", "trait": "flower_part", "start": 0, "end": 6},
+                {
+                    "low": 0,
+                    "trait": "count",
+                    "flower_part": "sepal",
+                    "start": 7,
+                    "end": 13,
+                },
+            ],
+        )
+
+    def test_count_45(self):
+        self.maxDiff = None
+        self.assertEqual(
+            test(
+                """
+                staminate catkins in 1 or more clusters of 3--6;
+                pistillate catkins in 1 or more clusters of 2--7
+                """
+            ),
+            [
+                {"sex": "staminate", "trait": "sex", "start": 0, "end": 9},
+                {
+                    "inflorescence": "catkin",
+                    "trait": "inflorescence",
+                    "start": 10,
+                    "end": 17,
+                    "sex": "staminate",
+                },
+                {
+                    "low": 3,
+                    "high": 6,
+                    "trait": "count",
+                    "start": 21,
+                    "end": 47,
+                    "count_group": "cluster",
+                    "inflorescence": "catkin",
+                    "sex": "staminate",
+                },
+                {"sex": "pistillate", "trait": "sex", "start": 49, "end": 59},
+                {
+                    "inflorescence": "catkin",
+                    "trait": "inflorescence",
+                    "start": 60,
+                    "end": 67,
+                    "sex": "pistillate",
+                },
+                {
+                    "low": 2,
+                    "high": 7,
+                    "trait": "count",
+                    "start": 71,
+                    "end": 97,
+                    "count_group": "cluster",
+                    "inflorescence": "catkin",
+                    "sex": "pistillate",
+                },
+            ],
+        )
+
+    def test_count_46(self):
+        self.assertEqual(
+            test("Seeds 1000"),
+            [{"end": 5, "fruit_part": "seed", "start": 0, "trait": "fruit_part"}],
+        )

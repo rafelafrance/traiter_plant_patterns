@@ -26,7 +26,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 # #####################################################################################
 SHAPE = MatcherPatterns(
     "shape",
-    on_match="mimosa.shape.v1",
+    on_match="plant.shape.v1",
     decoder=DECODER,
     patterns=[
         "shape_loc* -* shape+",
@@ -60,7 +60,7 @@ def on_shape_match(ent):
 # #####################################################################################
 N_SHAPE = MatcherPatterns(
     "n_shape",
-    on_match="mimosa.n_shape.v1",
+    on_match="plant.n_shape.v1",
     decoder=DECODER,
     patterns=[
         "shape_loc* 9 - angular",

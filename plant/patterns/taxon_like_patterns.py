@@ -4,7 +4,7 @@ from traiter.patterns.matcher_patterns import MatcherPatterns
 from . import common_patterns
 from . import term_patterns as terms
 
-ON_TAXON_LIKE_MATCH = "mimosa.taxon_like.v1"
+ON_TAXON_LIKE_MATCH = "plant.taxon_like.v1"
 
 
 SIMILAR = """ like similar exactly sympatric affini resembling resembles related

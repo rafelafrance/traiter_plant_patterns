@@ -16,7 +16,7 @@ SHAPES = """ margin shape """.split()
 
 MARGIN = MatcherPatterns(
     "margin",
-    on_match="mimosa.margin.v1",
+    on_match="plant.margin.v1",
     decoder=common_patterns.COMMON_PATTERNS
     | {
         "margin": {"ENT_TYPE": "margin"},

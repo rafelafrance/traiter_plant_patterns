@@ -37,7 +37,7 @@ ABBREVS = """
     """.split()
 ABBREVS += [f"{c}." for c in string.ascii_uppercase]
 
-TOKENIZER = "plant.custom_tokenizer.v1"
+TOKENIZER = "mimosa.custom_tokenizer.v1"
 
 
 def setup_tokenizer(nlp):

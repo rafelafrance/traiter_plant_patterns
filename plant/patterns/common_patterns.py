@@ -1,6 +1,10 @@
 """Terms common to many pipelines."""
 from traiter import const as t_const
 
+ABBREVS = """
+    Jan. Feb. Mar. Apr. Jun. Jul. Aug. Sep. Sept. Oct. Nov. Dec.
+    ca. al. """.split()
+
 AND = ["&", "and", "et"]
 CONJ = AND + ["or"]
 TO = ["to"]

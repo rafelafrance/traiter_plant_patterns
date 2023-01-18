@@ -13,7 +13,7 @@ PARTIAL_TRAITS = """ about color_mod cross dim dimension imperial_length imperia
 
 
 # ####################################################################################
-DELETE_MISSING_PARTS = "mimosa.missing_parts.v1"
+DELETE_MISSING_PARTS = "plant.missing_parts.v1"
 
 
 @registry.misc(DELETE_MISSING_PARTS)
@@ -25,7 +25,7 @@ def delete_missing_parts(ent):
 
 
 # ####################################################################################
-DELETE_PAGE_NO = "mimosa.page_no.v1"
+DELETE_PAGE_NO = "plant.page_no.v1"
 
 
 @registry.misc(DELETE_PAGE_NO)
@@ -57,7 +57,7 @@ def delete_page_no(ent):
 
 
 # ####################################################################################
-DELETE_KM = "mimosa.kilometers.v1"
+DELETE_KM = "plant.kilometers.v1"
 
 
 @registry.misc(DELETE_KM)
@@ -69,7 +69,7 @@ def delete_kilometers(ent):
 
 
 # ####################################################################################
-DELETE_MISSING_COUNT = "mimosa.delete_missing_count.v1"
+DELETE_MISSING_COUNT = "plant.delete_missing_count.v1"
 
 
 @registry.misc(DELETE_MISSING_COUNT)

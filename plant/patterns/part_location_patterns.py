@@ -29,7 +29,7 @@ def get_joined(ent):
 
 
 # ####################################################################################
-ON_AS_LOCATION_MATCH = "mimosa.as_location.v1"
+ON_AS_LOCATION_MATCH = "plant.as_location.v1"
 
 PART_AS_LOCATION = MatcherPatterns(
     "part_as_loc",
@@ -65,7 +65,7 @@ def on_as_location_match(ent):
 # ####################################################################################
 PART_AS_DISTANCE = MatcherPatterns(
     "part_as_distance",
-    on_match="mimosa.part_as_distance.v1",
+    on_match="plant.part_as_distance.v1",
     decoder=DECODER,
     patterns=[
         "joined?  leader part prep? 99-99 cm",

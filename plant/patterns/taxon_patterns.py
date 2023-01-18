@@ -98,7 +98,7 @@ def cleanup_ent(ent, original):
 
 
 # ###################################################################################
-ON_MULTI_TAXON_MATCH = "mimosa.multi_taxon.v1"
+ON_MULTI_TAXON_MATCH = "plant.multi_taxon.v1"
 
 MULTI_TAXON = MatcherPatterns(
     "multi_taxon",
@@ -123,7 +123,7 @@ def on_multi_taxon_match(ent):
 
 
 # ###################################################################################
-ON_TAXON_MATCH = "mimosa.taxon.v1"
+ON_TAXON_MATCH = "plant.taxon.v1"
 
 TAXON = MatcherPatterns(
     "taxon",

@@ -7,7 +7,7 @@ from traiter.patterns.matcher_patterns import MatcherPatterns
 
 from . import common_patterns
 
-ON_RANGE_MATCH = "mimosa.range.v1"
+ON_RANGE_MATCH = "plant.range.v1"
 
 SKIP = """ p. pg pg. page pi pi. fig fig. sheet sheets bis bis.
     sp. spp. no. no map """.split()

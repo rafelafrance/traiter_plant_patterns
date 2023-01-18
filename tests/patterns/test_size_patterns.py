@@ -814,14 +814,14 @@ class TestSize(unittest.TestCase):
                 {"part": "shrub", "trait": "part", "start": 0, "end": 6},
                 {"part": "tree", "trait": "part", "start": 10, "end": 15},
                 {
-                    "dimensions": "length",
                     "length_low": 3.0,
                     "length_high": 50.0,
                     "length_units": "m",
+                    "dimensions": "length",
                     "trait": "size",
                     "start": 18,
                     "end": 25,
-                    "part": "tree",
+                    "part": "bark",
                 },
                 {"part": "bark", "trait": "part", "start": 26, "end": 30},
                 {

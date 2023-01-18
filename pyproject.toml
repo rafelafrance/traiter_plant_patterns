@@ -16,7 +16,6 @@ dependencies = [
      "spacy==3.3.0",
 ]
 optional-dependencies.dev = [
-    "aquirdturtle-collapsible-headings",
     "autopep8",
     "bandit",
     "black",

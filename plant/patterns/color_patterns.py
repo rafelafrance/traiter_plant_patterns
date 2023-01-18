@@ -17,7 +17,7 @@ SKIP = t_const.DASH + common_patterns.MISSING
 
 COLOR = matcher_patterns.MatcherPatterns(
     "color",
-    on_match="mimosa.color.v1",
+    on_match="plant.color.v1",
     decoder=common_patterns.COMMON_PATTERNS
     | {
         "color_words": {"ENT_TYPE": {"IN": ["color", "color_mod"]}},
