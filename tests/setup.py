@@ -1,7 +1,7 @@
 """Setup for all tests."""
 from traiter.util import shorten
 
-from plant.pipeline_builder import PipelineBuilder
+from traiterplants.pipeline_builder import PipelineBuilder
 
 # Singleton for testing
 PIPELINE = PipelineBuilder()

@@ -12,12 +12,14 @@ install: venv
 	$(PYTHON) -m pip install -U pip setuptools wheel
 	$(PYTHON) -m pip install .
 	$(PYTHON) -m pip install git+https://github.com/rafelafrance/traiter.git@master#egg=traiter
+	$(PYTHON) -m spacy download en_core_web_sm
 
 dev: venv
 	source $(VENV)/bin/activate
 	$(PYTHON) -m pip install -U pip setuptools wheel
 	$(PYTHON) -m pip install -e .[dev]
 	$(PYTHON) -m pip install -e ../traiter
+	$(PYTHON) -m spacy download en_core_web_sm
 	pre-commit install
 
 venv:
