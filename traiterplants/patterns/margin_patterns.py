@@ -1,4 +1,3 @@
-"""Parse the trait."""
 import re
 
 from spacy import registry
@@ -16,7 +15,7 @@ SHAPES = """ margin shape """.split()
 
 MARGIN = MatcherPatterns(
     "margin",
-    on_match="plant.margin.v1",
+    on_match="plant_margin_v1",
     decoder=common_patterns.COMMON_PATTERNS
     | {
         "margin": {"ENT_TYPE": "margin"},

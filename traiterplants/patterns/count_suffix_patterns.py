@@ -17,7 +17,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 # ####################################################################################
 COUNT_SUFFIX = MatcherPatterns(
     "count_suffix",
-    on_match="plant.count_suffix.v1",
+    on_match="plant_count_suffix_v1",
     decoder=DECODER,
     patterns=[
         "99-99 count_suffix",
@@ -48,7 +48,7 @@ def on_count_suffix_match(ent):
 # ####################################################################################
 COUNT_SUFFIX_WORD = MatcherPatterns(
     "count_suffix_word",
-    on_match="plant.count_suffix_word.v1",
+    on_match="plant_count_suffix_word_v1",
     decoder=DECODER,
     patterns=[
         "count_word count_suffix",

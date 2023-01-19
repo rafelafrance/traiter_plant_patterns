@@ -55,11 +55,11 @@ class TestTaxonLike(unittest.TestCase):
             [
                 {
                     "level": "species",
-                    "authority": "Harms",
+                    "authority": "Harms Glaziou",
                     "taxon_like": "M. sensitiva",
                     "trait": "taxon_like",
                     "start": 0,
-                    "end": 36,
+                    "end": 47,
                     "relation": "sympatric",
                 }
             ],

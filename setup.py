@@ -1,40 +1,38 @@
 #!/usr/bin/env python3
-"""Setup the Traiter environment."""
+import tomllib
 from distutils.core import setup
 from setuptools import find_packages
 
-NAME = "traiterplants"
-DESCRIPTION = """Common Traiter patterns for mining literature on plants"""
+
+def read_pyproject():
+    with open("pyproject.toml", "rb") as in_file:
+        settings = tomllib.load(in_file)
+    return settings
+
+
+SETTINGS = read_pyproject()
 
 
 def readme():
-    """Get README.md content."""
     with open("README.md") as in_file:
         return in_file.read()
 
 
 def license_():
-    """Get LICENSE.txt content."""
     with open("LICENSE") as in_file:
         return in_file.read()
 
 
-def find_requirements():
-    """Read requirements.txt file and returns list of requirements."""
-    with open("requirements.txt") as in_file:
-        return in_file.read().splitlines()
-
-
 setup(
-    name=NAME,
-    version="0.1.0",
+    name=SETTINGS["project"]["name"],
+    version=SETTINGS["project"]["version"],
     packages=find_packages(),
-    install_requires=find_requirements(),
+    install_requires=SETTINGS["project"]["dependencies"],
     include_package_data=True,
-    description=DESCRIPTION,
+    description=SETTINGS["project"]["description"],
     long_description=readme(),
     license=license_(),
-    url="https://github.com/rafelafrance/traiterplants",
-    python_requires=">=3.10",
+    url="https://github.com/rafelafrance/traiter",
+    python_requires=">=3.11",
     scripts=[],
 )

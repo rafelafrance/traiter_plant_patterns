@@ -1,6 +1,6 @@
-"""Setup for all tests."""
 from traiter.util import shorten
 
+from traiterplants import sentence_pipeline
 from traiterplants.pipeline_builder import PipelineBuilder
 
 # Singleton for testing
@@ -25,6 +25,8 @@ PIPELINE.add_link_sex_pipe()
 PIPELINE.add_link_location_pipe()
 PIPELINE.add_link_taxa_like_pipe()
 PIPELINE.add_delete_unlinked_pipe()
+
+SENT_NLP = sentence_pipeline.pipeline()  # Singleton for testing
 
 
 def test(text: str) -> list[dict]:

@@ -1,4 +1,3 @@
-"""Common size snippets."""
 import re
 from collections import deque
 
@@ -32,7 +31,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 
 SIZE = MatcherPatterns(
     "size",
-    on_match="plant.size.v1",
+    on_match="plant_size_v1",
     decoder=DECODER,
     patterns=[
         "about? 99.9-99.9 cm  follow*",
@@ -48,7 +47,7 @@ SIZE = MatcherPatterns(
 
 SIZE_HIGH_ONLY = MatcherPatterns(
     "size.high_only",
-    on_match="plant.size_high_only.v1",
+    on_match="plant_size_high_only_v1",
     decoder=DECODER,
     patterns=[
         "to about? 99.9 [?]? cm follow*",
@@ -57,7 +56,7 @@ SIZE_HIGH_ONLY = MatcherPatterns(
 
 SIZE_DOUBLE_DIM = MatcherPatterns(
     "size.double_dim",
-    on_match="plant.size_double_dim.v1",
+    on_match="plant_size_double_dim_v1",
     decoder=DECODER,
     patterns=[
         "about? 99.9-99.9 cm  sex? ,? dim and dim",

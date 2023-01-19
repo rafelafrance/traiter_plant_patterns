@@ -22,7 +22,7 @@ SUBPART = MatcherPatterns(
 # ####################################################################################
 SUBPART_SUFFIX = MatcherPatterns(
     "subpart_suffix",
-    on_match="plant.subpart_suffix.v1",
+    on_match="plant_subpart_suffix_v1",
     decoder=DECODER,
     patterns=[
         "- subpart",

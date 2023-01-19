@@ -33,7 +33,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 # ####################################################################################
 COUNT = MatcherPatterns(
     "count",
-    on_match="plant.count.v1",
+    on_match="plant_count_v1",
     decoder=DECODER,
     patterns=[
         "99-99",
@@ -74,7 +74,7 @@ def on_count_match(ent):
 # ####################################################################################
 COUNT_WORD = MatcherPatterns(
     "count_word",
-    on_match="plant.count_word.v1",
+    on_match="plant_count_word_v1",
     decoder=DECODER,
     patterns=[
         "count_word",

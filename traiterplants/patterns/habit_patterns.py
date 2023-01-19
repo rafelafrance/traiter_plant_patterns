@@ -3,7 +3,7 @@ from traiter.patterns.matcher_patterns import MatcherPatterns
 
 from . import common_patterns
 
-ON_HABIT_MATCH = "plant.habit.v1"
+ON_HABIT_MATCH = "plant_habit_v1"
 
 
 TREE = """ tree trees bush bushes """.split()

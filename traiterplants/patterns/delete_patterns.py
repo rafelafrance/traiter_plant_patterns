@@ -1,4 +1,3 @@
-"""Remove entities when they meet these criteria."""
 import re
 
 from spacy import registry
@@ -13,7 +12,7 @@ PARTIAL_TRAITS = """ about color_mod cross dim dimension imperial_length imperia
 
 
 # ####################################################################################
-DELETE_MISSING_PARTS = "plant.missing_parts.v1"
+DELETE_MISSING_PARTS = "plant_missing_parts_v1"
 
 
 @registry.misc(DELETE_MISSING_PARTS)
@@ -25,7 +24,7 @@ def delete_missing_parts(ent):
 
 
 # ####################################################################################
-DELETE_PAGE_NO = "plant.page_no.v1"
+DELETE_PAGE_NO = "plant_page_no_v1"
 
 
 @registry.misc(DELETE_PAGE_NO)
@@ -57,7 +56,7 @@ def delete_page_no(ent):
 
 
 # ####################################################################################
-DELETE_KM = "plant.kilometers.v1"
+DELETE_KM = "plant_kilometers_v1"
 
 
 @registry.misc(DELETE_KM)
@@ -69,7 +68,7 @@ def delete_kilometers(ent):
 
 
 # ####################################################################################
-DELETE_MISSING_COUNT = "plant.delete_missing_count.v1"
+DELETE_MISSING_COUNT = "plant_delete_missing_count_v1"
 
 
 @registry.misc(DELETE_MISSING_COUNT)

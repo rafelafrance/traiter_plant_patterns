@@ -3,7 +3,7 @@ import unittest
 
 from traiter.util import shorten
 
-from tests.setup import PIPELINE
+from tests.setup import SENT_NLP
 
 
 class TestSentence(unittest.TestCase):
@@ -11,13 +11,13 @@ class TestSentence(unittest.TestCase):
 
     def test_sentencizer_01(self):
         text = shorten("""It was common “along a tiny stream.” Argia apicalis.""")
-        doc = PIPELINE(text)
+        doc = SENT_NLP(text)
         sents = list(doc.sents)
         self.assertEqual(len(sents), 2)
 
     def test_sentencizer_02(self):
         text = shorten("""(Dunn et al. 2009, Jørgensen 2015).""")
-        doc = PIPELINE(text)
+        doc = SENT_NLP(text)
         sents = list(doc.sents)
         self.assertEqual(len(sents), 1)
 
@@ -25,13 +25,13 @@ class TestSentence(unittest.TestCase):
         text = """Abbreviated
             when
             subsequently mentioned."""
-        doc = PIPELINE(text)
+        doc = SENT_NLP(text)
         sents = list(doc.sents)
         self.assertEqual(len(sents), 1)
 
     def test_sentencizer_04(self):
         text = """Up to 3 mm. Sometimes blue."""
-        doc = PIPELINE(text)
+        doc = SENT_NLP(text)
         sents = list(doc.sents)
         self.assertEqual(len(sents), 2)
 
@@ -42,7 +42,7 @@ class TestSentence(unittest.TestCase):
             Stems [10–]30–70[–100] cm. Leaves: stipules lanceolate to oblong.
             """
         )
-        doc = PIPELINE(text)
+        doc = SENT_NLP(text)
         sents = list(doc.sents)
         self.assertEqual(len(sents), 3)
 
@@ -53,12 +53,12 @@ class TestSentence(unittest.TestCase):
             smaller 3.5–5 mm wide. 2n = 34, 56 (South America).
             """
         )
-        doc = PIPELINE(text)
+        doc = SENT_NLP(text)
         sents = list(doc.sents)
         self.assertEqual(len(sents), 2)
 
     def test_sentencizer_07(self):
         text = shorten("""Ciald., Darwiniana.""")
-        doc = PIPELINE(text)
+        doc = SENT_NLP(text)
         sents = list(doc.sents)
         self.assertEqual(len(sents), 1)
