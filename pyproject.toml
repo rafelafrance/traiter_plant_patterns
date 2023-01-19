@@ -3,7 +3,7 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "traiterplants"
+name = "traiter_plants"
 version = "0.1.0"
 description = ""
 license = {file = "LICENSE"}
