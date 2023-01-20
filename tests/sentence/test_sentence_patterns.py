@@ -7,7 +7,7 @@ from tests.setup import SENT_NLP
 
 
 class TestSentence(unittest.TestCase):
-    """ "Test the sentence splitter."""
+    """Test the sentence splitter."""
 
     def test_sentencizer_01(self):
         text = shorten("""It was common “along a tiny stream.” Argia apicalis.""")

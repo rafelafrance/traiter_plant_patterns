@@ -178,10 +178,10 @@ class PipelineBuilder:
             },
         )
 
-    def add_delete_partial_traits_pipe(self):
-        self.nlp.add_pipe(
-            DELETE_TRAITS, config={"delete": delete_patterns.PARTIAL_TRAITS}
-        )
+    def add_delete_partial_traits_pipe(self, name=DELETE_TRAITS, partial_traits=None):
+        if partial_traits is None:
+            partial_traits = delete_patterns.PARTIAL_TRAITS
+        self.nlp.add_pipe(DELETE_TRAITS, name=name, config={"delete": partial_traits})
 
     def add_merge_pipe(self):
         self.nlp.add_pipe(MERGE_TRAITS)
@@ -285,14 +285,17 @@ class PipelineBuilder:
             },
         )
 
-    def add_delete_unlinked_pipe(self):
+    def add_delete_unlinked_pipe(self, delete_unlinked=None, delete_when=None):
+        if delete_when is None:
+            delete_unlinked = delete_patterns.DELETE_UNLINKED
+
+        if delete_when is None:
+            delete_when = delete_patterns.DELETE_WHEN
+
         self.nlp.add_pipe(
             DELETE_TRAITS,
             name="delete_unlinked",
-            config={
-                "delete": delete_patterns.DELETE_UNLINKED,
-                "delete_when": delete_patterns.DELETE_WHEN,
-            },
+            config={"delete": delete_unlinked, "delete_when": delete_when},
         )
 
     def add_debug_ents_pipe(self):
