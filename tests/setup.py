@@ -1,7 +1,7 @@
 from traiter.util import shorten
 
-from traiter_plants import sentence_pipeline
-from traiter_plants.pipeline_builder import PipelineBuilder
+from plants import sentence_pipeline
+from plants.pipeline_builder import PipelineBuilder
 
 # Singleton for testing
 PIPELINE = PipelineBuilder()
