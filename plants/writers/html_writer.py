@@ -38,9 +38,9 @@ class CssClasses:
 
 
 class HtmlWriter:
-    def __init__(self, template_dir, out_path):
+    def __init__(self, template_dir, out_html):
         self.template_dir = template_dir
-        self.out_path = out_path
+        self.out_html = out_html
         self.css_classes = CssClasses()
         self.formatted = []
 
@@ -122,5 +122,5 @@ class HtmlWriter:
             rows=self.formatted,
         )
 
-        with open(self.out_path, "w") as html_file:
+        with open(self.out_html, "w") as html_file:
             html_file.write(template)

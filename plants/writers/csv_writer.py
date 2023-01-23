@@ -9,14 +9,15 @@ SKIP |= EXTRAS | terms.PARTS_SET | terms.SUBPART_SET
 
 
 class CsvWriter:
-    def __init__(self):
+    def __init__(self, out_csv):
+        self.out_csv = out_csv
         self.csv_rows = []
 
-    def write(self, rows, out_csv):
+    def write(self, rows):
         csv_rows = [self.format_row(r) for r in rows]
         df = pd.DataFrame(csv_rows).fillna("")
         df = self.sort_columns(df)
-        df.to_csv(out_csv, index=False)
+        df.to_csv(self.out_csv, index=False)
 
     def format_row(self, row):
         raise NotImplementedError()
