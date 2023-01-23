@@ -1,10 +1,10 @@
 from traiter.terms.db import Db
 
-from .. import consts
+from .. import const
 
-TERM_DB = consts.DATA_DIR / "plant_terms.sqlite"
+TERM_DB = const.DATA_DIR / "plant_terms.sqlite"
 if not TERM_DB.exists():
-    TERM_DB = consts.MOCK_DIR / "plant_terms.sqlite"
+    TERM_DB = const.MOCK_DIR / "plant_terms.sqlite"
 
 # #########################################################################
 TERMS = Db.shared("colors units taxon_levels time numerics")

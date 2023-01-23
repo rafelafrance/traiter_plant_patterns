@@ -3,7 +3,7 @@ import re
 from spacy import registry
 
 from . import term_patterns
-from .. import consts
+from .. import const
 
 PARTIAL_TRAITS = """ about color_mod cross dim dimension imperial_length imperial_mass
     joined length_units level margin_leader metric_length metric_mass month not_a_range
@@ -41,8 +41,8 @@ def delete_page_no(ent):
     # Are the previous 2 tokens title case?
     if (
         ent.start > 1
-        and ent.doc[ent.start - 2].shape_ in consts.TITLE_SHAPES
-        and ent.doc[ent.start - 1].shape_ in consts.TITLE_SHAPES
+        and ent.doc[ent.start - 2].shape_ in const.TITLE_SHAPES
+        and ent.doc[ent.start - 1].shape_ in const.TITLE_SHAPES
     ):
         return True
 

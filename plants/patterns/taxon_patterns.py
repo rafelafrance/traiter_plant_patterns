@@ -6,13 +6,13 @@ from traiter.patterns.matcher_patterns import MatcherPatterns
 
 from . import common_patterns
 from . import term_patterns
-from .. import consts
+from .. import const
 
 M_DOT = r"^[A-Z][a-z]?\.?$"
 M_DOT_RE = re.compile(M_DOT)
 
 DECODER = common_patterns.COMMON_PATTERNS | {
-    "auth": {"SHAPE": {"IN": consts.NAME_SHAPES}},  # "auth": {"POS": "PROPN"},
+    "auth": {"SHAPE": {"IN": const.NAME_SHAPES}},  # "auth": {"POS": "PROPN"},
     "maybe": {"POS": "NOUN"},
     "taxon": {"ENT_TYPE": "plant_taxon"},
     "level": {"ENT_TYPE": "level"},
@@ -36,7 +36,7 @@ def build_taxon(span):
             is_level = token.lower_
             data["level"] = term_patterns.REPLACE.get(token.lower_, token.lower_)
         elif is_level:
-            if data["level"] in consts.LOWER_TAXON_LEVEL:
+            if data["level"] in const.LOWER_TAXON_LEVEL:
                 original.append(token.text)
                 taxa.append(token.lower_)
             else:
@@ -60,7 +60,7 @@ def build_taxon(span):
                 if level not in used_levels:
                     used_levels.append(level)
                     data["level"] = level
-                    if level in consts.LOWER_TAXON_LEVEL:
+                    if level in const.LOWER_TAXON_LEVEL:
                         original.append(token.text)
                         taxa.append(token.lower_)
                     else:
@@ -72,7 +72,7 @@ def build_taxon(span):
                 taxa.append(token.text)
 
         elif token.pos_ in ["PROPN", "NOUN"] or token.lower_ in common_patterns.AND:
-            if token.shape_ in consts.TITLE_SHAPES:
+            if token.shape_ in const.TITLE_SHAPES:
                 auth.append(token.text)
             elif auth and token.lower_ in common_patterns.AND:
                 auth.append(token.text)
@@ -90,7 +90,7 @@ def cleanup_ent(ent, original):
         del ent._.data["plant_taxon"]
 
     # There is latin in the text, I need to guard against that
-    is_lower = ent._.data.get("level") in consts.LOWER_TAXON_LEVEL
+    is_lower = ent._.data.get("level") in const.LOWER_TAXON_LEVEL
     alone = len(ent._.data["taxon"].split()) == 1
     if alone and (is_lower or original[0][0].islower()):
         ent._.delete = True

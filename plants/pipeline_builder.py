@@ -8,7 +8,7 @@ from traiter.pipes.merge_traits import MERGE_TRAITS
 from traiter.pipes.simple_traits_pipe import SIMPLE_TRAITS
 from traiter.pipes.term_pipe import TERM_PIPE
 
-from . import consts
+from . import const
 from . import tokenizer
 from .patterns import color_patterns
 from .patterns import count_patterns
@@ -193,8 +193,8 @@ class PipelineBuilder:
             config={
                 "parents": part_linker_patterns.PART_PARENTS,
                 "children": part_linker_patterns.PART_CHILDREN,
-                "weights": consts.TOKEN_WEIGHTS,
-                "reverse_weights": consts.REVERSE_WEIGHTS,
+                "weights": const.TOKEN_WEIGHTS,
+                "reverse_weights": const.REVERSE_WEIGHTS,
                 "patterns": matcher_patterns.as_dicts(
                     [part_linker_patterns.PART_LINKER]
                 ),
@@ -208,7 +208,7 @@ class PipelineBuilder:
             config={
                 "parents": part_linker_patterns.LINK_PART_ONCE_PARENTS,
                 "children": part_linker_patterns.LINK_PART_ONCE_CHILDREN,
-                "weights": consts.TOKEN_WEIGHTS,
+                "weights": const.TOKEN_WEIGHTS,
                 "max_links": 1,
                 "differ": ["sex", "dimensions"],
                 "patterns": matcher_patterns.as_dicts(
@@ -224,7 +224,7 @@ class PipelineBuilder:
             config={
                 "parents": subpart_linker_patterns.SUBPART_PARENTS,
                 "children": subpart_linker_patterns.SUBPART_CHILDREN,
-                "weights": consts.TOKEN_WEIGHTS,
+                "weights": const.TOKEN_WEIGHTS,
                 "patterns": matcher_patterns.as_dicts(
                     [subpart_linker_patterns.SUBPART_LINKER]
                 ),
@@ -238,7 +238,7 @@ class PipelineBuilder:
             config={
                 "parents": subpart_linker_patterns.SUBPART_SUFFIX_PARENTS,
                 "children": subpart_linker_patterns.SUBPART_SUFFIX_CHILDREN,
-                "weights": consts.TOKEN_WEIGHTS,
+                "weights": const.TOKEN_WEIGHTS,
                 "patterns": matcher_patterns.as_dicts(
                     [subpart_linker_patterns.SUBPART_SUFFIX_LINKER]
                 ),
@@ -252,7 +252,7 @@ class PipelineBuilder:
             config={
                 "parents": sex_linker_patterns.SEX_PARENTS,
                 "children": sex_linker_patterns.SEX_CHILDREN,
-                "weights": consts.TOKEN_WEIGHTS,
+                "weights": const.TOKEN_WEIGHTS,
                 "patterns": matcher_patterns.as_dicts([sex_linker_patterns.SEX_LINKER]),
             },
         )
@@ -264,7 +264,7 @@ class PipelineBuilder:
             config={
                 "parents": location_linker_patterns.LOCATION_PARENTS,
                 "children": location_linker_patterns.LOCATION_CHILDREN,
-                "weights": consts.TOKEN_WEIGHTS,
+                "weights": const.TOKEN_WEIGHTS,
                 "patterns": matcher_patterns.as_dicts(
                     [location_linker_patterns.LOCATION_LINKER],
                 ),
@@ -278,7 +278,7 @@ class PipelineBuilder:
             config={
                 "parents": taxon_like_linker_patterns.TAXON_LIKE_PARENTS,
                 "children": taxon_like_linker_patterns.TAXON_LIKE_CHILDREN,
-                "weights": consts.TOKEN_WEIGHTS,
+                "weights": const.TOKEN_WEIGHTS,
                 "patterns": matcher_patterns.as_dicts(
                     [taxon_like_linker_patterns.TAXON_LIKE_LINKER]
                 ),

@@ -7,7 +7,7 @@ from traiter.patterns import matcher_patterns
 
 from . import common_patterns
 from . import term_patterns
-from .. import consts
+from .. import const
 
 MULTIPLE_DASHES = ["\\" + c for c in t_const.DASH_CHAR]
 MULTIPLE_DASHES = rf'\s*[{"".join(MULTIPLE_DASHES)}]{{2,}}\s*'
@@ -41,7 +41,7 @@ def on_color_match(ent):
             continue
         if token.pos_ in ["AUX"]:
             continue
-        if token.shape_ in consts.TITLE_SHAPES:
+        if token.shape_ in const.TITLE_SHAPES:
             continue
         parts.append(replace)
 
