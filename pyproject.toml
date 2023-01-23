@@ -10,6 +10,7 @@ license = {file = "LICENSE"}
 authors = [{name="Raphael LaFrance", email="rafelafrance@gmail.com"}]
 requires-python = ">=3.11"
 dependencies = [
+    "pandas",
     "spacy",
 ]
 optional-dependencies.dev = [

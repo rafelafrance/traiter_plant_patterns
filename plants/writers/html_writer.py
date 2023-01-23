@@ -1,6 +1,8 @@
 import collections
 import html
 import itertools
+from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 
 import jinja2
@@ -14,8 +16,15 @@ BORDERS = itertools.cycle([f"bb{i}" for i in range(COLOR_COUNT)])
 
 SKIPS = {"start", "end", "trait", "part", "subpart"}
 
+FormattedTrait = collections.namedtuple("FormattedTrait", "text traits raw")
 TraitRow = collections.namedtuple("TraitRow", "label data")
 SortableTrait = collections.namedtuple("SortableTrait", "label start trait title")
+
+
+@dataclass(kw_only=True)
+class HtmlWriterRow:
+    formatted_text: str
+    formatted_traits: list[TraitRow] = field(default_factory=list)
 
 
 class CssClasses:
