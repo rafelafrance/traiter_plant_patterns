@@ -2,12 +2,8 @@ from collections import defaultdict
 
 import pandas as pd
 
+from . import writer_utils as w_utils
 from ..patterns import term_patterns as terms
-
-EXTRAS = set(""" sex location group """.split())
-
-SKIP = {"trait", "start", "end", "dimensions", "taxon"}
-SKIP |= EXTRAS | terms.PARTS_SET | terms.SUBPART_SET
 
 
 class CsvWriter:
@@ -39,7 +35,7 @@ class CsvWriter:
             if not (terms.PARTS_SET & key_set):
                 continue
 
-            base_header = self.base_column_header(trait, key_set)
+            base_header = w_utils.get_label(trait)
 
             self.group_values_by_header(by_header, trait, base_header)
             self.number_columns(by_header, csv_row)
@@ -50,23 +46,9 @@ class CsvWriter:
         return df
 
     @staticmethod
-    def base_column_header(trait, key_set):
-        part = (terms.PARTS_SET & key_set).pop()
-        if "subpart" in trait:
-            label = f'{part}_{trait["subpart"]}_{trait["trait"]}'
-        elif "subpart_suffix" in trait:
-            subpart = trait["subpart_suffix"].removeprefix("-")
-            label = f'{part}_{subpart}_{trait["trait"]}'
-        else:
-            label = f'{part}_{trait["trait"]}'
-        return label
-
-    @staticmethod
     def group_values_by_header(by_header, trait, base_header):
-        extras = sorted(v for k, v in trait.items() if k in EXTRAS)
-        unnumbered_header = "_".join([base_header] + extras)
-        trait = {k: v for k, v in trait.items() if k not in SKIP}
-        by_header[unnumbered_header].append(trait)
+        filtered = {k: v for k, v in trait.items() if k not in w_utils.FIELD_SKIPS}
+        by_header[base_header].append(filtered)
 
     @staticmethod
     def number_columns(by_header, csv_row):

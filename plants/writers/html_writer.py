@@ -14,11 +14,9 @@ COLOR_COUNT = 14
 BACKGROUNDS = itertools.cycle([f"cc{i}" for i in range(COLOR_COUNT)])
 BORDERS = itertools.cycle([f"bb{i}" for i in range(COLOR_COUNT)])
 
-SKIPS = {"start", "end", "trait", "part", "subpart"}
-
-FormattedTrait = collections.namedtuple("FormattedTrait", "text traits raw")
 TraitRow = collections.namedtuple("TraitRow", "label data")
 SortableTrait = collections.namedtuple("SortableTrait", "label start trait title")
+FormattedTrait = collections.namedtuple("FormattedTrait", "text traits raw")
 
 
 @dataclass(kw_only=True)
@@ -87,7 +85,7 @@ class HtmlWriter:
         for trait in row.traits:
             label = w_utils.get_label(trait)
             title = row.text[trait["start"] : trait["end"]]
-            if trait["trait"] not in w_utils.DO_NOT_SHOW:
+            if trait["trait"] not in w_utils.TRAIT_SKIPS:
                 sortable.append(SortableTrait(label, trait["start"], trait, title))
 
         sortable = sorted(sortable)
@@ -100,7 +98,7 @@ class HtmlWriter:
                 fields = ", ".join(
                     f'<span title="{trait.title}">{k}:&nbsp;{v}</span>'
                     for k, v in trait.trait.items()
-                    if k not in w_utils.TRAIT_SKIPS
+                    if k not in w_utils.FIELD_SKIPS
                 )
                 if fields:
                     trait_list.append(fields)
