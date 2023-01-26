@@ -10,11 +10,11 @@ ABBREVS = """
     var. sect. subsect. ser. subser. subsp. spec. sp. spp. nov.
     Acad. Agri. Amer. Ann. Arb. Arq. adj. al. alt. ann.
     Bol. Bot. Bras. Bull. bot. bras.
-    Cat. Ci. Coll. Columb. Com. Contr. Cur. ca. cent. centr. cf. coll.
+    Cat. Ci. Coll. Columb. Com. Contr. Cur. c. ca. cent. centr. cf. coll.
     DC. depto. diam. dtto.
-    Encycl. Encyle. Exot. ed. ememd. ent. est.
+    Encycl. Encyle. Exot. e. ed. eg. e.g. ememd. ent. est.
     FIG. Fig. Figs. Fl. fig. figs. fl. flor. flumin.
-    Gard. Gen. Geo. gard. geograph.
+    Gard. Gen. Geo. g. gard. geograph.
     Herb. Hist. Hort. hb. hist.
     Is. illeg. infra. is.
     Jahrb. Jard. Jr. jug.
@@ -37,7 +37,7 @@ ABBREVS = """
     """.split()
 ABBREVS += [f"{c}." for c in string.ascii_uppercase]
 
-TOKENIZER = "plant_custom_tokenizer_v1"
+TOKENIZER = "mimosa.custom_tokenizer.v1"
 
 
 def setup_tokenizer(nlp):

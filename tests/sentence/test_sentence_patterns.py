@@ -62,3 +62,9 @@ class TestSentence(unittest.TestCase):
         doc = SENT_NLP(text)
         sents = list(doc.sents)
         self.assertEqual(len(sents), 1)
+
+    def test_sentencizer_08(self):
+        text = shorten("""(e.g. 1. carinata, Fig. 231).""")
+        doc = SENT_NLP(text)
+        sents = list(doc.sents)
+        self.assertEqual(len(sents), 1)

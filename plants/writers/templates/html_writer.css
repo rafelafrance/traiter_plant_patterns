@@ -39,6 +39,15 @@ table {
   border: 1px solid black;
 }
 
+tr {
+  animation: fadein 1s;
+}
+
+tr.closed {
+  animation: fadeout 1s;
+  display: none;
+}
+
 th {
   position: sticky;
   top: 0;
