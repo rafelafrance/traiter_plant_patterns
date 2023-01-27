@@ -103,3 +103,17 @@ class TestTaxon(unittest.TestCase):
                 }
             ],
         )
+
+    def test_taxon_08(self):
+        self.assertEqual(
+            test("""Sect. Vulpinae is characterized"""),
+            [
+                {
+                    "level": "section",
+                    "taxon": "sect. Vulpinae",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 14,
+                }
+            ],
+        )

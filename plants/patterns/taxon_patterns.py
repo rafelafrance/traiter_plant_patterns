@@ -35,6 +35,7 @@ def build_taxon(span):
             original.append(token.text)
             is_level = token.lower_
             data["level"] = term_patterns.REPLACE.get(token.lower_, token.lower_)
+
         elif is_level:
             if data["level"] in const.LOWER_TAXON_LEVEL:
                 original.append(token.text)
@@ -80,7 +81,7 @@ def build_taxon(span):
     if auth:
         data["authority"] = " ".join(auth)
 
-    data["taxon"] = " ".join(taxa)
+    data["taxon"] = " ".join([t for t in taxa if t])
 
     return data, original
 
@@ -98,11 +99,9 @@ def cleanup_ent(ent, original):
 
 
 # ###################################################################################
-ON_MULTI_TAXON_MATCH = "plant_multi_taxon_v1"
-
 MULTI_TAXON = MatcherPatterns(
     "multi_taxon",
-    on_match=ON_MULTI_TAXON_MATCH,
+    on_match="plant_multi_taxon_v1",
     decoder=DECODER,
     patterns=[
         "M.? taxon+ and M.? taxon+",
@@ -110,7 +109,7 @@ MULTI_TAXON = MatcherPatterns(
 )
 
 
-@registry.misc(ON_MULTI_TAXON_MATCH)
+@registry.misc(MULTI_TAXON.on_match)
 def on_multi_taxon_match(ent):
     conj_idx = next(i for i, t in enumerate(ent) if t.lower_ in common_patterns.AND)
     first, _ = build_taxon(ent[:conj_idx])
@@ -123,11 +122,9 @@ def on_multi_taxon_match(ent):
 
 
 # ###################################################################################
-ON_TAXON_MATCH = "plant_taxon_v1"
-
 TAXON = MatcherPatterns(
     "taxon",
-    on_match=ON_TAXON_MATCH,
+    on_match="plant_taxon_v1",
     decoder=DECODER,
     patterns=[
         "M.? taxon+ (? auth*                       )?",
@@ -139,6 +136,7 @@ TAXON = MatcherPatterns(
         "M.? taxon+ (? auth*             and auth+ )? level .? word",
         "M.? taxon+ (? auth+ maybe auth+ and auth+ )? level .? word",
         "level .? taxon+",
+        "level .? word",
         "taxon+",
         "M.? taxon level .? word",
         "M. .? taxon+",
@@ -146,7 +144,7 @@ TAXON = MatcherPatterns(
 )
 
 
-@registry.misc(ON_TAXON_MATCH)
+@registry.misc(TAXON.on_match)
 def on_taxon_match(ent):
     ent._.data, original = build_taxon(ent)
     cleanup_ent(ent, original)

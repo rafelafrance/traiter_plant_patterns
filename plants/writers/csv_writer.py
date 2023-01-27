@@ -7,14 +7,17 @@ from ..patterns import term_patterns as terms
 
 
 class CsvWriter:
+    first = []
+
     def __init__(self, out_csv):
         self.out_csv = out_csv
         self.csv_rows = []
 
     def write(self, rows):
         csv_rows = self.format_all_rows(rows)
-        df = pd.DataFrame(csv_rows).fillna("")
+        df = pd.DataFrame(csv_rows)
         df = self.sort_df(df)
+        df = df.fillna("")
         df.to_csv(self.out_csv, index=False)
 
     def format_all_rows(self, rows):
@@ -41,8 +44,13 @@ class CsvWriter:
             self.number_columns(by_header, csv_row)
         return csv_row
 
-    @staticmethod
-    def sort_df(df):
+    def sort_df(self, df):
+        rest = [
+            c for c in df.columns if c not in self.first and df[c].notna().sum() > 2
+        ]
+
+        columns = self.first + sorted(rest)
+        df = df[columns]
         return df
 
     @staticmethod
