@@ -5,6 +5,7 @@ ALL_PARTS = terms.PARTS_SET.copy() | terms.SUBPART_SET.copy()
 TRAIT_SKIPS = terms.PARTS + terms.SUBPARTS + terms.LOCATIONS + ["sex"]
 TITLE_SKIPS = ["start", "end"]
 FIELD_SKIPS = TITLE_SKIPS + ["trait", "dimensions"] + terms.PARTS + terms.SUBPARTS
+COLUMN_SKIPS = FIELD_SKIPS + ["taxon"]
 
 
 def get_label(trait):

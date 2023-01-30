@@ -11,12 +11,13 @@ from .. import const
 M_DOT = r"^[A-Z][a-z]?\.?$"
 M_DOT_RE = re.compile(M_DOT)
 
+REJECT_LEVEL = """ name names group groups level levels pattern patterns """.split()
+
 DECODER = common_patterns.COMMON_PATTERNS | {
-    "auth": {"SHAPE": {"IN": const.NAME_SHAPES}},  # "auth": {"POS": "PROPN"},
-    "maybe": {"POS": "NOUN"},
+    "auth": {"SHAPE": {"IN": const.NAME_SHAPES}},
+    "maybe": {"POS": {"IN": ["PROPN", "NOUN"]}},
     "taxon": {"ENT_TYPE": "plant_taxon"},
     "level": {"ENT_TYPE": "level"},
-    "word": {"LOWER": {"REGEX": r"^[a-z-]+$"}},
     "M.": {"TEXT": {"REGEX": M_DOT}},
 }
 
@@ -37,12 +38,13 @@ def build_taxon(span):
             data["level"] = term_patterns.REPLACE.get(token.lower_, token.lower_)
 
         elif is_level:
-            if data["level"] in const.LOWER_TAXON_LEVEL:
-                original.append(token.text)
-                taxa.append(token.lower_)
-            else:
-                original.append(token.text)
-                taxa.append(token.text.title())
+            if token.lower_ not in REJECT_LEVEL:
+                if data["level"] in const.LOWER_TAXON_LEVEL:
+                    original.append(token.text)
+                    taxa.append(token.lower_)
+                else:
+                    original.append(token.text)
+                    taxa.append(token.text.title())
             is_level = ""
 
         elif M_DOT_RE.match(token.text):
@@ -129,16 +131,16 @@ TAXON = MatcherPatterns(
     patterns=[
         "M.? taxon+ (? auth*                       )?",
         "M.? taxon+ (? auth+ maybe auth+           )?",
-        "M.? taxon+ (? auth*                       )? level .? word",
-        "M.? taxon+ (? auth+ maybe auth+           )? level .? word",
+        "M.? taxon+ (? auth*                       )? level .? maybe",
+        "M.? taxon+ (? auth+ maybe auth+           )? level .? maybe",
         "M.? taxon+ (? auth*             and auth+ )?",
         "M.? taxon+ (? auth+ maybe auth+ and auth+ )?",
-        "M.? taxon+ (? auth*             and auth+ )? level .? word",
-        "M.? taxon+ (? auth+ maybe auth+ and auth+ )? level .? word",
+        "M.? taxon+ (? auth*             and auth+ )? level .? maybe",
+        "M.? taxon+ (? auth+ maybe auth+ and auth+ )? level .? maybe",
         "level .? taxon+",
-        "level .? word",
+        "level .? maybe",
         "taxon+",
-        "M.? taxon level .? word",
+        "M.? taxon level .? maybe",
         "M. .? taxon+",
     ],
 )

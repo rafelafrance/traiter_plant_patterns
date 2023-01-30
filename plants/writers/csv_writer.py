@@ -9,8 +9,9 @@ from ..patterns import term_patterns as terms
 class CsvWriter:
     first = []
 
-    def __init__(self, out_csv):
+    def __init__(self, out_csv, csv_min=0):
         self.out_csv = out_csv
+        self.csv_min = csv_min
         self.csv_rows = []
 
     def write(self, rows):
@@ -46,7 +47,9 @@ class CsvWriter:
 
     def sort_df(self, df):
         rest = [
-            c for c in df.columns if c not in self.first and df[c].notna().sum() > 2
+            c
+            for c in df.columns
+            if c not in self.first and df[c].notna().sum() >= self.csv_min
         ]
 
         columns = self.first + sorted(rest)
@@ -55,7 +58,7 @@ class CsvWriter:
 
     @staticmethod
     def group_values_by_header(by_header, trait, base_header):
-        filtered = {k: v for k, v in trait.items() if k not in w_utils.FIELD_SKIPS}
+        filtered = {k: v for k, v in trait.items() if k not in w_utils.COLUMN_SKIPS}
         by_header[base_header].append(filtered)
 
     @staticmethod
