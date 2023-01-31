@@ -8,25 +8,25 @@ ABBREVS = """
     Jan. Feb. Febr. Mar. Apr. Jun. Jul. Aug. Sep. Sept. Oct. Nov. Dec.
     Var. Sect. Subsect. Ser. Subser. Subsp. Spec. Sp. Spp.
     var. sect. subsect. ser. subser. subsp. spec. sp. spp. nov.
-    Acad. Agri. Amer. Ann. Arb. Arq. adj. al. alt. ann.
+    Acad. Agri. Amer. Ann. Arb. Arch. Arq. adj. al. alt. ann.
     Bol. Bot. Bras. Bull. bot. bras.
-    Cat. Ci. Coll. Columb. Com. Contr. Cur. c. ca. cent. centr. cf. coll.
-    DC. depto. diam. dtto.
-    Encycl. Encyle. Exot. e. ed. eg. e.g. ememd. ent. est.
-    FIG. Fig. Figs. Fl. fig. figs. fl. flor. flumin.
+    Cat. Ci. Coll. Columb. Com. Contr. Cur. c. ca. cent. centr. cf. cit. coll. com.
+    DC. Dept. Diam. Distr. depto. diam. distr. dtto.
+    Encycl. Encyle. Est. Exot. e. ed. eg. e.g. ememd. ent. est.
+    FIG. Fig. Figs. Fl. fig. figs. fl. flor. flumin. frag.
     Gard. Gen. Geo. g. gard. geograph.
     Herb. Hist. Hort. hb. hist.
-    Is. illeg. infra. is.
+    Ind. Is. illeg. infra. is.
     Jahrb. Jard. Jr. jug.
-    Lab. Lam. Leg. Legum. Linn. lam. lat. leg. lin. long.
-    Mag. Mem. Mex. Mts. Mus. Nac. mem. mens. monac. mont. mun.
+    Lab. Lam. Leg. Legum. Linn. lam. lat. leg. lin. loc. long.
+    Mag. Mem. Mim. Mex. Mts. Mun. Mus. Nac. mem. mens. monac. mont. mun.
     Nat. Natl. Neg. No. nat. no. nom. nud.
     Ocas.
-    PI. PL. Pl. Proc. Prodr. Prov. Pt. Pto. Publ. p. pi. pl. pr. prov.
-    reg. revis.
-    Sa. Sci. Soc. Sr. Sta. Sto. Sul. Suppl. Syst.
+    PI. PL. Pl. Proc. Prodr. Prov. Pt. Pto. Publ. p. photo. pi. pl. pr. prov.
+    Rev. reg. revis.
+    ST. Sa. Sci. Soc. Sr. St. Sta. Sto. Sul. Suppl. Syst.
     s. sci. stat. stk. str. superfl. suppl. surv. syn.
-    Tex. Trans telegr.
+    Tex. Trans t. tab. telegr.
     U.S. US. Univ.
     Veg. veg.
     Wm.
