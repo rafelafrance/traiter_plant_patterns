@@ -1,11 +1,10 @@
 from ..patterns import term_patterns as terms
 
-ALL_PARTS = terms.PARTS_SET.copy() | terms.SUBPART_SET.copy()
-
-TRAIT_SKIPS = terms.PARTS + terms.SUBPARTS + terms.LOCATIONS + ["sex"]
 TITLE_SKIPS = ["start", "end"]
-FIELD_SKIPS = TITLE_SKIPS + ["trait", "dimensions"] + terms.PARTS + terms.SUBPARTS
+FIELD_SKIPS = TITLE_SKIPS + ["trait", "dimensions"]
+FIELD_SKIPS += terms.PARTS + terms.SUBPARTS
 COLUMN_SKIPS = FIELD_SKIPS + ["taxon"]
+TRAIT_SKIPS = terms.PARTS + terms.SUBPARTS + terms.LOCATIONS + ["sex"]
 
 
 def get_label(trait):

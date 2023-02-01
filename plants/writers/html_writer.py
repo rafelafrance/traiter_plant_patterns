@@ -85,8 +85,9 @@ class HtmlWriter:
         for trait in row.traits:
             label = w_utils.get_label(trait)
             title = row.text[trait["start"] : trait["end"]]
-            if trait["trait"] not in w_utils.TRAIT_SKIPS:
-                sortable.append(SortableTrait(label, trait["start"], trait, title))
+            # if trait["trait"] not in w_utils.TRAIT_SKIPS:
+            #     sortable.append(SortableTrait(label, trait["start"], trait, title))
+            sortable.append(SortableTrait(label, trait["start"], trait, title))
 
         sortable = sorted(sortable)
 

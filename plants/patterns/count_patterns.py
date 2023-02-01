@@ -9,11 +9,13 @@ from . import term_patterns
 
 # ####################################################################################
 NOT_COUNT_WORDS = (
-    t_const.CROSS + t_const.SLASH + """ average side times days weeks by """.split()
+    t_const.CROSS
+    + t_const.SLASH
+    + """ average side times days weeks by table """.split()
 )
 NOT_COUNT_ENTS = """ imperial_length metric_mass imperial_mass """.split()
 
-EVERY = """ every per each """.split()
+EVERY = """ every per each or more """.split()
 
 DECODER = common_patterns.COMMON_PATTERNS | {
     "adp": {"POS": {"IN": ["ADP"]}},
@@ -39,7 +41,7 @@ COUNT = MatcherPatterns(
         "99-99",
         "99-99 -* per_count",
         "( 99-99 ) per_count",
-        "99-99 -* every part",
+        "99-99 -* every+ part per_count?",
         "( 99-99 ) every part",
         "per_count+ adp? 99-99",
     ],

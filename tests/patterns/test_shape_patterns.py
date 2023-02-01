@@ -220,28 +220,18 @@ class TestShape(unittest.TestCase):
         self.assertEqual(
             test("Leaf blades lobe apex rounded"),
             [
-                {"leaf_part": "leaf", "trait": "leaf_part", "start": 0, "end": 11},
                 {
-                    "subpart": "lobe",
-                    "trait": "subpart",
-                    "start": 12,
-                    "end": 16,
-                    "leaf_part": "leaf",
-                },
-                {
-                    "subpart": "apex",
-                    "trait": "subpart",
-                    "start": 17,
+                    "trait": "leaf_part",
+                    "start": 0,
                     "end": 21,
-                    "leaf_part": "leaf",
+                    "leaf_part": "leaf lobe apex",
                 },
                 {
                     "shape": "orbicular",
                     "trait": "shape",
                     "start": 22,
                     "end": 29,
-                    "leaf_part": "leaf",
-                    "subpart": "apex",
+                    "leaf_part": "leaf lobe apex",
                 },
             ],
         )

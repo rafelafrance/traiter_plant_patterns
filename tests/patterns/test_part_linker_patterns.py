@@ -99,8 +99,8 @@ class TestPartLinker(unittest.TestCase):
                     "end": 30,
                 },
                 {
-                    "venation": "bipinnate",
-                    "trait": "venation",
+                    "shape": "bipinnate",
+                    "trait": "shape",
                     "start": 32,
                     "end": 41,
                     "leaf_part": "leaf",
@@ -121,5 +121,28 @@ class TestPartLinker(unittest.TestCase):
                     "subpart": "axis",
                 },
                 {"trait": "part", "start": 98, "end": 114, "part": "primary pulvinus"},
+            ],
+        )
+
+    def test_part_linker_05(self):
+        self.assertEqual(
+            test("""juvenile leaves persistent for a long period."""),
+            [
+                {"end": 15, "leaf_part": "leaf", "start": 9, "trait": "leaf_part"},
+                {"duration": "persistent", "end": 26, "start": 16, "trait": "duration"},
+            ],
+        )
+
+    def test_part_linker_06(self):
+        self.assertEqual(
+            test("""Most species have stipular spines, bipinnately compound leaves."""),
+            [
+                {
+                    "leaf_part": "stipular spines",
+                    "trait": "leaf_part",
+                    "start": 18,
+                    "end": 33,
+                },
+                {"leaf_part": "leaf", "trait": "leaf_part", "start": 56, "end": 62},
             ],
         )

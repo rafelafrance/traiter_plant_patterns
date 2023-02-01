@@ -5,7 +5,7 @@ from . import term_patterns
 
 LOCATION_PARENTS = term_patterns.LOCATIONS
 LOCATION_CHILDREN = term_patterns.all_traits_except(
-    " shape sex taxon duration ".split() + term_patterns.LOCATIONS
+    " shape sex taxon ".split() + term_patterns.LOCATIONS + term_patterns.NO_LINK
 )
 
 LOCATION_LINKER = matcher_patterns.MatcherPatterns(

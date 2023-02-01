@@ -9,6 +9,7 @@ PART_LEADER = """ primary secondary """.split()
 DECODER = common_patterns.COMMON_PATTERNS | {
     "leader": {"LOWER": {"IN": PART_LEADER}},
     "part": {"ENT_TYPE": {"IN": term_patterns.PARTS}},
+    "subpart": {"ENT_TYPE": {"IN": term_patterns.SUBPARTS}},
 }
 
 # ####################################################################################
@@ -18,7 +19,9 @@ PART = MatcherPatterns(
     decoder=DECODER,
     patterns=[
         "leader  part",
-        "leader? part -   part",
+        "leader? part -?  part",
+        "leader? part -?  subpart",
+        "leader? part     subpart+",
         "leader? part and part",
     ],
 )
@@ -26,7 +29,9 @@ PART = MatcherPatterns(
 
 @registry.misc(PART.on_match)
 def on_part_match(ent):
-    if any(t.lower_ in common_patterns.AND for t in ent):
+    if any(t._.cached_label in term_patterns.SUBPARTS for t in ent):
+        ent._.new_label = next(t._.cached_label for t in ent)
+    elif any(t.lower_ in common_patterns.AND for t in ent):
         ent._.new_label = "multiple_parts"
         ent._.data["multiple_parts"] = [
             term_patterns.REPLACE.get(t.lower_, t.lower_)
@@ -42,8 +47,10 @@ MISSING_PART = MatcherPatterns(
     decoder=DECODER,
     patterns=[
         "missing part",
-        "missing part - part",
+        "missing part  -  part",
         "missing part and part",
+        "missing part -?  subpart",
+        "missing part     subpart",
     ],
 )
 

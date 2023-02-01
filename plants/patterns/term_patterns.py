@@ -70,6 +70,8 @@ TRAITS_SET = set(TRAITS)
 ALL_TRAITS = LOCATIONS + MORPHOLOGIES + PARTS + PLANT_TRAITS + SUBPARTS + TRAITS
 ALL_TRAITS_SET = set(ALL_TRAITS)
 
+NO_LINK = """ duration habit habitat leaf_duration """.split()
+
 
 def all_traits_except(removes: list[str]) -> list:
     return [t for t in ALL_TRAITS if t not in removes]

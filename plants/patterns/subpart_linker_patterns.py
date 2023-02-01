@@ -17,6 +17,7 @@ SUBPART_CHILDREN = term_patterns.all_traits_except(
     + term_patterns.LOCATIONS
     + term_patterns.PARTS
     + term_patterns.PLANT_TRAITS
+    + term_patterns.NO_LINK
 )
 
 SUBPART_LINKER = matcher_patterns.MatcherPatterns(
