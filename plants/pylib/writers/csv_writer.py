@@ -3,7 +3,7 @@ from collections import defaultdict
 import pandas as pd
 
 from . import writer_utils as w_utils
-from ..patterns import term_patterns as terms
+from plants.pylib.patterns import term_patterns as terms
 
 
 class CsvWriter:

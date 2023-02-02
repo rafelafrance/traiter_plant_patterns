@@ -1,4 +1,4 @@
-from ..patterns import term_patterns as terms
+from plants.pylib.patterns import term_patterns as terms
 
 TITLE_SKIPS = ["start", "end"]
 FIELD_SKIPS = TITLE_SKIPS + ["trait", "dimensions"]

@@ -2,7 +2,7 @@ from pathlib import Path
 
 from traiter.terms.db import Db
 
-from .. import vocabulary as vocab
+from plants.pylib import vocabulary as vocab
 
 VOCAB_DIR = Path(vocab.__file__).parent
 
