@@ -1,9 +1,9 @@
 import re
 
 from spacy import registry
-from traiter import actions
-from traiter import const as t_const
-from traiter.patterns import matcher_patterns
+from traiter.pylib import actions
+from traiter.pylib import const as t_const
+from traiter.pylib.patterns import matcher_patterns
 
 from . import common_patterns
 from . import term_patterns

@@ -1,4 +1,4 @@
-from traiter.patterns import matcher_patterns
+from traiter.pylib.patterns import matcher_patterns
 
 from . import common_patterns
 from . import term_patterns

@@ -4,7 +4,7 @@ We are linking parts like "petal" or "leaf" to traits like color or size.
 For example: "with thick, woody rootstock" should link the "rootstock" part with
 the "woody" trait.
 """
-from traiter.patterns import matcher_patterns
+from traiter.pylib.patterns import matcher_patterns
 
 from . import common_patterns
 from . import term_patterns

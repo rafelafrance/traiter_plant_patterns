@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from traiter.terms.db import Db
+from traiter.pylib.terms.db import Db
 
 from plants.pylib import vocabulary as vocab
 

@@ -2,7 +2,7 @@ import string
 
 import regex as re
 from spacy.util import registry
-from traiter import tokenizer_util
+from traiter.pylib import tokenizer_util
 
 ABBREVS = """
     Jan. Feb. Febr. Mar. Apr. Jun. Jul. Aug. Sep. Sept. Oct. Nov. Dec.

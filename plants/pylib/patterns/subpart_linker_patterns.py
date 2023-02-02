@@ -5,7 +5,7 @@ For example: "leaves are covered with white hairs 1-(1.5) mm long."
 Should link "hairs" with the color "white" and to the length "1 to 1.5 mm".
 Named entity recognition (NER) must be run first.
 """
-from traiter.patterns import matcher_patterns
+from traiter.pylib.patterns import matcher_patterns
 
 from . import common_patterns
 from . import term_patterns

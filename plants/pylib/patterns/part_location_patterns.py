@@ -1,6 +1,6 @@
 from spacy import registry
-from traiter import actions
-from traiter.patterns.matcher_patterns import MatcherPatterns
+from traiter.pylib import actions
+from traiter.pylib.patterns.matcher_patterns import MatcherPatterns
 
 from . import common_patterns
 from . import size_patterns

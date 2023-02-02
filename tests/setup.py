@@ -1,4 +1,4 @@
-from traiter.util import shorten
+from traiter.pylib.util import shorten
 
 from plants.pylib import sentence_pipeline
 from plants.pylib.pipeline_builder import PipelineBuilder

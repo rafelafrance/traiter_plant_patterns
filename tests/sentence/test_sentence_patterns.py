@@ -1,7 +1,7 @@
 """Test the sentence splitter."""
 import unittest
 
-from traiter.util import shorten
+from traiter.pylib.util import shorten
 
 from tests.setup import SENT_NLP
 
