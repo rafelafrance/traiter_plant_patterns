@@ -537,7 +537,7 @@ class TestCount(unittest.TestCase):
                     "trait": "taxon",
                     "start": 0,
                     "end": 6,
-                    "level": "genus",
+                    "rank": "genus",
                 }
             ],
         )
@@ -547,7 +547,7 @@ class TestCount(unittest.TestCase):
             test("""Mimosa lat. 13°40-14°10'S"""),
             [
                 {
-                    "level": "genus",
+                    "rank": "genus",
                     "taxon": "Mimosa",
                     "trait": "taxon",
                     "start": 0,
@@ -564,7 +564,7 @@ class TestCount(unittest.TestCase):
                     "trait": "taxon",
                     "start": 0,
                     "end": 6,
-                    "level": "genus",
+                    "rank": "genus",
                     "taxon": "Mimosa",
                 }
             ],

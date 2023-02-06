@@ -1,15 +1,9 @@
-from pathlib import Path
-
 from traiter.pylib.terms.db import Db
 
-from plants.pylib import vocabulary as vocab
-
-VOCAB_DIR = Path(vocab.__file__).parent
-
-TERM_DB = VOCAB_DIR / "plant_terms.sqlite"
+from ..const import TERM_DB
 
 # #########################################################################
-TERMS = Db.shared("colors units taxon_levels time numerics")
+TERMS = Db.shared("colors units taxon_ranks time numerics")
 TERMS += Db.select_term_set(TERM_DB, "plant_treatment")
 TERMS += Db.trailing_dash(TERMS, label="color")
 TERMS += Db.select_term_set(TERM_DB, "plant_taxa")
@@ -21,8 +15,8 @@ REPLACE = TERMS.pattern_dict("replace")
 REMOVE = TERMS.pattern_dict("remove")
 SUFFIX_TERM = TERMS.pattern_dict("suffix_term")
 
-LEVELS = TERMS.pattern_dict("level")
-LEVELS = {k: v.split() for k, v in LEVELS.items()}
+RANKS = TERMS.pattern_dict("rank")
+RANKS = {k: v.split() for k, v in RANKS.items()}
 
 
 # #########################################################################

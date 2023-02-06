@@ -11,7 +11,7 @@
 #             ),
 #             [
 #                 {
-#                     "level": "series",
+#                     "rank": "series",
 #                     "taxon": "ser. Glanduliferae",
 #                     "trait": "taxon",
 #                     "start": 0,
@@ -60,7 +60,7 @@
 #             ),
 #             [
 #                 {
-#                     "level": "species",
+#                     "rank": "species",
 #                     "taxon": "Mimosa sensitiva",
 #                     "trait": "taxon",
 #                     "start": 0,

@@ -9,7 +9,7 @@ class TestTaxonLike(unittest.TestCase):
             test("""it seems closer to the nearly sympatric M. sensitiva."""),
             [
                 {
-                    "level": "species",
+                    "rank": "species",
                     "taxon_like": "M. sensitiva",
                     "trait": "taxon_like",
                     "start": 30,
@@ -24,7 +24,7 @@ class TestTaxonLike(unittest.TestCase):
             test("""it is similar to M. sensitiva."""),
             [
                 {
-                    "level": "species",
+                    "rank": "species",
                     "taxon_like": "M. sensitiva",
                     "trait": "taxon_like",
                     "start": 6,
@@ -39,7 +39,7 @@ class TestTaxonLike(unittest.TestCase):
             test("""It resembles M. sensitiva in amplitude"""),
             [
                 {
-                    "level": "species",
+                    "rank": "species",
                     "taxon_like": "M. sensitiva",
                     "trait": "taxon_like",
                     "start": 3,
@@ -54,7 +54,7 @@ class TestTaxonLike(unittest.TestCase):
             test("""sympatric pair of M. sensitiva Harms ex Glaziou"""),
             [
                 {
-                    "level": "species",
+                    "rank": "species",
                     "authority": "Harms Glaziou",
                     "taxon_like": "M. sensitiva",
                     "trait": "taxon_like",
@@ -70,7 +70,7 @@ class TestTaxonLike(unittest.TestCase):
             test("""vicinis M. sensitiva et M. pachyphloia"""),
             [
                 {
-                    "level": "species",
+                    "rank": "species",
                     "taxon_like": ["M. sensitiva", "M. pachyphloia"],
                     "trait": "taxon_like",
                     "start": 0,
@@ -85,7 +85,7 @@ class TestTaxonLike(unittest.TestCase):
             test("""distinguished from var. pachyphloia"""),
             [
                 {
-                    "level": "variety",
+                    "rank": "variety",
                     "trait": "taxon_like",
                     "start": 0,
                     "end": 35,
@@ -100,7 +100,7 @@ class TestTaxonLike(unittest.TestCase):
             test("""The var. floridana resembles var. nuttallii in venation"""),
             [
                 {
-                    "level": "variety",
+                    "rank": "variety",
                     "taxon": "var. floridana",
                     "trait": "taxon",
                     "start": 4,
@@ -108,7 +108,7 @@ class TestTaxonLike(unittest.TestCase):
                     "taxon_like": "var. nuttallii",
                 },
                 {
-                    "level": "variety",
+                    "rank": "variety",
                     "trait": "taxon_like",
                     "start": 19,
                     "end": 43,

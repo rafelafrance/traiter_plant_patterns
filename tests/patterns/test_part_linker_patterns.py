@@ -92,7 +92,7 @@ class TestPartLinker(unittest.TestCase):
             [
                 {"leaf_part": "leaf", "trait": "leaf_part", "start": 0, "end": 3},
                 {
-                    "level": "species",
+                    "rank": "species",
                     "taxon": "Af. pachyphloia",
                     "trait": "taxon",
                     "start": 15,

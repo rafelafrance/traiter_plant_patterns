@@ -9,7 +9,7 @@ class TestTaxonLikeLinker(unittest.TestCase):
             test("""Mimosa sensitiva Bameby, vicinis M. pachyphloia"""),
             [
                 {
-                    "level": "species",
+                    "rank": "species",
                     "authority": "Bameby",
                     "taxon": "Mimosa sensitiva",
                     "trait": "taxon",
@@ -18,7 +18,7 @@ class TestTaxonLikeLinker(unittest.TestCase):
                     "taxon_like": "M. pachyphloia",
                 },
                 {
-                    "level": "species",
+                    "rank": "species",
                     "trait": "taxon_like",
                     "start": 25,
                     "end": 47,

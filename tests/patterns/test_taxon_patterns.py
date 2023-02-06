@@ -9,7 +9,7 @@ class TestTaxon(unittest.TestCase):
             test("""M. sensitiva"""),
             [
                 {
-                    "level": "species",
+                    "rank": "species",
                     "taxon": "M. sensitiva",
                     "trait": "taxon",
                     "start": 0,
@@ -23,7 +23,7 @@ class TestTaxon(unittest.TestCase):
             test("""Mimosa sensitiva"""),
             [
                 {
-                    "level": "species",
+                    "rank": "species",
                     "taxon": "Mimosa sensitiva",
                     "trait": "taxon",
                     "start": 0,
@@ -37,7 +37,7 @@ class TestTaxon(unittest.TestCase):
             test("""M. polycarpa var. spegazzinii"""),
             [
                 {
-                    "level": "variety",
+                    "rank": "variety",
                     "taxon": "M. polycarpa var. spegazzinii",
                     "trait": "taxon",
                     "start": 0,
@@ -51,7 +51,7 @@ class TestTaxon(unittest.TestCase):
             test("""A. pachyphloia subsp. brevipinnula."""),
             [
                 {
-                    "level": "subspecies",
+                    "rank": "subspecies",
                     "taxon": "A. pachyphloia subsp. brevipinnula",
                     "trait": "taxon",
                     "start": 0,
@@ -66,7 +66,7 @@ class TestTaxon(unittest.TestCase):
             [
                 {
                     "authority": "Bamehy",
-                    "level": "species",
+                    "rank": "species",
                     "taxon": "M. pachyphloia",
                     "trait": "taxon",
                     "start": 0,
@@ -81,7 +81,7 @@ class TestTaxon(unittest.TestCase):
             [
                 {
                     "authority": "Britton & Rose",
-                    "level": "species",
+                    "rank": "species",
                     "taxon": "A. pachyphloia",
                     "trait": "taxon",
                     "start": 0,
@@ -95,7 +95,7 @@ class TestTaxon(unittest.TestCase):
             test("""Af. pachyphloia"""),
             [
                 {
-                    "level": "species",
+                    "rank": "species",
                     "taxon": "Af. pachyphloia",
                     "trait": "taxon",
                     "start": 0,
@@ -109,7 +109,7 @@ class TestTaxon(unittest.TestCase):
             test("""Sect. Vulpinae is characterized"""),
             [
                 {
-                    "level": "section",
+                    "rank": "section",
                     "taxon": "sect. Vulpinae",
                     "trait": "taxon",
                     "start": 0,
