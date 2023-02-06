@@ -5,7 +5,6 @@ from . import vocabulary as vocab
 
 VOCAB_DIR = Path(vocab.__file__).parent
 TERM_DB = VOCAB_DIR / "plant_terms.sqlite"
-SPELL_DB = VOCAB_DIR / "spellcheck.sqlite"
 
 CURR_DIR = Path(os.getcwd())
 IS_SUBDIR = CURR_DIR.name in ("notebooks", "experiments")
