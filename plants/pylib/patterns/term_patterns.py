@@ -6,7 +6,7 @@ from .. import const
 TERMS = Db.shared("colors units taxon_ranks time numerics")
 TERMS += Db.select_term_set(const.TERM_DB, "plant_treatment")
 TERMS += Db.trailing_dash(TERMS, label="color")
-TERMS += Db.select_term_set(const.TAXON_DB, "plant_taxa")
+TERMS += Db.select_term_set(const.TERM_DB, "plant_taxa")
 TERMS.drop("imperial_length")
 TERMS.drop("time_units")
 TERMS.drop("ordinal numeric_units roman")

@@ -17,7 +17,7 @@ REJECT_RANK = """
     relationships salvador sierra local
     """.split()
 
-NOT_A_GENUS = """ la el """.split()
+NOT_A_GENUS = """ de el la le no se """.split()
 
 DECODER = common_patterns.COMMON_PATTERNS | {
     "auth": {"SHAPE": {"IN": const.NAME_SHAPES}},
