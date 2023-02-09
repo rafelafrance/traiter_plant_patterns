@@ -143,6 +143,7 @@ class PipelineBuilder:
             config={
                 "patterns": matcher_patterns.as_dicts(
                     [
+                        taxon_patterns.NOT_A_TAXON,
                         taxon_patterns.TAXON,
                         taxon_patterns.MULTI_TAXON,
                     ]

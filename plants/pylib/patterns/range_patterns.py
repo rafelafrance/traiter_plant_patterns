@@ -15,6 +15,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
     "99.9": {"TEXT": {"REGEX": t_const.FLOAT_TOKEN_RE}},
     "ambiguous": {"LOWER": {"IN": ["few", "many"]}},
     "conj": {"POS": {"IN": ["CCONJ"]}},
+    # These are for patterns that are not a real range = NOT_A_RANGE
     "month": {"ENT_TYPE": "month"},
     "nope": {"TEXT": {"REGEX": r"^[&/:°'\"]+$"}},
     "skip": {"LOWER": {"IN": SKIP}},

@@ -123,3 +123,23 @@ class TestTaxon(unittest.TestCase):
             test("""All species are trees"""),
             [{"end": 21, "part": "tree", "start": 16, "trait": "part"}],
         )
+
+    def test_taxon_10(self):
+        self.assertEqual(
+            test("""Alajuela, between La Palma and Rio Platanillo"""),
+            [],
+        )
+
+    def test_taxon_11(self):
+        self.assertEqual(
+            test("""ruiziana and I. silanchensis."""),
+            [
+                {
+                    "rank": "species",
+                    "taxon": ["ruiziana", "I. silanchensis"],
+                    "trait": "multi_taxon",
+                    "start": 0,
+                    "end": 28,
+                }
+            ],
+        )

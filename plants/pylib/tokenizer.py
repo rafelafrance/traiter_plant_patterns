@@ -8,7 +8,7 @@ ABBREVS = """
     Jan. Feb. Febr. Mar. Apr. Jun. Jul. Aug. Sep. Sept. Oct. Nov. Dec.
     Var. Sect. Subsect. Ser. Subser. Subsp. Spec. Sp. Spp.
     var. sect. subsect. ser. subser. subsp. spec. sp. spp. nov.
-    Acad. Agri. Amer. Ann. Arb. Arch. Arq. adj. al. alt. ann.
+    Acad. Af. Agri. Amer. Ann. Arb. Arch. Arq. adj. al. alt. ann.
     Bol. Bot. Bras. Bull. bot. bras.
     Cat. Ci. Coll. Columb. Com. Contr. Cur. c. ca. cent. centr. cf. cit. coll. com.
     DC. Dept. Diam. Distr. depto. diam. distr. dtto.

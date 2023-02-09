@@ -1,4 +1,3 @@
-"""Get mimosa taxon notations."""
 import regex as re
 from spacy import registry
 from traiter.pylib import actions
@@ -11,11 +10,19 @@ from .. import const
 M_DOT = r"^[A-Z][a-z]?\.?$"
 M_DOT_RE = re.compile(M_DOT)
 
-REJECT_RANK = """ name names group groups rank ranks pattern patterns """.split()
+MIN_RANK_LEN = 4
+
+REJECT_RANK = """
+    name names group groups rank ranks pattern patterns level pair pairs diversity
+    relationships salvador sierra local
+    """.split()
+
+NOT_A_GENUS = """ la el """.split()
 
 DECODER = common_patterns.COMMON_PATTERNS | {
     "auth": {"SHAPE": {"IN": const.NAME_SHAPES}},
     "maybe": {"POS": {"IN": ["PROPN", "NOUN"]}},
+    "nope": {"LOWER": {"IN": NOT_A_GENUS}},
     "taxon": {"ENT_TYPE": "plant_taxon"},
     "rank": {"ENT_TYPE": "rank"},
     "M.": {"TEXT": {"REGEX": M_DOT}},
@@ -31,14 +38,16 @@ def build_taxon(span):
     data = {}
 
     for token in span:
+        # We got a rank label the next token is the rank
         if token._.cached_label == "rank":
             taxa.append(token.lower_)
             original.append(token.text)
             is_rank = token.lower_
             data["rank"] = term_patterns.REPLACE.get(token.lower_, token.lower_)
 
+        # The last token was a rank label this token should be a rank
         elif is_rank:
-            if token.lower_ not in REJECT_RANK:
+            if token.lower_ not in REJECT_RANK:  # and len(token) >= MIN_RANK_LEN:
                 if data["rank"] in const.LOWER_TAXON_RANK:
                     original.append(token.text)
                     taxa.append(token.lower_)
@@ -47,14 +56,13 @@ def build_taxon(span):
                     taxa.append(token.text.title())
             is_rank = ""
 
+        # An abbreviated genus C. lupus
         elif M_DOT_RE.match(token.text):
             original.append(token.text)
             taxa.append(token.text)
             used_ranks.append("genus")
 
-        elif token.text == ".":
-            taxa.append(taxa.pop() + ".")
-
+        # We have a taxon name from the DB
         elif token._.cached_label == "plant_taxon":
             ranks = term_patterns.RANKS.get(token.lower_, ["unknown"])
 
@@ -63,6 +71,8 @@ def build_taxon(span):
                 if rank not in used_ranks:
                     used_ranks.append(rank)
                     data["rank"] = rank
+
+                    # Capitalize the taxon
                     if rank in const.LOWER_TAXON_RANK:
                         original.append(token.text)
                         taxa.append(token.lower_)
@@ -74,6 +84,7 @@ def build_taxon(span):
                 original.append(token.text)
                 taxa.append(token.text)
 
+        # These are maybe an authority
         elif token.pos_ in ["PROPN", "NOUN"] or token.lower_ in common_patterns.AND:
             if token.shape_ in const.TITLE_SHAPES:
                 auth.append(token.text)
@@ -129,18 +140,26 @@ TAXON = MatcherPatterns(
     on_match="plant_taxon_v1",
     decoder=DECODER,
     patterns=[
-        "M.? taxon+ (? auth*                       )?",
-        "M.? taxon+ (? auth+ maybe auth+           )?",
-        "M.? taxon+ (? auth*                       )? rank .? maybe",
-        "M.? taxon+ (? auth+ maybe auth+           )? rank .? maybe",
-        "M.? taxon+ (? auth*             and auth+ )?",
-        "M.? taxon+ (? auth+ maybe auth+ and auth+ )?",
-        "M.? taxon+ (? auth*             and auth+ )? rank .? maybe",
-        "M.? taxon+ (? auth+ maybe auth+ and auth+ )? rank .? maybe",
+        "M.? taxon+ (  auth*                       ) ",
+        "M.? taxon+ (  auth+ maybe auth+           ) ",
+        "M.? taxon+ (  auth*                       )  rank .? maybe",
+        "M.? taxon+ (  auth+ maybe auth+           )  rank .? maybe",
+        "M.? taxon+ (  auth*             and auth+ ) ",
+        "M.? taxon+ (  auth+ maybe auth+ and auth+ ) ",
+        "M.? taxon+ (  auth*             and auth+ )  rank .? maybe",
+        "M.? taxon+ (  auth+ maybe auth+ and auth+ )  rank .? maybe",
+        "M.? taxon+    auth*                         ",
+        "M.? taxon+    auth+ maybe auth+             ",
+        "M.? taxon+    auth*                          rank .? maybe",
+        "M.? taxon+    auth+ maybe auth+              rank .? maybe",
+        "M.? taxon+    auth+             and auth+   ",
+        "M.? taxon+    auth+ maybe auth+ and auth+   ",
+        "M.? taxon+    auth*             and auth+    rank .? maybe",
+        "M.? taxon+    auth+ maybe auth+ and auth+    rank .? maybe",
         "rank .? taxon+",
         "rank .? maybe",
         "taxon+",
-        "M.? taxon rank .? maybe",
+        "M.?   taxon rank .? maybe",
         "M. .? taxon+",
     ],
 )
@@ -150,3 +169,22 @@ TAXON = MatcherPatterns(
 def on_taxon_match(ent):
     ent._.data, original = build_taxon(ent)
     cleanup_ent(ent, original)
+
+
+# ###################################################################################
+NOT_A_TAXON = MatcherPatterns(
+    "not_a_taxon",
+    on_match=actions.REJECT_MATCH,
+    decoder=DECODER,
+    patterns=[
+        "nope taxon+    auth*                         ",
+        "nope taxon+    auth+ maybe auth+             ",
+        "nope taxon+    auth*                          rank .? maybe",
+        "nope taxon+    auth+ maybe auth+              rank .? maybe",
+        "nope taxon+    auth*             and auth+   ",
+        "nope taxon+    auth+ maybe auth+ and auth+   ",
+        "nope taxon+    auth*             and auth+    rank .? maybe",
+        "nope taxon+    auth+ maybe auth+ and auth+    rank .? maybe",
+        "taxon and? M.",
+    ],
+)
