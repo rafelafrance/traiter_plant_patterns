@@ -29,6 +29,7 @@ from .patterns import subpart_patterns
 from .patterns import taxon_like_linker_patterns
 from .patterns import taxon_like_patterns
 from .patterns import taxon_patterns
+from .patterns import taxon_patterns_full
 from .patterns import term_patterns
 
 
@@ -143,9 +144,10 @@ class PipelineBuilder:
             config={
                 "patterns": matcher_patterns.as_dicts(
                     [
-                        taxon_patterns.NOT_A_TAXON,
-                        taxon_patterns.TAXON,
-                        taxon_patterns.MULTI_TAXON,
+                        taxon_patterns_full.FULL_TAXON,
+                        # taxon_patterns.NOT_A_TAXON,
+                        # taxon_patterns.TAXON,
+                        # taxon_patterns.MULTI_TAXON,
                     ]
                 )
             },

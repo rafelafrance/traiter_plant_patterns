@@ -6,7 +6,8 @@ from .. import const
 TERMS = Db.shared("colors units taxon_ranks time numerics")
 TERMS += Db.select_term_set(const.TERM_DB, "plant_treatment")
 TERMS += Db.trailing_dash(TERMS, label="color")
-TERMS += Db.select_term_set(const.TERM_DB, "plant_taxa")
+# TERMS += Db.select_term_set(const.TERM_DB, "plant_taxa")
+TERMS += Db.select_term_set(const.TAXON_DB, "taxa")
 TERMS.drop("imperial_length")
 TERMS.drop("time_units")
 TERMS.drop("ordinal numeric_units roman")
@@ -15,10 +16,9 @@ REPLACE = TERMS.pattern_dict("replace")
 REMOVE = TERMS.pattern_dict("remove")
 SUFFIX_TERM = TERMS.pattern_dict("suffix_term")
 
-RANKS = TERMS.pattern_dict("rank")
-RANKS = {k: v.split() for k, v in RANKS.items()}
-
-RANK2ID = TERMS.pattern_dict("rank_id")
+# RANKS = TERMS.pattern_dict("rank")
+# RANKS = {k: v.split() for k, v in RANKS.items()}
+FULL_RANK = TERMS.pattern_dict("rank")
 
 
 # #########################################################################

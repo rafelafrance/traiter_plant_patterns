@@ -19,7 +19,6 @@ UPPER_SHAPES = set(""" XXXXX XXXX XXX XX X. XX. X """.split())
 NAME_SHAPES = list(TITLE_SHAPES) + list(UPPER_SHAPES)
 
 LOWER_TAXON_RANK = """ species subspecies variety subvariety form subform """.split()
-RANK2ID = {}
 
 
 TOKEN_WEIGHTS = {",": 3, ";": 7, ".": 7, "with": 10, "of": 7}

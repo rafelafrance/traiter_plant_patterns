@@ -6,7 +6,7 @@ from tests.setup import test
 class TestTaxon(unittest.TestCase):
     def test_taxon_01(self):
         self.assertEqual(
-            test("""M. sensitiva"""),
+            test("""Mimosa sensitiva"""),
             [
                 {
                     "rank": "species",
