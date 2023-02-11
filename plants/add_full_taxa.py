@@ -64,7 +64,7 @@ def write_database(batch):
         );
         insert into term_columns
                ( term_set,  extra,    rename)
-        values ('taxa',    'extra1', 'rank');
+        values ('taxa',    'extra1', 'rank1');
         insert into term_columns
                ( term_set,  extra,    rename)
         values ('taxa',    'extra2', 'options');

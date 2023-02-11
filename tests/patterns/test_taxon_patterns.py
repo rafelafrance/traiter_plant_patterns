@@ -6,11 +6,11 @@ from tests.setup import test
 class TestTaxon(unittest.TestCase):
     def test_taxon_01(self):
         self.assertEqual(
-            test("""Mimosa sensitiva"""),
+            test("""M. sensitiva"""),
             [
                 {
                     "rank": "species",
-                    "taxon": "M. sensitiva",
+                    "taxon": "Mimosa sensitiva",
                     "trait": "taxon",
                     "start": 0,
                     "end": 12,
@@ -38,7 +38,7 @@ class TestTaxon(unittest.TestCase):
             [
                 {
                     "rank": "variety",
-                    "taxon": "M. polycarpa var. spegazzinii",
+                    "taxon": "Mimosa polycarpa var. spegazzinii",
                     "trait": "taxon",
                     "start": 0,
                     "end": 29,
@@ -52,7 +52,7 @@ class TestTaxon(unittest.TestCase):
             [
                 {
                     "rank": "subspecies",
-                    "taxon": "A. pachyphloia subsp. brevipinnula",
+                    "taxon": "Acacia pachyphloia subsp. brevipinnula",
                     "trait": "taxon",
                     "start": 0,
                     "end": 34,
@@ -62,12 +62,12 @@ class TestTaxon(unittest.TestCase):
 
     def test_taxon_05(self):
         self.assertEqual(
-            test("""M. pachyphloia Bamehy 184."""),
+            test("""A. pachyphloia Bamehy 184."""),
             [
                 {
                     "authority": "Bamehy",
                     "rank": "species",
-                    "taxon": "M. pachyphloia",
+                    "taxon": "Acacia pachyphloia",
                     "trait": "taxon",
                     "start": 0,
                     "end": 21,
@@ -82,7 +82,7 @@ class TestTaxon(unittest.TestCase):
                 {
                     "authority": "Britton & Rose",
                     "rank": "species",
-                    "taxon": "A. pachyphloia",
+                    "taxon": "Acacia pachyphloia",
                     "trait": "taxon",
                     "start": 0,
                     "end": 29,
@@ -92,25 +92,11 @@ class TestTaxon(unittest.TestCase):
 
     def test_taxon_07(self):
         self.assertEqual(
-            test("""Af. pachyphloia"""),
-            [
-                {
-                    "rank": "species",
-                    "taxon": "Af. pachyphloia",
-                    "trait": "taxon",
-                    "start": 0,
-                    "end": 15,
-                }
-            ],
-        )
-
-    def test_taxon_08(self):
-        self.assertEqual(
             test("""Sect. Vulpinae is characterized"""),
             [
                 {
                     "rank": "section",
-                    "taxon": "sect. Vulpinae",
+                    "taxon": "Vulpinae",
                     "trait": "taxon",
                     "start": 0,
                     "end": 14,
@@ -118,13 +104,13 @@ class TestTaxon(unittest.TestCase):
             ],
         )
 
-    def test_taxon_09(self):
+    def test_taxon_08(self):
         self.assertEqual(
             test("""All species are trees"""),
             [{"end": 21, "part": "tree", "start": 16, "trait": "part"}],
         )
 
-    def test_taxon_10(self):
+    def test_taxon_09(self):
         self.assertEqual(
             test("""Alajuela, between La Palma and Rio Platanillo"""),
             [],

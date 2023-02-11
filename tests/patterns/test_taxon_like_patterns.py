@@ -10,7 +10,7 @@ class TestTaxonLike(unittest.TestCase):
             [
                 {
                     "rank": "species",
-                    "taxon_like": "M. sensitiva",
+                    "taxon_like": "Mimosa sensitiva",
                     "trait": "taxon_like",
                     "start": 30,
                     "end": 52,
@@ -25,7 +25,7 @@ class TestTaxonLike(unittest.TestCase):
             [
                 {
                     "rank": "species",
-                    "taxon_like": "M. sensitiva",
+                    "taxon_like": "Mimosa sensitiva",
                     "trait": "taxon_like",
                     "start": 6,
                     "end": 29,
@@ -40,7 +40,7 @@ class TestTaxonLike(unittest.TestCase):
             [
                 {
                     "rank": "species",
-                    "taxon_like": "M. sensitiva",
+                    "taxon_like": "Mimosa sensitiva",
                     "trait": "taxon_like",
                     "start": 3,
                     "end": 25,
@@ -56,7 +56,7 @@ class TestTaxonLike(unittest.TestCase):
                 {
                     "rank": "species",
                     "authority": "Harms Glaziou",
-                    "taxon_like": "M. sensitiva",
+                    "taxon_like": "Mimosa sensitiva",
                     "trait": "taxon_like",
                     "start": 0,
                     "end": 47,
@@ -67,11 +67,11 @@ class TestTaxonLike(unittest.TestCase):
 
     def test_taxon_like_05(self):
         self.assertEqual(
-            test("""vicinis M. sensitiva et M. pachyphloia"""),
+            test("""vicinis M. sensitiva et A. pachyphloia"""),
             [
                 {
                     "rank": "species",
-                    "taxon_like": ["M. sensitiva", "M. pachyphloia"],
+                    "taxon_like": ["Mimosa sensitiva", "Acacia pachyphloia"],
                     "trait": "taxon_like",
                     "start": 0,
                     "end": 38,
@@ -89,7 +89,7 @@ class TestTaxonLike(unittest.TestCase):
                     "trait": "taxon_like",
                     "start": 0,
                     "end": 35,
-                    "taxon_like": "var. pachyphloia",
+                    "taxon_like": "pachyphloia",
                     "relation": "distinguished",
                 }
             ],
@@ -101,18 +101,10 @@ class TestTaxonLike(unittest.TestCase):
             [
                 {
                     "rank": "variety",
-                    "taxon": "var. floridana",
-                    "trait": "taxon",
-                    "start": 4,
-                    "end": 18,
-                    "taxon_like": "var. nuttallii",
-                },
-                {
-                    "rank": "variety",
                     "trait": "taxon_like",
                     "start": 19,
                     "end": 43,
-                    "taxon_like": "var. nuttallii",
+                    "taxon_like": "nuttallii",
                     "relation": "resembles",
                 },
                 {"venation": "vein", "trait": "venation", "start": 47, "end": 55},

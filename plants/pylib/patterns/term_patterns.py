@@ -18,7 +18,7 @@ SUFFIX_TERM = TERMS.pattern_dict("suffix_term")
 
 # RANKS = TERMS.pattern_dict("rank")
 # RANKS = {k: v.split() for k, v in RANKS.items()}
-FULL_RANK = TERMS.pattern_dict("rank")
+RANK1 = TERMS.pattern_dict("rank1")
 
 
 # #########################################################################

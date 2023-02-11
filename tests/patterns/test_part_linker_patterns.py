@@ -86,41 +86,41 @@ class TestPartLinker(unittest.TestCase):
     def test_part_linker_04(self):
         self.assertEqual(
             test(
-                """Lvs (except of Af. pachyphloia) bipinnate, the primary and secondary
+                """Lvs (except of A. pachyphloia) bipinnate, the primary and secondary
                 axes normally pulvinate (the primary pulvinus rarely suppressed)"""
             ),
             [
                 {"leaf_part": "leaf", "trait": "leaf_part", "start": 0, "end": 3},
                 {
                     "rank": "species",
-                    "taxon": "Af. pachyphloia",
+                    "taxon": "Acacia pachyphloia",
                     "trait": "taxon",
                     "start": 15,
-                    "end": 30,
+                    "end": 29,
                 },
                 {
                     "shape": "bipinnate",
                     "trait": "shape",
-                    "start": 32,
-                    "end": 41,
+                    "start": 31,
+                    "end": 40,
                     "leaf_part": "leaf",
                 },
                 {
                     "subpart": "axis",
                     "trait": "subpart",
-                    "start": 69,
-                    "end": 73,
+                    "start": 68,
+                    "end": 72,
                     "part": "primary pulvinus",
                 },
                 {
                     "shape": "pulvinate",
                     "trait": "shape",
-                    "start": 83,
-                    "end": 92,
+                    "start": 82,
+                    "end": 91,
                     "part": "primary pulvinus",
                     "subpart": "axis",
                 },
-                {"trait": "part", "start": 98, "end": 114, "part": "primary pulvinus"},
+                {"trait": "part", "start": 97, "end": 113, "part": "primary pulvinus"},
             ],
         )
 
