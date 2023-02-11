@@ -5,10 +5,10 @@ from spacy import registry
 from . import term_patterns
 from .. import const
 
-PARTIAL_TRAITS = """ about color_mod cross dim dimension imperial_length imperial_mass
-    joined length_units rank margin_leader metric_length metric_mass month not_a_range
-    number_word per_count plant_taxon quest range shape_leader shape_suffix skip
-    units """.split()
+PARTIAL_TRAITS = """ about bad_taxon color_mod cross dim dimension imperial_length
+    imperial_mass joined length_units rank margin_leader metric_length metric_mass
+    month not_a_range number_word per_count plant_taxon quest range shape_leader
+    shape_suffix skip units """.split()
 
 
 # ####################################################################################

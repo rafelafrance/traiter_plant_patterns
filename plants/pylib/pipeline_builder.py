@@ -145,6 +145,7 @@ class PipelineBuilder:
                     [
                         taxon_patterns_full.FULL_TAXON,
                         taxon_patterns_full.FULL_MULTI_TAXON,
+                        taxon_patterns_full.BAD_TAXON,
                         # taxon_patterns.NOT_A_TAXON,
                         # taxon_patterns.TAXON,
                         # taxon_patterns.MULTI_TAXON,

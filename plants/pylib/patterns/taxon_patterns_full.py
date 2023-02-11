@@ -5,12 +5,14 @@ from . import common_patterns
 from . import term_patterns as terms
 from .. import const
 
+NOT_A_GENUS = """ de el la le no se """.split()
 
 DECODER = common_patterns.COMMON_PATTERNS | {
     "auth": {"SHAPE": {"IN": const.NAME_SHAPES}},
     "maybe": {"POS": {"IN": ["PROPN", "NOUN"]}},
     "rank": {"ENT_TYPE": "rank"},
     "taxon": {"ENT_TYPE": "taxon"},
+    "nope": {"LOWER": {"IN": NOT_A_GENUS}},
 }
 
 FULL_TAXON = MatcherPatterns(
@@ -27,7 +29,7 @@ FULL_TAXON = MatcherPatterns(
         "taxon   auth+ maybe auth+            ",
         "taxon   auth+             and auth+  ",
         "taxon   auth+ maybe auth+ and auth+  ",
-        "rank taxon+",
+        "rank taxon",
         "rank maybe",
     ],
 )
@@ -86,3 +88,13 @@ def on_multi_taxon_match(ent):
         if token._.cached_label == "taxon":
             ent._.data["taxon"].append(terms.REPLACE.get(token.lower_, token.text))
             ent._.data["rank"] = terms.RANK1.get(token.lower_, "unknown")
+
+
+# ###################################################################################
+BAD_TAXON = MatcherPatterns(
+    "bad_taxon",
+    decoder=DECODER,
+    patterns=[
+        "nope taxon",
+    ],
+)

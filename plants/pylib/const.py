@@ -13,9 +13,9 @@ ROOT_DIR = Path("../.." if IS_SUBDIR else ".")
 
 DATA_DIR = ROOT_DIR / "data"
 
-TAXON_DB = DATA_DIR / "taxa.sqlite"
-if not TAXON_DB.exists():
-    TAXON_DB = TERM_DB
+FULL_TAXON_DB = DATA_DIR / "taxa.sqlite"
+# Some test data taxa is in the term DB
+TAXON_DB = FULL_TAXON_DB if FULL_TAXON_DB.exists() else TERM_DB
 
 TITLE_SHAPES = set(""" Xxxxx Xxxx Xxx Xx X. Xx. X """.split())
 UPPER_SHAPES = set(""" XXXXX XXXX XXX XX X. XX. X """.split())

@@ -35,7 +35,10 @@ def main():
         get_wfot_taxa(taxa, args.wfot_tsv, pattern2rank)
 
     fix_ranks(taxa)
+
     taxa = add_missing_species(taxa, small_ranks)
+
+    remove_problem_taxa(taxa)
 
     records = get_records(taxa)
     records = get_binomials(records)
@@ -46,7 +49,7 @@ def main():
 
 
 def write_database(batch):
-    const.TAXON_DB.unlink(missing_ok=True)
+    const.FULL_TAXON_DB.unlink(missing_ok=True)
     create = """
         create table terms (
             term_set text,
@@ -74,7 +77,7 @@ def write_database(batch):
                ( term_set, label,   pattern,  attr,    replace,  extra1,  extra2)
         values ('taxa',   'taxon', :pattern, 'lower', :replace, :extra1, :extra2)
         """
-    with sqlite3.connect(const.TAXON_DB) as cxn:
+    with sqlite3.connect(const.FULL_TAXON_DB) as cxn:
         cxn.executescript(create)
         cxn.executemany(insert, batch)
 
@@ -128,6 +131,13 @@ def add_missing_species(taxa, small_ranks):
             species = " ".join(words[:2])
             new[species] = "species"
     return new
+
+
+def remove_problem_taxa(taxa):
+    """Some upper taxa interfere with other parses."""
+    problem_taxa = """ Side """.split()
+    for problem in problem_taxa:
+        del taxa[problem]
 
 
 def get_records(taxa):
