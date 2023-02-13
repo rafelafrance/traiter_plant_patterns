@@ -3,10 +3,9 @@ from traiter.pylib.terms.db import Db
 from .. import const
 
 # #########################################################################
-TERMS = Db.shared("colors units taxon_ranks time numerics")
+TERMS = Db.shared("colors units time numerics")
 TERMS += Db.select_term_set(const.TERM_DB, "plant_treatment")
 TERMS += Db.trailing_dash(TERMS, label="color")
-# TERMS += Db.select_term_set(const.TERM_DB, "plant_taxa")
 TERMS += Db.select_term_set(const.TAXON_DB, "taxa")
 TERMS += Db.select_term_set(const.TAXON_DB, "ranks")
 TERMS.drop("imperial_length")
@@ -17,9 +16,8 @@ REPLACE = TERMS.pattern_dict("replace")
 REMOVE = TERMS.pattern_dict("remove")
 SUFFIX_TERM = TERMS.pattern_dict("suffix_term")
 
-# RANKS = TERMS.pattern_dict("rank")
-# RANKS = {k: v.split() for k, v in RANKS.items()}
 RANK1 = TERMS.pattern_dict("rank1")
+RANK_ABBREV = TERMS.pattern_dict("abbrev")
 
 
 # #########################################################################

@@ -55,7 +55,7 @@ class TestTaxonLike(unittest.TestCase):
             [
                 {
                     "rank": "species",
-                    "authority": "Harms Glaziou",
+                    "authority": "Harms ex Glaziou",
                     "taxon_like": "Mimosa sensitiva",
                     "trait": "taxon_like",
                     "start": 0,
@@ -99,6 +99,14 @@ class TestTaxonLike(unittest.TestCase):
         self.assertEqual(
             test("""The var. floridana resembles var. nuttallii in venation"""),
             [
+                {
+                    "rank": "variety",
+                    "taxon": "floridana",
+                    "trait": "taxon",
+                    "start": 4,
+                    "end": 18,
+                    "taxon_like": "nuttallii",
+                },
                 {
                     "rank": "variety",
                     "trait": "taxon_like",

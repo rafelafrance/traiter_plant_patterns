@@ -38,7 +38,7 @@ class TestTaxon(unittest.TestCase):
             [
                 {
                     "rank": "variety",
-                    "taxon": "Mimosa polycarpa var. spegazzinii",
+                    "taxon": "M. polycarpa var. spegazzinii",
                     "trait": "taxon",
                     "start": 0,
                     "end": 29,
@@ -80,7 +80,7 @@ class TestTaxon(unittest.TestCase):
             test("""A. pachyphloia Britton & Rose"""),
             [
                 {
-                    "authority": "Britton & Rose",
+                    "authority": "Britton and Rose",
                     "rank": "species",
                     "taxon": "Acacia pachyphloia",
                     "trait": "taxon",

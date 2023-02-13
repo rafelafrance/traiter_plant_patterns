@@ -32,7 +32,7 @@ class Ranks:
     def get_ranks():
         with sqlite3.connect(const.TERM_DB) as cxn:
             cxn.row_factory = sqlite3.Row
-            sql = "select * from terms where term_set = 'taxon_ranks'"
+            sql = "select * from terms where term_set = 'ranks'"
             ranks = [t for t in cxn.execute(sql)]
         return ranks
 

@@ -31,29 +31,57 @@ def main():
     species = get_species(taxa)
     higher_taxa = get_higher_taxa(taxa, rank_utils)
     lower_taxa = get_lower_taxa(taxa, rank_utils)
-    ranks = get_ranks(rank_utils)
 
-    batch = species + higher_taxa + lower_taxa + ranks
+    create_tables()
+    insert_ranks()
+
+    batch = species + higher_taxa + lower_taxa
     write_database(batch)
 
     log.finished()
 
 
-def get_ranks(rank_utils):
-    records = []
-    for rank in rank_utils.ranks:
-        records.append(
-            Record(
-                term_set="ranks",
-                label=f"rank_{rank['replace']}",
-                pattern=rank["pattern"],
-                attr="lower",
-                replace=rank["replace"],
-                extra1="",
-                extra2="",
-            )
-        )
-    return records
+def write_database(batch):
+    insert = """
+        insert into terms
+               ( term_set,  label,  pattern,  attr,  replace,  extra1,  extra2)
+        values (:term_set, :label, :pattern, :attr, :replace, :extra1, :extra2)
+        """
+    with sqlite3.connect(const.FULL_TAXON_DB) as cxn:
+        cxn.executemany(insert, batch)
+
+
+def create_tables():
+    const.FULL_TAXON_DB.unlink(missing_ok=True)
+    create = """
+        create table terms (
+            term_set text,
+            label    text,
+            pattern  text,
+            attr     text,
+            replace  text,
+            extra1   blob,
+            extra2   blob
+        );
+        create table term_columns (
+            term_set text,
+            extra    text,
+            rename   text
+        );
+        """
+    with sqlite3.connect(const.FULL_TAXON_DB) as cxn:
+        cxn.executescript(create)
+
+
+def insert_ranks():
+    with sqlite3.connect(const.FULL_TAXON_DB) as cxn:
+        cxn.execute(f"attach database '{const.TERM_DB}' as aux")
+        sql = """
+            insert into term_columns
+            select * from aux.term_columns where term_set in ('taxa', 'ranks')"""
+        cxn.execute(sql)
+        sql = "insert into terms select * from aux.terms where term_set = 'ranks'"
+        cxn.execute(sql)
 
 
 def get_higher_taxa(taxa, rank_utils):
@@ -116,7 +144,7 @@ def get_species(taxa):
             species.append(
                 Record(
                     term_set="taxa",
-                    label="species",
+                    label="species_taxon",
                     pattern=taxon.lower(),
                     attr="lower",
                     replace=taxon,
@@ -133,8 +161,8 @@ def get_species(taxa):
         species.append(
             Record(
                 term_set="taxa",
-                label="species",
-                pattern=abbrev,
+                label="species_taxon",
+                pattern=abbrev.lower(),
                 attr="lower",
                 replace=replace,
                 extra1="species",
@@ -143,40 +171,6 @@ def get_species(taxa):
         )
 
     return species
-
-
-def write_database(batch):
-    const.FULL_TAXON_DB.unlink(missing_ok=True)
-    create = """
-        create table terms (
-            term_set text,
-            label    text,
-            pattern  text,
-            attr     text,
-            replace  text,
-            extra1   blob,
-            extra2   blob
-        );
-        create table term_columns (
-            term_set text,
-            extra    text,
-            rename   text
-        );
-        insert into term_columns
-               ( term_set,  extra,    rename)
-        values ('taxa',    'extra1', 'rank1');
-        insert into term_columns
-               ( term_set,  extra,    rename)
-        values ('taxa',    'extra2', 'options');
-        """
-    insert = """
-        insert into terms
-               ( term_set,  label,  pattern,  attr,  replace,  extra1,  extra2)
-        values (:term_set, :label, :pattern, :attr, :replace, :extra1, :extra2)
-        """
-    with sqlite3.connect(const.FULL_TAXON_DB) as cxn:
-        cxn.executescript(create)
-        cxn.executemany(insert, batch)
 
 
 def fix_ranks(taxa):

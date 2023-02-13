@@ -7,10 +7,12 @@ from .. import const
 
 
 NOT_A_GENUS_PREFIX = """ de el la le no se """.split()
+MAYBE = """ PROPN NOUN """.split()
 
 DECODER = common_patterns.COMMON_PATTERNS | {
+    "auth": {"SHAPE": {"IN": const.NAME_SHAPES}},
     "bad": {"LOWER": {"IN": NOT_A_GENUS_PREFIX}},
-    "maybe": {"POS": {"IN": ["PROPN", "NOUN"]}},
+    "maybe": {"POS": {"IN": MAYBE}},
     "taxon": {"ENT_TYPE": "taxon"},
 }
 
@@ -28,11 +30,14 @@ MULTI_TAXON = MatcherPatterns(
 
 @registry.misc(MULTI_TAXON.on_match)
 def on_multi_taxon_match(ent):
-    ent._.data["taxon"] = []
+    taxa = []
+
     for token in ent:
-        if token._.cached_label == "taxon":
-            ent._.data["taxon"].append(terms.REPLACE.get(token.lower_, token.text))
+        if token.ent_type_ == "taxon":
+            taxa.append(terms.REPLACE.get(token.lower_, token.text))
             ent._.data["rank"] = terms.RANK1.get(token.lower_, "unknown")
+
+    ent._.data["taxon"] = taxa
 
 
 # ###################################################################################
@@ -48,10 +53,9 @@ BAD_TAXON = MatcherPatterns(
 # ###################################################################################
 TAXON_AUTH = MatcherPatterns(
     "taxon_auth",
-    on_match="taxon_auth_v1",
+    on_match="plant_taxon_auth_v1",
     decoder=DECODER,
     patterns=[
-        "taxon",
         "taxon ( auth+                       )",
         "taxon ( auth+ maybe auth+           )",
         "taxon ( auth+             and auth+ )",
@@ -65,35 +69,25 @@ TAXON_AUTH = MatcherPatterns(
 
 
 @registry.misc(TAXON_AUTH.on_match)
-def on_full_taxon_match(ent):
+def on_taxon_auth_match(ent):
     auth = []
-    prev_rank = False
+
+    taxon = next(e for e in ent.ents if e.label_ == "taxon")
 
     for token in ent:
+        if token.ent_type_ == "taxon":
+            continue
 
-        # Taxon and its rank
-        if token._.cached_label == "taxon":
-            ent._.data["taxon"] = terms.REPLACE.get(token.lower_, token.text)
+        if auth and token.lower_ in common_patterns.AND:
+            auth.append("and")
 
-            # A given rank overrides the one in the DB
-            if not ent._.data.get("rank"):
-                ent._.data["rank"] = terms.RANK1.get(token.lower_, "unknown")
+        elif token.shape_ in const.NAME_SHAPES:
+            auth.append(token.text)
 
-        # A given rank trumps the one in the DB
-        elif token._.cached_label == "rank":
-            ent._.data["rank"] = terms.REPLACE.get(token.lower_, token.lower_)
-            prev_rank = True
+        elif token.pos_ in MAYBE:
+            auth.append(token.text)
 
-        elif token.pos_ in ["PROPN", "NOUN"] and prev_rank:
-            ent._.data["taxon"] = terms.REPLACE.get(token.lower_, token.text)
-            prev_rank = False
-
-        # Authority
-        elif token.pos_ in ["PROPN", "NOUN"] or token.lower_ in common_patterns.AND:
-            if token.shape_ in const.TITLE_SHAPES:
-                auth.append(token.text)
-            elif auth and token.lower_ in common_patterns.AND:
-                auth.append(token.text)
-
-    if auth:
-        ent._.data["authority"] = " ".join(auth)
+    ent._.data["taxon"] = taxon._.data["taxon"]
+    ent._.data["rank"] = taxon._.data["rank"]
+    ent._.data["authority"] = " ".join(auth)
+    ent._.new_label = "taxon"

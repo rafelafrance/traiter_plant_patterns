@@ -28,7 +28,8 @@ from .patterns import subpart_linker_patterns
 from .patterns import subpart_patterns
 from .patterns import taxon_like_linker_patterns
 from .patterns import taxon_like_patterns
-from .patterns import taxon_patterns_full
+from .patterns import taxon_patterns
+from .patterns import taxon_plus_patterns
 from .patterns import term_patterns
 
 
@@ -139,20 +140,38 @@ class PipelineBuilder:
     def add_taxa_pipe(self):
         self.nlp.add_pipe(
             ADD_TRAITS,
-            name="taxa_traits",
+            name="taxon_traits",
             config={
                 "patterns": matcher_patterns.as_dicts(
                     [
-                        taxon_patterns_full.FULL_TAXON,
-                        taxon_patterns_full.FULL_MULTI_TAXON,
-                        taxon_patterns_full.BAD_TAXON,
-                        # taxon_patterns.NOT_A_TAXON,
-                        # taxon_patterns.TAXON,
-                        # taxon_patterns.MULTI_TAXON,
+                        taxon_patterns.HIGHER_TAXON,
+                        taxon_patterns.SPECIES_TAXON,
+                        taxon_patterns.SUBSPECIES_TAXON,
+                        taxon_patterns.VARIETY_TAXON,
+                        taxon_patterns.SUBVARIETY_TAXON,
+                        taxon_patterns.FORM_TAXON,
+                        taxon_patterns.SUBFORM_TAXON,
                     ]
                 )
             },
         )
+        self.nlp.add_pipe("merge_entities", name="merge_taxa")
+
+    def add_taxon_plus_pipe(self):
+        self.nlp.add_pipe(
+            ADD_TRAITS,
+            name="taxon_plus_traits",
+            config={
+                "patterns": matcher_patterns.as_dicts(
+                    [
+                        taxon_plus_patterns.TAXON_AUTH,
+                        taxon_plus_patterns.MULTI_TAXON,
+                        taxon_plus_patterns.BAD_TAXON,
+                    ]
+                )
+            },
+        )
+        self.nlp.add_pipe("merge_entities", name="merge_taxa_plus")
 
     def add_taxon_like_pipe(self):
         self.nlp.add_pipe(
