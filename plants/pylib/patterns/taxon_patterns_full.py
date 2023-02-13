@@ -5,14 +5,14 @@ from . import common_patterns
 from . import term_patterns as terms
 from .. import const
 
-NOT_A_GENUS = """ de el la le no se """.split()
+NOT_A_GENUS_PREFIX = """ de el la le no se """.split()
 
 DECODER = common_patterns.COMMON_PATTERNS | {
     "auth": {"SHAPE": {"IN": const.NAME_SHAPES}},
+    "bad": {"LOWER": {"IN": NOT_A_GENUS_PREFIX}},
     "maybe": {"POS": {"IN": ["PROPN", "NOUN"]}},
     "rank": {"ENT_TYPE": "rank"},
     "taxon": {"ENT_TYPE": "taxon"},
-    "nope": {"LOWER": {"IN": NOT_A_GENUS}},
 }
 
 FULL_TAXON = MatcherPatterns(
@@ -95,6 +95,6 @@ BAD_TAXON = MatcherPatterns(
     "bad_taxon",
     decoder=DECODER,
     patterns=[
-        "nope taxon",
+        "bad taxon",
     ],
 )
