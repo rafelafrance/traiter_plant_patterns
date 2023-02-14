@@ -7,7 +7,7 @@ from . import term_patterns as terms
 
 
 LOWER_RANK = """
-    subspecies_rank variety_rank subvariety_rank form_rank subform_rank
+    species_rank subspecies_rank variety_rank subvariety_rank form_rank subform_rank
     """.split()
 LOWER_RANK_SET = set(LOWER_RANK)
 
