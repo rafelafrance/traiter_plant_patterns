@@ -11,7 +11,7 @@ from . import term_patterns
 NOT_COUNT_WORDS = (
     t_const.CROSS
     + t_const.SLASH
-    + """ average side times days weeks by table """.split()
+    + """ average side times days weeks by table chapter """.split()
 )
 NOT_COUNT_ENTS = """ imperial_length metric_mass imperial_mass """.split()
 

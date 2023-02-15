@@ -531,43 +531,19 @@ class TestCount(unittest.TestCase):
     def test_count_33(self):
         self.assertEqual(
             test("""Mimosa to S. Paulo 2."""),
-            [
-                {
-                    "taxon": "Mimosa",
-                    "trait": "taxon",
-                    "start": 0,
-                    "end": 6,
-                    "rank": "genus",
-                }
-            ],
+            [],
         )
 
     def test_count_34(self):
         self.assertEqual(
             test("""Mimosa lat. 13°40-14°10'S"""),
-            [
-                {
-                    "rank": "genus",
-                    "taxon": "Mimosa",
-                    "trait": "taxon",
-                    "start": 0,
-                    "end": 6,
-                }
-            ],
+            [],
         )
 
     def test_count_35(self):
         self.assertEqual(
             test("""Mimosa 18-30"""),
-            [
-                {
-                    "trait": "taxon",
-                    "start": 0,
-                    "end": 6,
-                    "rank": "genus",
-                    "taxon": "Mimosa",
-                }
-            ],
+            [],
         )
 
     def test_count_36(self):

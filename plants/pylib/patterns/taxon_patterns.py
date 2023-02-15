@@ -38,10 +38,12 @@ HIGHER_TAXON = MatcherPatterns(
     decoder=DECODER,
     patterns=[
         "higher_taxon",
-        "higher_rank higher_taxon",
-        "higher_rank maybe",
-        "lower_rank  lower",
-        "lower_rank  maybe",
+        "higher_rank  higher_taxon",
+        "higher_rank  maybe",
+        "lower_rank   lower",
+        "lower_rank   maybe",
+        "species_rank lower",
+        "species_rank maybe",
     ],
 )
 
@@ -50,6 +52,7 @@ HIGHER_TAXON = MatcherPatterns(
 def on_single_taxon_match(ent):
     ent._.new_label = "taxon"
     data = {}
+    rank_from_db = False
 
     for token in ent:
 
@@ -59,14 +62,19 @@ def on_single_taxon_match(ent):
 
             # A given rank will override the one in the DB
             if not data.get("rank"):
+                rank_from_db = True
                 data["rank"] = terms.RANK1.get(token.lower_, "unknown")
 
         # A given rank overrides the one in the DB
         elif token._.cached_label in ANY_RANK_SET:
+            rank_from_db = False
             data["rank"] = terms.REPLACE.get(token.lower_, token.lower_)
 
         elif token.pos_ in MAYBE:
             data["taxon"] = terms.REPLACE.get(token.lower_, token.text)
+
+    if rank_from_db and data["rank"] == "genus":
+        raise actions.RejectMatch()
 
     ent._.data = data
 

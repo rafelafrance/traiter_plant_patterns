@@ -150,21 +150,25 @@ class Taxa:
 
     def remove_problem_taxa(self):
         """Some upper taxa interfere with other parses."""
-        problem_taxa = """ side costa """.split()
+        problem_taxa = """ side """.split()
         for problem in problem_taxa:
             del self.taxa[problem]
 
     def split_words(self):
         """Convert full taxa names into terms for the DB."""
-        bad_taxa = ("temp", "uncertain")
+        bad_taxa = ("temp", "uncertain", "unknown")
 
         # Have higher taxa block lower taxa from getting in
         taxa = sorted(self.taxa.items(), key=lambda t: self.ranks.rank2id[t[1]])
 
         for taxon, rank in taxa:
-            words = [w for w in taxon.split() if w not in self.terms]
+            words = taxon.split()
+
+            if any(w in bad_taxa for w in words):
+                continue
+
+            words = [w for w in words if w not in self.terms]
             words = [w for w in words if w not in self.ranks.all]
-            words = [w for w in words if w not in bad_taxa]
 
             if rank == "species":
                 self.terms[taxon] = rank
