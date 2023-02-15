@@ -338,28 +338,31 @@ class TestSize(unittest.TestCase):
 
     def test_size_16(self):
         self.assertEqual(
-            test("(3–)5-lobed, 6–20(–30) × 6–25 cm,"),
+            test("leaf (3–)5-lobed, 6–20(–30) × 6–25 cm,"),
             [
+                {"leaf_part": "leaf", "trait": "leaf_part", "start": 0, "end": 4},
                 {
                     "min": 3,
                     "low": 5,
                     "trait": "count",
-                    "start": 0,
-                    "end": 11,
+                    "start": 5,
+                    "end": 16,
                     "subpart": "lobe",
+                    "leaf_part": "leaf",
                 },
                 {
-                    "dimensions": ["length", "width"],
                     "length_low": 6.0,
                     "length_high": 20.0,
                     "length_max": 30.0,
                     "length_units": "cm",
-                    "trait": "size",
-                    "start": 13,
-                    "end": 32,
                     "width_low": 6.0,
                     "width_high": 25.0,
                     "width_units": "cm",
+                    "dimensions": ["length", "width"],
+                    "trait": "size",
+                    "start": 18,
+                    "end": 37,
+                    "leaf_part": "leaf",
                 },
             ],
         )

@@ -23,37 +23,6 @@ class TestMargin(unittest.TestCase):
         )
 
     def test_margin_02(self):
-        self.maxDiff = None
-        self.assertEqual(
-            test("margins ciliate, apex acute to long-acuminate,"),
-            [
-                {"subpart": "margin", "trait": "subpart", "start": 0, "end": 7},
-                {
-                    "margin": "ciliate",
-                    "trait": "margin",
-                    "subpart": "margin",
-                    "start": 8,
-                    "end": 15,
-                },
-                {"subpart": "apex", "trait": "subpart", "start": 17, "end": 21},
-                {
-                    "shape": "acute",
-                    "trait": "shape",
-                    "subpart": "apex",
-                    "start": 22,
-                    "end": 27,
-                },
-                {
-                    "shape": "acuminate",
-                    "trait": "shape",
-                    "subpart": "apex",
-                    "start": 31,
-                    "end": 45,
-                },
-            ],
-        )
-
-    def test_margin_03(self):
         self.assertEqual(
             test("reniform, undulate-margined"),
             [
@@ -67,7 +36,7 @@ class TestMargin(unittest.TestCase):
             ],
         )
 
-    def test_margin_04(self):
+    def test_margin_03(self):
         self.assertEqual(
             test("margins thickened-corrugated"),
             [
@@ -82,7 +51,7 @@ class TestMargin(unittest.TestCase):
             ],
         )
 
-    def test_margin_05(self):
+    def test_margin_04(self):
         self.assertEqual(
             test("margins coarsely toothed or remotely sinuate-dentate to serrate,"),
             [

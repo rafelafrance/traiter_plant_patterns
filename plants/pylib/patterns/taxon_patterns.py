@@ -7,11 +7,12 @@ from . import term_patterns as terms
 
 
 LOWER_RANK = """
-    species_rank subspecies_rank variety_rank subvariety_rank form_rank subform_rank
+    subspecies_rank variety_rank subvariety_rank form_rank subform_rank
     """.split()
 LOWER_RANK_SET = set(LOWER_RANK)
 
 ANY_RANK = LOWER_RANK + """ higher_rank species_rank """.split()
+ANY_RANK_SET = set(ANY_RANK)
 
 MAYBE = """ PROPN NOUN """.split()
 
@@ -27,6 +28,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
     "form": {"ENT_TYPE": "form_rank"},
     "subform": {"ENT_TYPE": "subform_rank"},
     "lower_rank": {"ENT_TYPE": {"IN": LOWER_RANK}},
+    "species_rank": {"ENT_TYPE": "species_rank"},
 }
 
 # ###################################################################################
@@ -55,12 +57,12 @@ def on_single_taxon_match(ent):
         if token._.cached_label in ("higher_taxon", "lower_taxon"):
             data["taxon"] = terms.REPLACE.get(token.lower_, token.text)
 
-            # A given rank overrides the one in the DB
-            if not ent._.data.get("rank") and token._.cached_label == "higher_taxon":
+            # A given rank will override the one in the DB
+            if not data.get("rank"):
                 data["rank"] = terms.RANK1.get(token.lower_, "unknown")
 
         # A given rank overrides the one in the DB
-        elif token._.cached_label in ANY_RANK:
+        elif token._.cached_label in ANY_RANK_SET:
             data["rank"] = terms.REPLACE.get(token.lower_, token.lower_)
 
         elif token.pos_ in MAYBE:
@@ -86,7 +88,9 @@ SUBSPECIES_TAXON = MatcherPatterns(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species subspecies? lower",
+        "species            lower",
+        "species subspecies lower",
+        "species subspecies maybe",
     ],
 )
 
@@ -99,6 +103,8 @@ VARIETY_TAXON = MatcherPatterns(
         "species subspecies? lower variety lower",
         "species                   variety maybe",
         "species subspecies? lower variety maybe",
+        "species subspecies? maybe variety maybe",
+        "species subspecies? maybe variety lower",
     ],
 )
 
@@ -113,6 +119,10 @@ SUBVARIETY_TAXON = MatcherPatterns(
         "species                   subvariety maybe",
         "species variety     lower subvariety maybe",
         "species subspecies? lower subvariety maybe",
+        "species variety     maybe subvariety maybe",
+        "species subspecies? maybe subvariety maybe",
+        "species variety     maybe subvariety lower",
+        "species subspecies? maybe subvariety lower",
     ],
 )
 
@@ -127,6 +137,10 @@ FORM_TAXON = MatcherPatterns(
         "species                   form maybe",
         "species variety     lower form maybe",
         "species subspecies? lower form maybe",
+        "species variety     maybe form maybe",
+        "species subspecies? maybe form maybe",
+        "species variety     maybe form lower",
+        "species subspecies? maybe form lower",
     ],
 )
 
@@ -141,6 +155,10 @@ SUBFORM_TAXON = MatcherPatterns(
         "species                   subform maybe",
         "species variety     lower subform maybe",
         "species subspecies? lower subform maybe",
+        "species variety     maybe subform maybe",
+        "species subspecies? maybe subform maybe",
+        "species variety     maybe subform lower",
+        "species subspecies? maybe subform lower",
     ],
 )
 

@@ -89,5 +89,5 @@ DELETE_WHEN = {
     "count": [DELETE_MISSING_PARTS, DELETE_PAGE_NO],
     "count_group": DELETE_MISSING_PARTS,
     "count_suffix": DELETE_MISSING_COUNT,
-    "size": DELETE_KM,
+    "size": [DELETE_MISSING_PARTS, DELETE_KM],
 }

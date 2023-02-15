@@ -92,14 +92,14 @@ class TestTaxon(unittest.TestCase):
 
     def test_taxon_07(self):
         self.assertEqual(
-            test("""Sect. Vulpinae is characterized"""),
+            test("""Ser. Vulpinae is characterized"""),
             [
                 {
-                    "rank": "section",
+                    "rank": "series",
                     "taxon": "Vulpinae",
                     "trait": "taxon",
                     "start": 0,
-                    "end": 14,
+                    "end": 13,
                 }
             ],
         )

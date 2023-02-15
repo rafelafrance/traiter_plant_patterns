@@ -6,7 +6,7 @@ from . import term_patterns as terms
 from .. import const
 
 
-NOT_A_GENUS_PREFIX = """ de el la le no se """.split()
+NOT_A_GENUS_PREFIX = """ de el la le no se costa rica santa """.split()
 MAYBE = """ PROPN NOUN """.split()
 
 DECODER = common_patterns.COMMON_PATTERNS | {

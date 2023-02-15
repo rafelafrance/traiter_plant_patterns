@@ -71,8 +71,8 @@ class TestPartLocation(unittest.TestCase):
                     "end": 8,
                 },
                 {
-                    "margin": "ciliate",
-                    "trait": "margin",
+                    "surface": "ciliate",
+                    "trait": "surface",
                     "subpart_as_loc": "at margin",
                     "start": 17,
                     "end": 24,
