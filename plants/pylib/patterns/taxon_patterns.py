@@ -5,7 +5,6 @@ from traiter.pylib.patterns.matcher_patterns import MatcherPatterns
 from . import common_patterns
 from . import term_patterns as terms
 
-
 LOWER_RANK = """
     subspecies_rank variety_rank subvariety_rank form_rank subform_rank
     """.split()
@@ -39,11 +38,8 @@ HIGHER_TAXON = MatcherPatterns(
     patterns=[
         "higher_taxon",
         "higher_rank  higher_taxon",
-        "higher_rank  maybe",
         "lower_rank   lower",
-        "lower_rank   maybe",
         "species_rank lower",
-        "species_rank maybe",
     ],
 )
 

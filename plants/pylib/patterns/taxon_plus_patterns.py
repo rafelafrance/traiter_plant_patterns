@@ -1,4 +1,5 @@
 from spacy import registry
+from traiter.pylib import actions
 from traiter.pylib.patterns.matcher_patterns import MatcherPatterns
 
 from . import common_patterns
@@ -88,6 +89,9 @@ def on_taxon_auth_match(ent):
 
         elif token.pos_ in MAYBE:
             auth.append(token.text)
+
+    if not auth:
+        raise actions.RejectMatch()
 
     ent._.data["taxon"] = taxon._.data["taxon"]
     ent._.data["rank"] = taxon._.data["rank"]

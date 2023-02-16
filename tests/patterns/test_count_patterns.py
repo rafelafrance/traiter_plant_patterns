@@ -793,3 +793,9 @@ class TestCount(unittest.TestCase):
                 },
             ],
         )
+
+    def test_count_48(self):
+        self.assertEqual(
+            test("(see Chapter 2 — Wood and Bark Anatomy)"),
+            [{"part": "bark", "trait": "part", "start": 26, "end": 30}],
+        )

@@ -115,3 +115,24 @@ class TestTaxon(unittest.TestCase):
             test("""Alajuela, between La Palma and Rio Platanillo"""),
             [],
         )
+
+    def test_taxon_10(self):
+        self.assertEqual(
+            test("""together with A. pachyphloia (Vulpinae)"""),
+            [
+                {
+                    "taxon": "Acacia pachyphloia",
+                    "rank": "species",
+                    "trait": "taxon",
+                    "start": 14,
+                    "end": 28,
+                },
+                {
+                    "taxon": "Vulpinae",
+                    "rank": "section",
+                    "trait": "taxon",
+                    "start": 30,
+                    "end": 38,
+                },
+            ],
+        )
