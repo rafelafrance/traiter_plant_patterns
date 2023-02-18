@@ -15,13 +15,25 @@ cd traiter_plants
 make install
 ```
 
+### Taxon database
+
+I build a taxon database from 5 sources. The 3 primary sources have various issues, but they complement each other very well.
+
+1. [ITIS sqlite database located](https://www.itis.gov/downloads/index.html)
+2. [The WFO Plant List](https://wfoplantlist.org/plant-list/classifications)
+3. [Plant of the World Online](http://sftp.kew.org/pub/data-repositories/WCVP/)
+4. [An older version of the taxa database.](./plants/pylib/vocabulary/old_plant_taxa.sqlite)
+5. [Some miscellaneous taxa not found in the other sources.](./plants/pylib/vocabulary/other_taxa.csv)
+
+You can use the `add_taxa.py` script to extract the taxa and put them into a form the parsers can use.
+
 ## Repository details
 
 ## Run
 This repository is a library for other Traiter projects and is not run directly.
 
 ## Tests
-You can run the tests like so:
+There are tests which you can run like so:
 ```bash
 cd /my/path/to/traiter_plants
 python -m unittest discover
