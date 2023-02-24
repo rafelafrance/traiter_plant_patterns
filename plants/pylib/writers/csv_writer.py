@@ -18,8 +18,11 @@ class CsvWriter:
         csv_rows = self.format_all_rows(rows)
         df = pd.DataFrame(csv_rows)
         df = self.sort_df(df)
-        df = df.fillna("")
-        df.to_csv(self.out_csv, index=False)
+        # df = df.fillna("")
+
+        with open(self.out_csv, "w") as out_file:
+            out_file.write("** All sizes are given in centimeters. **\n")
+            df.to_csv(out_file, index=False)
 
     def format_all_rows(self, rows):
         csv_rows = [self.format_row(r) for r in rows]

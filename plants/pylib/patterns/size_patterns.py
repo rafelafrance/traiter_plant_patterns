@@ -8,7 +8,7 @@ from traiter.pylib import util as t_util
 from traiter.pylib.patterns.matcher_patterns import MatcherPatterns
 
 from . import common_patterns
-from . import term_patterns
+from . import term_patterns as terms
 
 FOLLOW = """ dim sex """.split()
 NOT_A_SIZE = """ for below above """.split()
@@ -91,16 +91,15 @@ def on_size_double_dim_match(ent):
 
     Like: Legumes 2.8-4.5 mm high and wide
     """
-    dims = [
-        term_patterns.REPLACE.get(t.lower_, t.lower_)
-        for t in ent
-        if t.ent_type_ == "dim"
-    ]
+    dims = [terms.REPLACE.get(t.lower_, t.lower_) for t in ent if t.ent_type_ == "dim"]
 
     ranges = [e for e in ent.ents if e.label_ == "range"]
 
-    for dim, range_ in zip(dims, ranges):
-        _size(range_)
+    all_units = [e.text.lower() for e in ent.ents if e.label_ == "metric_length"]
+    all_units = all_units + [all_units[-1]] * (len(ranges) - len(all_units))
+
+    for dim, range_, units in zip(dims, ranges, all_units):
+        _size(range_, units=units)
         for key, value in range_._.data.items():
             key_parts = key.split("_")
             if key_parts[-1] in SIZE_FIELDS:
@@ -115,8 +114,10 @@ def on_size_double_dim_match(ent):
     ent._.new_label = "size"
 
 
-def _size(ent, high_only=False):
+def _size(ent, high_only=False, units=None):
     dims = scan_tokens(ent, high_only)
+    if units:
+        dims[-1]["units"] = units
     dims = fix_dimensions(dims)
     dims = fix_units(dims)
     ent._.new_label = "size"
@@ -141,10 +142,10 @@ def scan_tokens(ent, high_only):
                 del dims[-1]["low"]
 
         elif label == "metric_length":
-            dims[-1]["units"] = term_patterns.REPLACE[token.lower_]
+            dims[-1]["units"] = terms.REPLACE[token.lower_]
 
         elif label == "dim":
-            dims[-1]["dimension"] = term_patterns.REPLACE[token.lower_]
+            dims[-1]["dimension"] = terms.REPLACE[token.lower_]
 
         elif label == "sex":
             dims[-1]["sex"] = re.sub(r"\W+", "", token.lower_)
@@ -188,14 +189,16 @@ def fill_data(dims, ent):
     for dim in dims:
         dimension = dim["dimension"]
 
+        units = dim["units"].lower()
+
         for field in SIZE_FIELDS:
             if value := dim.get(field):
                 key = f"{dimension}_{field}"
-                ent._.data[key] = round(value, 3)
+                factor = terms.FACTOR[units]
+                ent._.data[key] = round(value * factor, 3)
 
-        if units := dim.get("units"):
-            key = f"{dimension}_units"
-            ent._.data[key] = units.lower()
+        # key = f"{dimension}_units"
+        # ent._.data[key] = units.lower()
 
         if sex := dim.get("sex"):
             ent._.data["sex"] = sex

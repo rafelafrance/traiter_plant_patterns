@@ -11,9 +11,8 @@ class TestPartLocation(unittest.TestCase):
                 {"leaf_part": "stipule", "trait": "leaf_part", "start": 0, "end": 8},
                 {
                     "dimensions": "length",
-                    "length_low": 3.0,
-                    "length_high": 8.0,
-                    "length_units": "mm",
+                    "length_low": 0.3,
+                    "length_high": 0.8,
                     "trait": "size",
                     "start": 9,
                     "end": 15,
@@ -29,9 +28,8 @@ class TestPartLocation(unittest.TestCase):
                 {
                     "dimensions": "length",
                     "joined": "adnate",
-                    "length_low": 1.0,
-                    "length_high": 2.0,
-                    "length_units": "mm",
+                    "length_low": 0.1,
+                    "length_high": 0.2,
                     "trait": "part_as_loc",
                     "start": 34,
                     "end": 62,

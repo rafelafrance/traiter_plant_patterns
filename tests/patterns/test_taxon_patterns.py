@@ -136,3 +136,18 @@ class TestTaxon(unittest.TestCase):
                 },
             ],
         )
+
+    def test_taxon_11(self):
+        self.assertEqual(
+            test("""Mimosa sensitiva (Bentham) Bentham, Trans."""),
+            [
+                {
+                    "authority": "Bentham",
+                    "rank": "species",
+                    "taxon": "Mimosa sensitiva",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 26,
+                }
+            ],
+        )

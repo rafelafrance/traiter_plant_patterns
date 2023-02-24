@@ -16,7 +16,7 @@ NOT_COUNT_WORDS = (
 
 NOT_COUNT_ENTS = """ imperial_length metric_mass imperial_mass """.split()
 
-NOT_COUNT_PREFIX = """ chapter figure fig """.split()
+NOT_COUNT_PREFIX = """ chapter figure fig nos no # """.split()
 
 EVERY = """ every per each or more """.split()
 
@@ -28,6 +28,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
     "not_count_ent": {"ENT_TYPE": {"IN": NOT_COUNT_ENTS}},
     "not_count_word": {"LOWER": {"IN": NOT_COUNT_WORDS}},
     "not_count_prefix": {"LOWER": {"IN": NOT_COUNT_PREFIX}},
+    "[.,]": {"LOWER": {"IN": t_const.COMMA + t_const.DOT}},
     "per_count": {"ENT_TYPE": "per_count"},
     "every": {"LOWER": {"IN": EVERY}},
     "part": {"ENT_TYPE": {"IN": term_patterns.PARTS}},
@@ -103,7 +104,7 @@ NOT_A_COUNT = MatcherPatterns(
     on_match=actions.REJECT_MATCH,
     decoder=DECODER,
     patterns=[
-        "not_count_prefix 99-99",
+        "not_count_prefix [.,]? 99-99",
         "99-99 not_count_ent",
         "99-99 not_count_word 99-99? not_count_ent?",
         "9 / 9",

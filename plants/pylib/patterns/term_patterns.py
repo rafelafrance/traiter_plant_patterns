@@ -16,6 +16,9 @@ REPLACE = TERMS.pattern_dict("replace")
 REMOVE = TERMS.pattern_dict("remove")
 SUFFIX_TERM = TERMS.pattern_dict("suffix_term")
 
+FACTOR = TERMS.pattern_dict("factor")
+FACTOR = {k: float(v) for k, v in FACTOR.items()}
+
 RANK1 = TERMS.pattern_dict("rank1")
 RANK_ABBREV = TERMS.pattern_dict("abbrev")
 

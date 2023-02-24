@@ -47,14 +47,12 @@ class TestCount(unittest.TestCase):
                     "dimensions": ["length", "width"],
                     "length_low": 5.0,
                     "length_high": 10.0,
-                    "length_units": "cm",
                     "trait": "size",
                     "start": 6,
                     "end": 19,
                     "leaf_part": "leaf",
                     "width_low": 4.0,
                     "width_high": 9.0,
-                    "width_units": "cm",
                 },
             ],
         )
@@ -798,4 +796,10 @@ class TestCount(unittest.TestCase):
         self.assertEqual(
             test("(see Chapter 2 — Wood and Bark Anatomy)"),
             [{"part": "bark", "trait": "part", "start": 26, "end": 30}],
+        )
+
+    def test_count_49(self):
+        self.assertEqual(
+            test("in 1885, nos, 323 in flower"),
+            [{"end": 27, "flower_part": "flower", "start": 21, "trait": "flower_part"}],
         )
