@@ -151,3 +151,55 @@ class TestTaxon(unittest.TestCase):
                 }
             ],
         )
+
+    def test_taxon_12(self):
+        self.assertEqual(
+            test(
+                """
+                Neptunia gracilis f. gracilis Neptunia gracilis var. villosula Benth.,
+                """
+            ),
+            [
+                {
+                    "taxon": "Neptunia gracilis f. gracilis",
+                    "rank": "form",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 29,
+                },
+                {
+                    "taxon": "Neptunia gracilis var. villosula",
+                    "rank": "variety",
+                    "authority": "Benth",
+                    "trait": "taxon",
+                    "start": 30,
+                    "end": 68,
+                },
+            ],
+        )
+
+    def test_taxon_13(self):
+        self.assertEqual(
+            test(
+                """
+                F. gracilis Neptunia gracilis var. villosula Benth.,
+                """
+            ),
+            [
+                {
+                    "taxon": "F. gracilis",
+                    "rank": "species",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 11,
+                },
+                {
+                    "taxon": "Neptunia gracilis var. villosula",
+                    "rank": "variety",
+                    "authority": "Benth",
+                    "trait": "taxon",
+                    "start": 12,
+                    "end": 50,
+                },
+            ],
+        )

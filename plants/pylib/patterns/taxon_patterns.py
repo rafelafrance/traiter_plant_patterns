@@ -106,9 +106,8 @@ VARIETY_TAXON = MatcherPatterns(
         "species                   variety lower",
         "species subspecies? lower variety lower",
         "species                   variety maybe",
-        "species subspecies? lower variety maybe",
-        "species subspecies? maybe variety maybe",
-        "species subspecies? maybe variety lower",
+        # "species subspecies? lower variety maybe",
+        # "species subspecies? maybe variety maybe",
     ],
 )
 
