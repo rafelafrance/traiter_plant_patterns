@@ -84,6 +84,7 @@ SPECIES_TAXON = MatcherPatterns(
     decoder=DECODER,
     patterns=[
         "species",
+        "higher_taxon lower",
     ],
 )
 
@@ -172,7 +173,10 @@ def on_taxon_match(ent):
     for i, token in enumerate(ent):
         label = token._.cached_label
 
-        if label == "species_taxon":
+        if label == "higher_taxon" and terms.RANK1.get(token.lower_) == "genus":
+            name.append(terms.REPLACE.get(token.lower_, token.text))
+
+        elif label == "species_taxon":
             name.append(terms.REPLACE.get(token.lower_, token.text))
 
         elif label == "lower_taxon" and i != 3:

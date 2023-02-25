@@ -203,3 +203,17 @@ class TestTaxon(unittest.TestCase):
                 },
             ],
         )
+
+    def test_taxon_14(self):
+        self.assertEqual(
+            test("""Ticanto rhombifolia"""),
+            [
+                {
+                    "taxon": "Ticanto rhombifolia",
+                    "rank": "species",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 19,
+                }
+            ],
+        )
