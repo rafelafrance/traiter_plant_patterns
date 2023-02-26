@@ -75,7 +75,7 @@ def create_term_db():
         reader = csv.DictReader(in_csv)
         terms = [r for r in reader]
 
-    with sqlite3.connect(const.VOCAB_DIR / "terms.sqlite") as cxn:
+    with sqlite3.connect(const.VOCAB_DIR / "plant_terms.sqlite") as cxn:
         cxn.executescript(CREATE_TERM_DB)
         cxn.executemany(INSERT_TERM_COLUMNS, term_columns)
         cxn.executemany(INSERT_TERMS, terms)
