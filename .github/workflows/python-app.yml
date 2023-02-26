@@ -24,9 +24,6 @@ jobs:
         python -m pip install .
         python -m spacy download en_core_web_sm
         pip install git+https://github.com/rafelafrance/traiter.git@master#egg=traiter
-    - name: Create DBs
-      run: |
-        ./plants/create_dbs.py
     - name: Test with unittest
       run: |
         python -m unittest discover

@@ -59,7 +59,3 @@ junk*
 .idea/
 .virtual_documents/
 .vscode/
-
-# Binary data
-*.sqlite
-!taxa.sqlite
