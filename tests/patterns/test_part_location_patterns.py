@@ -140,7 +140,7 @@ class TestPartLocation(unittest.TestCase):
                     "trait": "shape",
                     "start": 35,
                     "end": 50,
-                    "inflorescence": "capitulum",
+                    "inflorescence": "pseudoraceme",
                 },
                 {
                     "shape": "spheric",

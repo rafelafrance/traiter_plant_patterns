@@ -35,7 +35,7 @@ class TestPartLinker(unittest.TestCase):
                     "trait": "size",
                     "start": 59,
                     "end": 74,
-                    "part": "tree",
+                    "part": "trunk",
                 },
                 {"part": "trunk", "trait": "part", "start": 80, "end": 85},
             ],

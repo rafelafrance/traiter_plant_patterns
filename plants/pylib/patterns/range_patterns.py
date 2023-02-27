@@ -2,9 +2,8 @@ import regex as re
 from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
-from traiter.pylib.patterns.matcher_patterns import MatcherPatterns
-
-from . import common_patterns
+from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
+from traiter.pylib.patterns import common_patterns
 
 ON_RANGE_MATCH = "plant_range_v1"
 
@@ -24,7 +23,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
     "bad-follower": {"LOWER": {"REGEX": r"^[=:]$"}},
 }
 
-RANGE_LOW = MatcherPatterns(
+RANGE_LOW = MatcherCompiler(
     "range.low",
     on_match=ON_RANGE_MATCH,
     decoder=DECODER,
@@ -35,7 +34,7 @@ RANGE_LOW = MatcherPatterns(
     ],
 )
 
-RANGE_MIN_LOW = MatcherPatterns(
+RANGE_MIN_LOW = MatcherCompiler(
     "range.min.low",
     on_match=ON_RANGE_MATCH,
     decoder=DECODER,
@@ -45,7 +44,7 @@ RANGE_MIN_LOW = MatcherPatterns(
     ],
 )
 
-RANGE_LOW_HIGH = MatcherPatterns(
+RANGE_LOW_HIGH = MatcherCompiler(
     "range.low.high",
     on_match=ON_RANGE_MATCH,
     decoder=DECODER,
@@ -56,7 +55,7 @@ RANGE_LOW_HIGH = MatcherPatterns(
     ],
 )
 
-RANGE_LOW_MAX = MatcherPatterns(
+RANGE_LOW_MAX = MatcherCompiler(
     "range.low.max",
     on_match=ON_RANGE_MATCH,
     decoder=DECODER,
@@ -66,7 +65,7 @@ RANGE_LOW_MAX = MatcherPatterns(
     ],
 )
 
-RANGE_MIN_LOW_HIGH = MatcherPatterns(
+RANGE_MIN_LOW_HIGH = MatcherCompiler(
     "range.min.low.high",
     on_match=ON_RANGE_MATCH,
     decoder=DECODER,
@@ -78,7 +77,7 @@ RANGE_MIN_LOW_HIGH = MatcherPatterns(
     ],
 )
 
-RANGE_MIN_LOW_MAX = MatcherPatterns(
+RANGE_MIN_LOW_MAX = MatcherCompiler(
     "range.min.low.max",
     on_match=ON_RANGE_MATCH,
     decoder=DECODER,
@@ -89,7 +88,7 @@ RANGE_MIN_LOW_MAX = MatcherPatterns(
     ],
 )
 
-RANGE_LOW_HIGH_MAX = MatcherPatterns(
+RANGE_LOW_HIGH_MAX = MatcherCompiler(
     "range.low.high.max",
     on_match=ON_RANGE_MATCH,
     decoder=DECODER,
@@ -104,7 +103,7 @@ RANGE_LOW_HIGH_MAX = MatcherPatterns(
     ],
 )
 
-RANGE_MIN_LOW_HIGH_MAX = MatcherPatterns(
+RANGE_MIN_LOW_HIGH_MAX = MatcherCompiler(
     "range.min.low.high.max",
     on_match=ON_RANGE_MATCH,
     decoder=DECODER,
@@ -120,7 +119,7 @@ RANGE_MIN_LOW_HIGH_MAX = MatcherPatterns(
     ],
 )
 
-NOT_A_RANGE = MatcherPatterns(
+NOT_A_RANGE = MatcherCompiler(
     "not_a_range",
     on_match=actions.REJECT_MATCH,
     decoder=DECODER,

@@ -1,7 +1,6 @@
 from spacy import registry
-from traiter.pylib.patterns.matcher_patterns import MatcherPatterns
-
-from . import common_patterns
+from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
+from traiter.pylib.patterns import common_patterns
 
 ON_HABIT_MATCH = "plant_habit_v1"
 
@@ -9,7 +8,7 @@ ON_HABIT_MATCH = "plant_habit_v1"
 TREE = """ tree trees bush bushes """.split()
 
 
-HABIT = MatcherPatterns(
+HABIT = MatcherCompiler(
     "habit",
     on_match=ON_HABIT_MATCH,
     decoder=common_patterns.COMMON_PATTERNS

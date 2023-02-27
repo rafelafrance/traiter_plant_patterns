@@ -1,34 +1,33 @@
 from traiter.pylib.util import shorten
 
-from plants.pylib import sentence_pipeline
+from plants.pylib.patterns import term_patterns
 from plants.pylib.pipeline_builder import PipelineBuilder
 
 # Singleton for testing
 PIPELINE = PipelineBuilder()
 PIPELINE.add_tokenizer_pipe()
-PIPELINE.add_term_pipe()
-PIPELINE.add_range_pipe()
-PIPELINE.add_parts_pipe()
-PIPELINE.add_simple_traits_pipe()
-PIPELINE.add_numeric_traits_pipe()
-PIPELINE.add_part_locations_pipe()
+PIPELINE.add_term_patterns(term_patterns.TERMS.terms, term_patterns.REPLACE)
+PIPELINE.add_range_patterns()
+PIPELINE.add_parts_patterns()
+PIPELINE.add_simple_patterns()
+PIPELINE.add_numeric_patterns()
+PIPELINE.add_part_locations_patterns()
 # PIPELINE.add_debug_tokens_pipe()  # #########################################
-PIPELINE.add_taxa_pipe()
-PIPELINE.add_taxon_plus_pipe()
-PIPELINE.add_taxon_like_pipe()
-PIPELINE.add_group_traits_pipe()
-PIPELINE.add_delete_partial_traits_pipe()
+PIPELINE.add_taxa_patterns()
+PIPELINE.add_taxon_plus_patterns()
+PIPELINE.add_taxon_like_patterns()
+PIPELINE.add_color_patterns()
+PIPELINE.add_group_traits_patterns()
+PIPELINE.add_delete_partial_traits_patterns()
 PIPELINE.add_merge_pipe()
-PIPELINE.add_link_parts_pipe()
-PIPELINE.add_link_parts_once_pipe()
-PIPELINE.add_link_subparts_pipe()
-PIPELINE.add_link_subparts_suffixes_pipe()
-PIPELINE.add_link_sex_pipe()
-PIPELINE.add_link_location_pipe()
-PIPELINE.add_link_taxa_like_pipe()
-PIPELINE.add_delete_unlinked_pipe()
-
-SENT_NLP = sentence_pipeline.pipeline()  # Singleton for testing
+PIPELINE.add_link_parts_patterns()
+PIPELINE.add_link_parts_once_patterns()
+PIPELINE.add_link_subparts_patterns()
+PIPELINE.add_link_subparts_suffixes_patterns()
+PIPELINE.add_link_sex_patterns()
+PIPELINE.add_link_location_patterns()
+PIPELINE.add_link_taxa_like_patterns()
+PIPELINE.add_delete_unlinked_patterns()
 
 
 def test(text: str) -> list[dict]:

@@ -1,8 +1,8 @@
 from spacy import registry
 from traiter.pylib import actions
-from traiter.pylib.patterns.matcher_patterns import MatcherPatterns
+from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
+from traiter.pylib.patterns import common_patterns
 
-from . import common_patterns
 from . import term_patterns as terms
 
 LOWER_RANK = """
@@ -31,7 +31,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 }
 
 # ###################################################################################
-HIGHER_TAXON = MatcherPatterns(
+HIGHER_TAXON = MatcherCompiler(
     "taxon.singleton",
     on_match="single_taxon_v1",
     decoder=DECODER,
@@ -78,7 +78,7 @@ def on_single_taxon_match(ent):
 # ###################################################################################
 ON_TAXON_MATCH = "plant_taxon_pattern_v1"
 
-SPECIES_TAXON = MatcherPatterns(
+SPECIES_TAXON = MatcherCompiler(
     "taxon.species",
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
@@ -88,7 +88,7 @@ SPECIES_TAXON = MatcherPatterns(
     ],
 )
 
-SUBSPECIES_TAXON = MatcherPatterns(
+SUBSPECIES_TAXON = MatcherCompiler(
     "taxon.subspecies",
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
@@ -99,7 +99,7 @@ SUBSPECIES_TAXON = MatcherPatterns(
     ],
 )
 
-VARIETY_TAXON = MatcherPatterns(
+VARIETY_TAXON = MatcherCompiler(
     "taxon.variety",
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
@@ -112,7 +112,7 @@ VARIETY_TAXON = MatcherPatterns(
     ],
 )
 
-SUBVARIETY_TAXON = MatcherPatterns(
+SUBVARIETY_TAXON = MatcherCompiler(
     "taxon.subvariety",
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
@@ -130,7 +130,7 @@ SUBVARIETY_TAXON = MatcherPatterns(
     ],
 )
 
-FORM_TAXON = MatcherPatterns(
+FORM_TAXON = MatcherCompiler(
     "taxon.form",
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
@@ -148,7 +148,7 @@ FORM_TAXON = MatcherPatterns(
     ],
 )
 
-SUBFORM_TAXON = MatcherPatterns(
+SUBFORM_TAXON = MatcherCompiler(
     "taxon.subform",
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,

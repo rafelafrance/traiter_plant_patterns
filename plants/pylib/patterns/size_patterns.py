@@ -5,9 +5,10 @@ from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
 from traiter.pylib import util as t_util
-from traiter.pylib.patterns.matcher_patterns import MatcherPatterns
+from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
+from traiter.pylib.patterns import common_patterns
+from traiter.pylib.patterns import term_patterns as t_terms
 
-from . import common_patterns
 from . import term_patterns as terms
 
 FOLLOW = """ dim sex """.split()
@@ -29,7 +30,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
     "x": {"LOWER": {"IN": t_const.CROSS}},
 }
 
-SIZE = MatcherPatterns(
+SIZE = MatcherCompiler(
     "size",
     on_match="plant_size_v1",
     decoder=DECODER,
@@ -45,7 +46,7 @@ SIZE = MatcherPatterns(
     ],
 )
 
-SIZE_HIGH_ONLY = MatcherPatterns(
+SIZE_HIGH_ONLY = MatcherCompiler(
     "size.high_only",
     on_match="plant_size_high_only_v1",
     decoder=DECODER,
@@ -54,7 +55,7 @@ SIZE_HIGH_ONLY = MatcherPatterns(
     ],
 )
 
-SIZE_DOUBLE_DIM = MatcherPatterns(
+SIZE_DOUBLE_DIM = MatcherCompiler(
     "size.double_dim",
     on_match="plant_size_double_dim_v1",
     decoder=DECODER,
@@ -64,7 +65,7 @@ SIZE_DOUBLE_DIM = MatcherPatterns(
     ],
 )
 
-NOT_A_SIZE = MatcherPatterns(
+NOT_A_SIZE = MatcherCompiler(
     "not_a_size",
     on_match=actions.REJECT_MATCH,
     decoder=DECODER,
@@ -194,7 +195,7 @@ def fill_data(dims, ent):
         for field in SIZE_FIELDS:
             if value := dim.get(field):
                 key = f"{dimension}_{field}"
-                factor = terms.FACTOR[units]
+                factor = t_terms.UNIT_FACTORS[units]
                 ent._.data[key] = round(value * factor, 3)
 
         # key = f"{dimension}_units"

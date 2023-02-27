@@ -1,11 +1,10 @@
-from traiter.pylib.patterns import matcher_patterns
-
-from . import common_patterns
+from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
+from traiter.pylib.patterns import common_patterns
 
 TAXON_LIKE_PARENTS = ["taxon_like"]
 TAXON_LIKE_CHILDREN = ["taxon"]
 
-TAXON_LIKE_LINKER = matcher_patterns.MatcherPatterns(
+TAXON_LIKE_LINKER = MatcherCompiler(
     "taxon_like_linker",
     decoder=common_patterns.COMMON_PATTERNS
     | {

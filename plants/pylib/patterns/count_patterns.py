@@ -2,9 +2,9 @@ from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
 from traiter.pylib import util as t_util
-from traiter.pylib.patterns.matcher_patterns import MatcherPatterns
+from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
+from traiter.pylib.patterns import common_patterns
 
-from . import common_patterns
 from . import term_patterns
 
 # ####################################################################################
@@ -38,7 +38,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 }
 
 # ####################################################################################
-COUNT = MatcherPatterns(
+COUNT = MatcherCompiler(
     "count",
     on_match="plant_count_v1",
     decoder=DECODER,
@@ -79,7 +79,7 @@ def on_count_match(ent):
 
 
 # ####################################################################################
-COUNT_WORD = MatcherPatterns(
+COUNT_WORD = MatcherCompiler(
     "count_word",
     on_match="plant_count_word_v1",
     decoder=DECODER,
@@ -99,7 +99,7 @@ def on_count_word_match(ent):
 
 
 # ####################################################################################
-NOT_A_COUNT = MatcherPatterns(
+NOT_A_COUNT = MatcherCompiler(
     "not_a_count",
     on_match=actions.REJECT_MATCH,
     decoder=DECODER,

@@ -1,9 +1,11 @@
+from traiter.pylib.patterns import term_patterns as terms
 from traiter.pylib.terms.db import Db
 
 from .. import const
 
 # #########################################################################
-TERMS = Db.shared("colors units time numerics")
+# TERMS = Db.shared("colors units time numerics")
+TERMS = terms.COLOR_TERMS + terms.UNIT_TERMS + terms.TIME_TERMS + terms.NUMERIC_TERMS
 TERMS += Db.select_term_set(const.TERM_DB, "plant_treatment")
 TERMS += Db.trailing_dash(TERMS, label="color")
 TERMS += Db.select_term_set(const.TAXON_DB, "taxa")
@@ -15,9 +17,6 @@ TERMS.drop("ordinal numeric_units roman")
 REPLACE = TERMS.pattern_dict("replace")
 REMOVE = TERMS.pattern_dict("remove")
 SUFFIX_TERM = TERMS.pattern_dict("suffix_term")
-
-FACTOR = TERMS.pattern_dict("factor")
-FACTOR = {k: float(v) for k, v in FACTOR.items()}
 
 RANK1 = TERMS.pattern_dict("rank1")
 RANK_ABBREV = TERMS.pattern_dict("abbrev")

@@ -1,7 +1,7 @@
 from spacy import registry
-from traiter.pylib.patterns.matcher_patterns import MatcherPatterns
+from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
+from traiter.pylib.patterns import common_patterns
 
-from . import common_patterns
 from . import term_patterns
 
 PART_LEADER = """ primary secondary """.split()
@@ -13,7 +13,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 }
 
 # ####################################################################################
-PART = MatcherPatterns(
+PART = MatcherCompiler(
     "part",
     on_match="plant_part_v1",
     decoder=DECODER,
@@ -41,7 +41,7 @@ def on_part_match(ent):
 
 
 # ####################################################################################
-MISSING_PART = MatcherPatterns(
+MISSING_PART = MatcherCompiler(
     "missing_part",
     on_match="plant_missing_part_v1",
     decoder=DECODER,
