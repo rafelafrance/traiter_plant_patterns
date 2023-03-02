@@ -1,25 +1,39 @@
+import os
+
+from traiter.pylib import term_reader
 from traiter.pylib.patterns import term_patterns as terms
-from traiter.pylib.terms.db import Db
 
 from .. import const
 
 # #########################################################################
-# TERMS = Db.shared("colors units time numerics")
-TERMS = terms.COLOR_TERMS + terms.UNIT_TERMS + terms.TIME_TERMS + terms.NUMERIC_TERMS
-TERMS += Db.select_term_set(const.TERM_DB, "plant_treatment")
-TERMS += Db.trailing_dash(TERMS, label="color")
-TERMS += Db.select_term_set(const.TAXON_DB, "taxa")
-TERMS += Db.select_term_set(const.TAXON_DB, "ranks")
-TERMS.drop("imperial_length")
-TERMS.drop("time_units")
-TERMS.drop("ordinal numeric_units roman")
+TAXA_CSV = const.VOCAB_DIR / "taxa.csv"
+# Some test taxa are in a mock CSV
+if not TAXA_CSV.exists() or "MOCK_TAXA" in os.environ:
+    TAXA_CSV = const.VOCAB_DIR / "mock_taxa.csv"
 
-REPLACE = TERMS.pattern_dict("replace")
-REMOVE = TERMS.pattern_dict("remove")
-SUFFIX_TERM = TERMS.pattern_dict("suffix_term")
+TAXA_TERMS = term_reader.read(TAXA_CSV)
+RANK_TERMS = term_reader.read(const.VOCAB_DIR / "ranks.csv")
 
-RANK1 = TERMS.pattern_dict("rank1")
-RANK_ABBREV = TERMS.pattern_dict("abbrev")
+JOB_TERMS = term_reader.read(const.VOCAB_DIR / "jobs.csv")
+
+TREATMENT_TERMS = term_reader.read(const.VOCAB_DIR / "treatment.csv")
+
+TERMS = terms.COLOR_TERMS
+TERMS += term_reader.shared("units")
+TERMS += term_reader.shared("numerics")
+TERMS += TREATMENT_TERMS
+TERMS += TAXA_TERMS + RANK_TERMS
+
+TERMS = term_reader.drop(TERMS, "imperial_length")
+TERMS = term_reader.drop(TERMS, "time_units")
+TERMS = term_reader.drop(TERMS, "ordinal numeric_units roman")
+
+REPLACE = term_reader.pattern_dict(TERMS, "replace")
+REMOVE = term_reader.pattern_dict(TERMS, "remove")
+SUFFIX_TERM = term_reader.pattern_dict(TERMS, "suffix_term")
+
+RANK1 = term_reader.pattern_dict(TERMS, "rank1")
+RANK_ABBREV = term_reader.pattern_dict(TERMS, "abbrev")
 
 
 # #########################################################################

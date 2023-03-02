@@ -6,7 +6,7 @@ from plants.pylib.pipeline_builder import PipelineBuilder
 # Singleton for testing
 PIPELINE = PipelineBuilder()
 PIPELINE.add_tokenizer_pipe()
-PIPELINE.add_term_patterns(term_patterns.TERMS.terms, term_patterns.REPLACE)
+PIPELINE.add_term_patterns(term_patterns.TERMS, term_patterns.REPLACE)
 PIPELINE.add_range_patterns()
 PIPELINE.add_parts_patterns()
 PIPELINE.add_simple_patterns()
