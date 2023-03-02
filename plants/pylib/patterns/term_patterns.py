@@ -1,7 +1,6 @@
 import os
 
 from traiter.pylib import term_reader
-from traiter.pylib.patterns import term_patterns as terms
 
 from .. import const
 
@@ -12,18 +11,13 @@ TAXA_CSV = VOCAB_TAXA
 if not TAXA_CSV.exists() or "MOCK_TAXA" in os.environ:
     TAXA_CSV = const.VOCAB_DIR / "mock_taxa.csv"
 
-TAXA_TERMS = term_reader.read(TAXA_CSV)
-RANK_TERMS = term_reader.read(const.VOCAB_DIR / "ranks.csv")
 
-JOB_TERMS = term_reader.read(const.VOCAB_DIR / "jobs.csv")
-
-TREATMENT_TERMS = term_reader.read(const.VOCAB_DIR / "treatment.csv")
-
-TERMS = terms.COLOR_TERMS
+TERMS = term_reader.shared("colors")
 TERMS += term_reader.shared("units")
 TERMS += term_reader.shared("numerics")
-TERMS += TREATMENT_TERMS
-TERMS += TAXA_TERMS + RANK_TERMS
+TERMS += term_reader.read(const.VOCAB_DIR / "treatment.csv")
+TERMS += term_reader.read(TAXA_CSV)
+TERMS += term_reader.read(const.VOCAB_DIR / "ranks.csv")
 
 TERMS = term_reader.drop(TERMS, "imperial_length")
 TERMS = term_reader.drop(TERMS, "time_units")
