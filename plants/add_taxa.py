@@ -15,19 +15,24 @@ import regex
 from pylib import const
 from tqdm import tqdm
 from traiter.pylib import log
+from traiter.pylib import term_reader
 
-Record = namedtuple("Record", "term_set label pattern attr replace extra1 extra2")
+from plants.pylib.patterns import term_patterns
+
+ITIS_SPECIES_ID = 220
+
+Record = namedtuple("Record", "label pattern attr replace rank1 options")
 
 
 class Ranks:
     def __init__(self):
         self.ranks = self.get_ranks()
-        self.id2rank = {int(r["extra1"]): r["replace"] for r in self.ranks}
+        self.id2rank = {int(r["rank1"]): r["replace"] for r in self.ranks}
         self.pattern2rank = {r["pattern"]: r["replace"] for r in self.ranks}
-        self.rank2id = {r["pattern"]: int(r["extra1"]) for r in self.ranks}
+        self.rank2id = {r["pattern"]: int(r["rank1"]) for r in self.ranks}
         self.all = {r["pattern"] for r in self.ranks}
-        self.lower = {r for i, r in self.id2rank.items() if i > const.ITIS_SPECIES_ID}
-        self.higher = {r for i, r in self.id2rank.items() if i < const.ITIS_SPECIES_ID}
+        self.lower = {r for i, r in self.id2rank.items() if i > ITIS_SPECIES_ID}
+        self.higher = {r for i, r in self.id2rank.items() if i < ITIS_SPECIES_ID}
         self.abbrev_list = defaultdict(set)
         for rank in self.ranks:
             self.abbrev_list[rank["replace"]].add(rank["pattern"])
@@ -38,11 +43,7 @@ class Ranks:
 
     @staticmethod
     def get_ranks():
-        with sqlite3.connect(const.TERM_DB) as cxn:
-            cxn.row_factory = sqlite3.Row
-            sql = "select * from terms where term_set = 'ranks'"
-            ranks = [t for t in cxn.execute(sql)]
-        return ranks
+        return term_reader.read(const.VOCAB_DIR / "ranks.csv")
 
     def has_rank_abbrev(self, rank, pattern):
         return any(w in self.abbrev_list[rank] for w in pattern.split())
@@ -214,13 +215,10 @@ def main():
     species = get_species()
     lower = get_lower_taxa()
 
-    create_tables()
-    insert_ranks()
+    rows = higher + species + lower
+    write_csv(rows)
 
-    batch = higher + species + lower
-    write_database(batch)
-
-    move_db()
+    move_csv()
 
     log.finished()
 
@@ -230,13 +228,12 @@ def get_higher_taxa():
     for taxon, rank in tqdm(TAXA.higher(), desc="higher"):
         records.append(
             Record(
-                term_set="taxa",
                 label="higher_taxon",
                 pattern=taxon.lower(),
                 attr="lower",
                 replace=taxon,
-                extra1=rank,
-                extra2="",
+                rank1=rank,
+                options="",
             )
         )
     return records
@@ -247,13 +244,12 @@ def get_lower_taxa():
     for taxon, ranks in tqdm(TAXA.lower(), desc="lower"):
         records.append(
             Record(
-                term_set="taxa",
                 label="lower_taxon",
                 pattern=taxon.lower(),
                 attr="text",
                 replace="",
-                extra1="",
-                extra2="",
+                rank1="",
+                options="",
             )
         )
     return records
@@ -266,13 +262,12 @@ def get_species():
     for taxon, rank in tqdm(TAXA.species(), desc="species 1"):
         species.append(
             Record(
-                term_set="taxa",
                 label="species_taxon",
                 pattern=taxon.lower(),
                 attr="lower",
                 replace=taxon,
-                extra1=rank,
-                extra2="",
+                rank1=rank,
+                options="",
             )
         )
         abbrev = TAXA.abbreviate(taxon)
@@ -283,68 +278,33 @@ def get_species():
         options = ",".join(sorted(options)) if len(options) > 1 else ""
         species.append(
             Record(
-                term_set="taxa",
                 label="species_taxon",
                 pattern=abbrev.lower(),
                 attr="lower",
                 replace=replace,
-                extra1="species",
-                extra2=options,
+                rank1="species",
+                options=options,
             )
         )
 
     return species
 
 
-def move_db():
-    src = const.FULL_TAXON_DB
-    dst = (const.DATA_DIR / "taxa.sqlite").absolute()
+def move_csv():
+    src = term_patterns.TAXA_CSV
+    dst = (const.DATA_DIR / src.name).absolute()
     dst.unlink(missing_ok=True)
     shutil.move(src, dst)
     os.symlink(dst, src)
 
 
-def write_database(batch):
-    insert = """
-        insert into terms
-               ( term_set,  label,  pattern,  attr,  replace,  extra1,  extra2)
-        values (:term_set, :label, :pattern, :attr, :replace, :extra1, :extra2)
-        """
-    with sqlite3.connect(const.FULL_TAXON_DB) as cxn:
-        cxn.executemany(insert, batch)
-
-
-def create_tables():
-    const.FULL_TAXON_DB.unlink(missing_ok=True)
-    create = """
-        create table terms (
-            term_set text,
-            label    text,
-            pattern  text,
-            attr     text,
-            replace  text,
-            extra1   blob,
-            extra2   blob
-        );
-        create table term_columns (
-            term_set text,
-            extra    text,
-            rename   text
-        );
-        """
-    with sqlite3.connect(const.FULL_TAXON_DB) as cxn:
-        cxn.executescript(create)
-
-
-def insert_ranks():
-    with sqlite3.connect(const.FULL_TAXON_DB) as cxn:
-        cxn.execute(f"attach database '{const.TERM_DB}' as aux")
-        sql = """
-            insert into term_columns
-            select * from aux.term_columns where term_set in ('taxa', 'ranks')"""
-        cxn.execute(sql)
-        sql = "insert into terms select * from aux.terms where term_set = 'ranks'"
-        cxn.execute(sql)
+def write_csv(rows):
+    with open(term_patterns.VOCAB_TAXA, "w") as out_csv:
+        writer = csv.writer(out_csv)
+        writer.writerow(""" label pattern attr replace rank1 options """.split())
+        for r in rows:
+            r = [r.label, r.pattern, r.attr, r.replace, r.rank1, r.options]
+            writer.writerow(r)
 
 
 def get_raw_taxa(args):
@@ -364,21 +324,19 @@ def get_raw_taxa(args):
         get_other_taxa(args.other_csv)
 
 
-def get_other_taxa(other_csv):
-    with open(other_csv) as in_file:
+def get_other_taxa(other_taxa_csv):
+    with open(other_taxa_csv) as in_file:
         reader = csv.DictReader(in_file)
-        for row in tqdm(reader, desc="other"):
+        for row in reader:
             TAXA.add_taxon_rank(row["taxon"], row["rank"])
 
 
-def get_old_taxa(old_db):
-    with sqlite3.connect(old_db) as cxn:
-        cxn.row_factory = sqlite3.Row
-        sql = "select * from terms where term_set = 'plant_taxa'"
-        rows = [t for t in tqdm(cxn.execute(sql), desc="old DB")]
-        for row in rows:
+def get_old_taxa(old_taxa_csv):
+    with open(old_taxa_csv) as in_file:
+        reader = csv.DictReader(in_file)
+        for row in list(reader):
             pattern = row["pattern"]
-            ranks = set(row["extra1"].split())
+            ranks = set(row["ranks"].split())
             ranks -= {"species"}
             if not ranks:
                 continue
@@ -447,17 +405,17 @@ def parse_args():
     )
 
     arg_parser.add_argument(
-        "--old-db",
+        "--old-taxa-csv",
         type=Path,
         metavar="PATH",
-        help="""Get terms from this old database.""",
+        help="""Get old taxon terms from this CSV.""",
     )
 
     arg_parser.add_argument(
-        "--other-csv",
+        "--other-taxa-csv",
         type=Path,
         metavar="PATH",
-        help="""Get terms from this CSV file.""",
+        help="""Get even more taxa from this CSV file.""",
     )
 
     args = arg_parser.parse_args()

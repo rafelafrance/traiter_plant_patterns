@@ -36,5 +36,5 @@ This repository is a library for other Traiter projects and is not run directly.
 There are tests which you can run like so:
 ```bash
 cd /my/path/to/traiter_plants
-python -m unittest discover
+export MOCK_TAXA=1; python -m unittest discover
 ```

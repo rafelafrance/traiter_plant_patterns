@@ -6,7 +6,8 @@ from traiter.pylib.patterns import term_patterns as terms
 from .. import const
 
 # #########################################################################
-TAXA_CSV = const.VOCAB_DIR / "taxa.csv"
+VOCAB_TAXA = const.VOCAB_DIR / "taxa.csv"
+TAXA_CSV = VOCAB_TAXA
 # Some test taxa are in a mock CSV
 if not TAXA_CSV.exists() or "MOCK_TAXA" in os.environ:
     TAXA_CSV = const.VOCAB_DIR / "mock_taxa.csv"
