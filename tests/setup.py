@@ -31,15 +31,11 @@ PIPELINE.add_delete_unlinked_patterns()
 
 
 def test(text: str) -> list[dict]:
-    """Find entities in the doc."""
     text = shorten(text)
     doc = PIPELINE(text)
     traits = [e._.data for e in doc.ents]
 
     # from pprint import pp
     # pp(traits, compact=True)
-
-    # from spacy import displacy
-    # displacy.serve(doc, options={'collapse_punct': False, 'compact': True})
 
     return traits

@@ -27,9 +27,9 @@ Record = namedtuple("Record", "label pattern attr replace rank1 options")
 class Ranks:
     def __init__(self):
         self.ranks = self.get_ranks()
-        self.id2rank = {int(r["rank1"]): r["replace"] for r in self.ranks}
+        self.id2rank = {int(r["rank_id"]): r["replace"] for r in self.ranks}
         self.pattern2rank = {r["pattern"]: r["replace"] for r in self.ranks}
-        self.rank2id = {r["pattern"]: int(r["rank1"]) for r in self.ranks}
+        self.rank2id = {r["pattern"]: int(r["rank_id"]) for r in self.ranks}
         self.all = {r["pattern"] for r in self.ranks}
         self.lower = {r for i, r in self.id2rank.items() if i > ITIS_SPECIES_ID}
         self.higher = {r for i, r in self.id2rank.items() if i < ITIS_SPECIES_ID}
@@ -151,9 +151,12 @@ class Taxa:
 
     def remove_problem_taxa(self):
         """Some upper taxa interfere with other parses."""
-        problem_taxa = """ side """.split()
-        for problem in problem_taxa:
-            del self.taxa[problem]
+        new = {}
+        problems = {"side"} | get_treatments()
+        for taxon, rank in self.taxa.items():
+            if taxon not in problems:
+                new[taxon] = rank
+        self.taxa = new
 
     def split_words(self):
         """Convert full taxa names into terms for the DB."""
@@ -276,11 +279,20 @@ def get_species():
     for abbrev, options in tqdm(all_abbrevs.items(), desc="species 2"):
         replace = options.pop() if len(options) == 1 else ""
         options = ",".join(sorted(options)) if len(options) > 1 else ""
+
+        # F. interferes with the taxon form abbreviation f.
+        if abbrev.startswith("F."):
+            pattern = abbrev
+            attr = "text"
+        else:
+            pattern = abbrev.lower()
+            attr = "lower"
+
         species.append(
             Record(
                 label="species_taxon",
-                pattern=abbrev.lower(),
-                attr="lower",
+                pattern=pattern,
+                attr=attr,
                 replace=replace,
                 rank1="species",
                 options=options,
@@ -317,11 +329,18 @@ def get_raw_taxa(args):
     if args.wfot_tsv:
         get_wfot_taxa(args.wfot_tsv)
 
-    if args.old_db:
-        get_old_taxa(args.old_db)
+    if args.old_taxa_csv:
+        get_old_taxa(args.old_taxa_csv)
 
-    if args.other_csv:
-        get_other_taxa(args.other_csv)
+    if args.other_taxa_csv:
+        get_other_taxa(args.other_taxa_csv)
+
+
+def get_treatments():
+    with open(const.VOCAB_DIR / "treatment.csv") as in_file:
+        reader = csv.DictReader(in_file)
+        treatments = {t["pattern"] for t in reader}
+    return treatments
 
 
 def get_other_taxa(other_taxa_csv):

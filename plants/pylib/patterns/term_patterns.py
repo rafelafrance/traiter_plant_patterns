@@ -7,17 +7,23 @@ from .. import const
 # #########################################################################
 VOCAB_TAXA = const.VOCAB_DIR / "taxa.csv"
 TAXA_CSV = VOCAB_TAXA
-# Some test taxa are in a mock CSV
-if not TAXA_CSV.exists() or "MOCK_TAXA" in os.environ:
+
+try:
+    use_mock_taxa = int(os.getenv("MOCK_TAXA"))
+except ValueError:
+    use_mock_taxa = 0
+
+if not TAXA_CSV.exists() or use_mock_taxa:
     TAXA_CSV = const.VOCAB_DIR / "mock_taxa.csv"
 
 
+# #########################################################################
 TERMS = term_reader.shared("colors")
 TERMS += term_reader.shared("units")
 TERMS += term_reader.shared("numerics")
-TERMS += term_reader.read(const.VOCAB_DIR / "treatment.csv")
 TERMS += term_reader.read(TAXA_CSV)
 TERMS += term_reader.read(const.VOCAB_DIR / "ranks.csv")
+TERMS += term_reader.read(const.VOCAB_DIR / "treatment.csv")
 
 TERMS = term_reader.drop(TERMS, "imperial_length")
 TERMS = term_reader.drop(TERMS, "time_units")
