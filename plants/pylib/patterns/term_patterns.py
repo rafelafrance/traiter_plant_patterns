@@ -10,7 +10,7 @@ TAXA_CSV = VOCAB_TAXA
 
 try:
     use_mock_taxa = int(os.getenv("MOCK_TAXA"))
-except ValueError:
+except (TypeError, ValueError):
     use_mock_taxa = 0
 
 if not TAXA_CSV.exists() or use_mock_taxa:
