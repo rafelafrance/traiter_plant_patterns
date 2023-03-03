@@ -5,8 +5,8 @@ from traiter.pylib import term_reader
 from .. import const
 
 # #########################################################################
-VOCAB_TAXA = const.VOCAB_DIR / "taxa.csv"
-TAXA_CSV = VOCAB_TAXA
+TAXA_VOCAB = const.VOCAB_DIR / "taxa.csv"
+TAXA_CSV = TAXA_VOCAB
 
 try:
     use_mock_taxa = int(os.getenv("MOCK_TAXA"))

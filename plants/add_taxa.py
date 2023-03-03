@@ -303,7 +303,7 @@ def get_species():
 
 
 def move_csv():
-    src = term_patterns.TAXA_CSV
+    src = term_patterns.TAXA_VOCAB
     dst = (const.DATA_DIR / src.name).absolute()
     dst.unlink(missing_ok=True)
     shutil.move(src, dst)
@@ -311,7 +311,7 @@ def move_csv():
 
 
 def write_csv(rows):
-    with open(term_patterns.VOCAB_TAXA, "w") as out_csv:
+    with open(term_patterns.TAXA_VOCAB, "w") as out_csv:
         writer = csv.writer(out_csv)
         writer.writerow(""" label pattern attr replace rank1 options """.split())
         for r in rows:
