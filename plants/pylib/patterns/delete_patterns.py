@@ -5,10 +5,10 @@ from traiter.pylib import const as t_const
 
 from . import term_patterns
 
-PARTIAL_TRAITS = """ about bad_taxon color_mod cross dim dimension imperial_length
-    imperial_mass joined length_units rank margin_leader metric_length metric_mass
-    month not_a_range number_word per_count plant_taxon quest range shape_leader
-    shape_suffix skip units
+PARTIAL_TRAITS = """ about authority bad_taxon color_mod cross dim dimension
+    imperial_length imperial_mass joined length_units rank margin_leader metric_length
+    metric_mass month not_a_range number_word per_count plant_taxon quest range
+    shape_leader shape_suffix skip units
     species_taxon lower_taxon higher_taxon higher_rank species_rank subspecies_rank
     variety_rank subvariety_rank form_rank subform_rank
     """.split()

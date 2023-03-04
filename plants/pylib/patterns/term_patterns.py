@@ -1,27 +1,12 @@
-import os
-
 from traiter.pylib import term_reader
 
 from .. import const
 
 # #########################################################################
-TAXA_VOCAB = const.VOCAB_DIR / "taxa.csv"
-TAXA_CSV = TAXA_VOCAB
-
-try:
-    use_mock_taxa = int(os.getenv("MOCK_TAXA"))
-except (TypeError, ValueError):
-    use_mock_taxa = 0
-
-if not TAXA_CSV.exists() or use_mock_taxa:
-    TAXA_CSV = const.VOCAB_DIR / "mock_taxa.csv"
-
-
-# #########################################################################
 TERMS = term_reader.shared("colors")
 TERMS += term_reader.shared("units")
 TERMS += term_reader.shared("numerics")
-TERMS += term_reader.read(TAXA_CSV)
+TERMS += term_reader.read(const.TAXA_CSV)
 TERMS += term_reader.read(const.VOCAB_DIR / "ranks.csv")
 TERMS += term_reader.read(const.VOCAB_DIR / "treatment.csv")
 

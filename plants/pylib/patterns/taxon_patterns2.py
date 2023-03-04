@@ -54,9 +54,9 @@ BAD_TAXON = MatcherCompiler(
 
 
 # ###################################################################################
-TAXON_AUTH = MatcherCompiler(
+TAXON2 = MatcherCompiler(
     "taxon_auth",
-    on_match="plant_taxon_auth_v1",
+    on_match="plant_taxon2_v1",
     decoder=DECODER,
     patterns=[
         "taxon ( auth+                       )",
@@ -71,11 +71,13 @@ TAXON_AUTH = MatcherCompiler(
 )
 
 
-@registry.misc(TAXON_AUTH.on_match)
+@registry.misc(TAXON2.on_match)
 def on_taxon_auth_match(ent):
     auth = []
 
-    taxon = next(e for e in ent.ents if e.label_ == "taxon")
+    taxon = [e for e in ent.ents if e.label_ == "taxon"]
+    if len(taxon) != 1:
+        raise actions.RejectMatch()
 
     for token in ent:
         if token.ent_type_ == "taxon":
@@ -90,10 +92,7 @@ def on_taxon_auth_match(ent):
         elif token.pos_ in MAYBE:
             auth.append(token.text)
 
-    if not auth:
-        raise actions.RejectMatch()
-
-    ent._.data["taxon"] = taxon._.data["taxon"]
-    ent._.data["rank"] = taxon._.data["rank"]
+    ent._.data["taxon"] = taxon[0]._.data["taxon"]
+    ent._.data["rank"] = taxon[0]._.data["rank"]
     ent._.data["authority"] = " ".join(auth)
     ent._.new_label = "taxon"

@@ -217,3 +217,76 @@ class TestTaxon(unittest.TestCase):
                 }
             ],
         )
+
+    def test_taxon_15(self):
+        """It gets a taxon notation."""
+        self.assertEqual(
+            test(
+                """
+                Cornaceae
+                Cornus obliqua Raf.
+                """
+            ),
+            [
+                {
+                    "rank": "family",
+                    "taxon": "Cornaceae",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 9,
+                },
+                {
+                    "authority": "Raf",
+                    "rank": "species",
+                    "taxon": "Cornus obliqua",
+                    "trait": "taxon",
+                    "start": 10,
+                    "end": 28,
+                },
+            ],
+        )
+
+    def test_taxon_16(self):
+        """It gets a family notation."""
+        self.assertEqual(
+            test(
+                """
+                Crowley's Ridge
+                Fabaceae
+                Vicia villosa Roth ssp. varia (Khan)
+                """
+            ),
+            [
+                {
+                    "taxon": "Fabaceae",
+                    "rank": "family",
+                    "trait": "taxon",
+                    "start": 16,
+                    "end": 24,
+                },
+                {
+                    "taxon": "Vicia villosa subsp. varia",
+                    "rank": "subspecies",
+                    "authority": ["Roth", "Khan"],
+                    "trait": "taxon",
+                    "start": 25,
+                    "end": 61,
+                },
+            ],
+        )
+
+    def test_taxon_17(self):
+        """It gets the full notation."""
+        self.assertEqual(
+            test("""Cephalanthus occidentalis L. Rubiaceas"""),
+            [
+                {
+                    "taxon": "Cephalanthus occidentalis",
+                    "rank": "species",
+                    "authority": "L. Rubiaceas",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 38,
+                }
+            ],
+        )

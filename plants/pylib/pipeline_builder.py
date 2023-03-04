@@ -26,7 +26,8 @@ from .patterns import subpart_patterns
 from .patterns import taxon_like_linker_patterns
 from .patterns import taxon_like_patterns
 from .patterns import taxon_patterns
-from .patterns import taxon_plus_patterns
+from .patterns import taxon_patterns2
+from .patterns import taxon_patterns3
 from .patterns import term_patterns
 
 
@@ -135,18 +136,25 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
     def add_taxon_plus_patterns(self):
         self.nlp.add_pipe(
             ADD_TRAITS,
-            name="taxon_plus_traits",
+            name="taxon_traits2",
             config={
                 "patterns": matcher_compiler.as_dicts(
                     [
-                        taxon_plus_patterns.TAXON_AUTH,
-                        taxon_plus_patterns.MULTI_TAXON,
-                        taxon_plus_patterns.BAD_TAXON,
+                        taxon_patterns2.TAXON2,
+                        taxon_patterns2.MULTI_TAXON,
+                        taxon_patterns2.BAD_TAXON,
                     ]
                 )
             },
         )
-        self.nlp.add_pipe("merge_entities", name="merge_taxa_plus")
+        self.nlp.add_pipe("merge_entities", name="merge_taxa2")
+
+        self.nlp.add_pipe(
+            ADD_TRAITS,
+            name="taxon_traits3",
+            config={"patterns": matcher_compiler.as_dicts([taxon_patterns3.TAXON3])},
+        )
+        self.nlp.add_pipe("merge_entities", name="merge_taxa3")
 
     def add_taxon_like_patterns(self):
         self.nlp.add_pipe(
