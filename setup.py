@@ -1,16 +1,27 @@
 #!/usr/bin/env python3
-import tomllib
+# import tomllib
 from distutils.core import setup
 from setuptools import find_packages
 
 
-def read_pyproject():
-    with open("pyproject.toml", "rb") as in_file:
-        settings = tomllib.load(in_file)
-    return settings
+# def read_pyproject():
+#     with open("pyproject.toml", "rb") as in_file:
+#         settings = tomllib.load(in_file)
+#     return settings
 
 
-SETTINGS = read_pyproject()
+# SETTINGS = read_pyproject()
+SETTINGS = {
+    "project": {
+        "name": "traiter_plants",
+        "version": "0.2.1",
+        "description": "",
+        "dependencies": [
+            "pandas",
+            "spacy",
+        ],
+    },
+}
 
 
 def readme():
@@ -33,6 +44,6 @@ setup(
     long_description=readme(),
     license=license_(),
     url="https://github.com/rafelafrance/traiter",
-    python_requires=">=3.11",
+    python_requires=">=3.10",
     scripts=[],
 )
