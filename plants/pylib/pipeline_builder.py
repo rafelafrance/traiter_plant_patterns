@@ -149,10 +149,10 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         )
         self.nlp.add_pipe("merge_entities", name="merge_taxa2")
 
-        for _ in range(1, n):
+        for i in range(2, n + 1):
             self.nlp.add_pipe(
                 ADD_TRAITS,
-                name="taxon_plus_traits2",
+                name=f"taxon_plus_traits{i}",
                 config={
                     "patterns": matcher_compiler.as_dicts(
                         [taxon_plus_patterns2.TAXON_PLUS2]
