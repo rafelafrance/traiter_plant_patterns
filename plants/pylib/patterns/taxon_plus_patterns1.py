@@ -54,7 +54,7 @@ BAD_TAXON = MatcherCompiler(
 
 
 # ###################################################################################
-TAXON2 = MatcherCompiler(
+TAXON_PLUS1 = MatcherCompiler(
     "taxon_auth",
     on_match="plant_taxon2_v1",
     decoder=DECODER,
@@ -71,7 +71,7 @@ TAXON2 = MatcherCompiler(
 )
 
 
-@registry.misc(TAXON2.on_match)
+@registry.misc(TAXON_PLUS1.on_match)
 def on_taxon_auth_match(ent):
     auth = []
 

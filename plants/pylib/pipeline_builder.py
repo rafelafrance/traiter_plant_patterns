@@ -26,8 +26,8 @@ from .patterns import subpart_patterns
 from .patterns import taxon_like_linker_patterns
 from .patterns import taxon_like_patterns
 from .patterns import taxon_patterns
-from .patterns import taxon_patterns2
-from .patterns import taxon_patterns3
+from .patterns import taxon_plus_patterns1
+from .patterns import taxon_plus_patterns2
 from .patterns import term_patterns
 
 
@@ -133,28 +133,33 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         )
         self.nlp.add_pipe("merge_entities", name="merge_taxa")
 
-    def add_taxon_plus_patterns(self):
+    def add_taxon_plus_patterns(self, n=1):
         self.nlp.add_pipe(
             ADD_TRAITS,
-            name="taxon_traits2",
+            name="taxon_plus_traits1",
             config={
                 "patterns": matcher_compiler.as_dicts(
                     [
-                        taxon_patterns2.TAXON2,
-                        taxon_patterns2.MULTI_TAXON,
-                        taxon_patterns2.BAD_TAXON,
+                        taxon_plus_patterns1.TAXON_PLUS1,
+                        taxon_plus_patterns1.MULTI_TAXON,
+                        taxon_plus_patterns1.BAD_TAXON,
                     ]
                 )
             },
         )
         self.nlp.add_pipe("merge_entities", name="merge_taxa2")
 
-        self.nlp.add_pipe(
-            ADD_TRAITS,
-            name="taxon_traits3",
-            config={"patterns": matcher_compiler.as_dicts([taxon_patterns3.TAXON3])},
-        )
-        self.nlp.add_pipe("merge_entities", name="merge_taxa3")
+        for _ in range(1, n):
+            self.nlp.add_pipe(
+                ADD_TRAITS,
+                name="taxon_plus_traits2",
+                config={
+                    "patterns": matcher_compiler.as_dicts(
+                        [taxon_plus_patterns2.TAXON_PLUS2]
+                    )
+                },
+            )
+            self.nlp.add_pipe("merge_entities", name="merge_taxa3")
 
     def add_taxon_like_patterns(self):
         self.nlp.add_pipe(

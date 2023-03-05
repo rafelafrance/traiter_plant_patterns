@@ -14,7 +14,7 @@ PIPELINE.add_numeric_patterns()
 PIPELINE.add_part_locations_patterns()
 # PIPELINE.add_debug_tokens_pipe()  # #########################################
 PIPELINE.add_taxa_patterns()
-PIPELINE.add_taxon_plus_patterns()
+PIPELINE.add_taxon_plus_patterns(n=2)
 PIPELINE.add_taxon_like_patterns()
 PIPELINE.add_color_patterns()
 PIPELINE.add_group_traits_patterns()

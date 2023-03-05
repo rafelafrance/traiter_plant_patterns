@@ -22,7 +22,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 
 
 # ###################################################################################
-TAXON3 = MatcherCompiler(
+TAXON_PLUS2 = MatcherCompiler(
     "taxon_auth",
     on_match="plant_taxon3_v1",
     decoder=DECODER,
@@ -49,7 +49,7 @@ TAXON3 = MatcherCompiler(
 )
 
 
-@registry.misc(TAXON3.on_match)
+@registry.misc(TAXON_PLUS2.on_match)
 def on_taxon_auth_match(ent):
     taxon_ent = next(e for e in ent.ents if e.label_ == "taxon")
 
