@@ -10,12 +10,10 @@ from . import term_patterns as terms
 NOT_A_GENUS_PREFIX = """
     de el la le no se costa santa &
     """.split()
-MAYBE = """ PROPN NOUN """.split()
 
 DECODER = common_patterns.COMMON_PATTERNS | {
     "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
     "bad": {"LOWER": {"IN": NOT_A_GENUS_PREFIX}},
-    "maybe": {"POS": {"IN": MAYBE}},
     "taxon": {"ENT_TYPE": "taxon"},
 }
 
@@ -59,14 +57,10 @@ TAXON_PLUS1 = MatcherCompiler(
     on_match="plant_taxon2_v1",
     decoder=DECODER,
     patterns=[
-        "taxon ( auth+                       )",
-        "taxon ( auth+ maybe auth+           )",
-        "taxon ( auth+             and auth+ )",
-        "taxon ( auth+ maybe auth+ and auth+ )",
-        "taxon   auth+                        ",
-        "taxon   auth+ maybe auth+            ",
-        "taxon   auth+             and auth+  ",
-        "taxon   auth+ maybe auth+ and auth+  ",
+        "taxon ( auth+           )",
+        "taxon ( auth+ and auth+ )",
+        "taxon   auth+            ",
+        "taxon   auth+ and auth+  ",
     ],
 )
 
@@ -87,9 +81,6 @@ def on_taxon_auth_match(ent):
             auth.append("and")
 
         elif token.shape_ in t_const.NAME_SHAPES:
-            auth.append(token.text)
-
-        elif token.pos_ in MAYBE:
             auth.append(token.text)
 
     ent._.data["taxon"] = taxon[0]._.data["taxon"]
