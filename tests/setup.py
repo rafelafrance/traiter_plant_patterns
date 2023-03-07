@@ -4,7 +4,7 @@ from plants.pylib.patterns import term_patterns
 from plants.pylib.pipeline_builder import PipelineBuilder
 
 # Singleton for testing
-PIPELINE = PipelineBuilder()
+PIPELINE = PipelineBuilder(exclude="ner")
 PIPELINE.add_tokenizer_pipe()
 PIPELINE.add_term_patterns(term_patterns.TERMS, term_patterns.REPLACE)
 PIPELINE.add_range_patterns()
