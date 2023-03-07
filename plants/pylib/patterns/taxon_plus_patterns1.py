@@ -8,7 +8,7 @@ from . import term_patterns as terms
 
 
 NOT_A_GENUS_PREFIX = """
-    de el la le no se costa rica santa &
+    de el la le no se costa santa &
     """.split()
 MAYBE = """ PROPN NOUN """.split()
 
