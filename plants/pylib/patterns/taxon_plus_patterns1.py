@@ -15,6 +15,7 @@ DECODER = common_patterns.COMMON_PATTERNS | {
     "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
     "bad": {"LOWER": {"IN": NOT_A_GENUS_PREFIX}},
     "taxon": {"ENT_TYPE": "taxon"},
+    "_": {"TEXT": {"REGEX": r"^[:._;,]+$"}},
 }
 
 
@@ -57,10 +58,10 @@ TAXON_PLUS1 = MatcherCompiler(
     on_match="plant_taxon2_v1",
     decoder=DECODER,
     patterns=[
-        "taxon ( auth+           )",
-        "taxon ( auth+ and auth+ )",
-        "taxon   auth+            ",
-        "taxon   auth+ and auth+  ",
+        "taxon ( auth+           _? )",
+        "taxon ( auth+ and auth+ _? )",
+        "taxon   auth+               ",
+        "taxon   auth+ and auth+     ",
     ],
 )
 
