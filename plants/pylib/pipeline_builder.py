@@ -33,25 +33,39 @@ from .patterns import term_patterns
 
 
 class PipelineBuilder(pipeline_builder.PipelineBuilder):
-    def add_terms(self):
+    def add_taxon_terms(self, **kwargs):
         self.nlp.add_pipe(
             TERM_PIPE,
             name="binomial_terms",
-            before="parser",
+            **kwargs,
             config={"terms": term_patterns.BINOMIAL_TERMS},
         )
         self.nlp.add_pipe(
             TERM_PIPE,
-            name="basic_terms",
+            name="monomial_terms",
             after="binomial_terms",
-            config={"terms": term_patterns.TERMS},
+            config={"terms": term_patterns.MONOMIAL_TERMS},
         )
-        self.nlp.add_pipe("merge_entities", name="merge_terms")
+        self.nlp.add_pipe(
+            "merge_entities", name="merge_taxon_terms", after="monomial_terms"
+        )
 
-    def add_range_patterns(self):
+    def add_basic_terms(self, terms, **kwargs):
+        self.nlp.add_pipe(
+            TERM_PIPE,
+            name="basic_terms",
+            **kwargs,
+            config={"terms": terms},
+        )
+        self.nlp.add_pipe(
+            "merge_entities", name="merge_basic_terms", after="basic_terms"
+        )
+
+    def add_range_patterns(self, **kwargs):
         self.nlp.add_pipe(
             ADD_TRAITS,
             name="range_pipe",
+            **kwargs,
             config={
                 "patterns": matcher_compiler.as_dicts(
                     [
@@ -70,10 +84,11 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         )
         self.nlp.add_pipe("merge_entities")
 
-    def add_parts_patterns(self):
+    def add_parts_patterns(self, **kwargs):
         self.nlp.add_pipe(
             ADD_TRAITS,
             name="parts",
+            **kwargs,
             config={
                 "patterns": matcher_compiler.as_dicts(
                     [
@@ -86,19 +101,21 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             },
         )
 
-    def add_simple_patterns(self):
+    def add_simple_patterns(self, **kwargs):
         self.nlp.add_pipe(
             SIMPLE_TRAITS,
+            **kwargs,
             config={
                 "replace": term_patterns.REPLACE,
                 "exclude": ["multiple_parts", "subpart_suffix"],
             },
         )
 
-    def add_numeric_patterns(self):
+    def add_numeric_patterns(self, **kwargs):
         self.nlp.add_pipe(
             ADD_TRAITS,
             name="numeric_traits",
+            **kwargs,
             config={
                 "patterns": matcher_compiler.as_dicts(
                     [
@@ -116,10 +133,11 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             },
         )
 
-    def add_part_locations_patterns(self):
+    def add_part_locations_patterns(self, **kwargs):
         self.nlp.add_pipe(
             ADD_TRAITS,
             name="part_locations_traits",
+            **kwargs,
             config={
                 "patterns": matcher_compiler.as_dicts(
                     [
@@ -129,10 +147,11 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             },
         )
 
-    def add_taxa_patterns(self):
+    def add_taxa_patterns(self, **kwargs):
         self.nlp.add_pipe(
             ADD_TRAITS,
             name="taxon_traits",
+            **kwargs,
             config={
                 "patterns": matcher_compiler.as_dicts(
                     [
@@ -147,9 +166,9 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
                 )
             },
         )
-        self.nlp.add_pipe("merge_entities", name="merge_taxa")
+        self.nlp.add_pipe("merge_entities", name="merge_taxa", after="taxon_traits")
 
-    def add_taxon_plus_patterns(self, n=1):
+    def add_taxon_plus_patterns(self, n=1, **kwargs):
         """Get taxon patterns that are build up from previous taxon notations:
 
         a) A taxon with an authority like: "Canis lupus Lineus". The authority is Lineus
@@ -175,6 +194,7 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         self.nlp.add_pipe(
             ADD_TRAITS,
             name="taxon_plus_traits1",
+            **kwargs,
             config={
                 "patterns": matcher_compiler.as_dicts(
                     [
@@ -185,33 +205,44 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
                 )
             },
         )
-        self.nlp.add_pipe("merge_entities", name="merge_taxa2")
+        self.nlp.add_pipe(
+            "merge_entities", name="merge_taxa2", after="taxon_plus_traits1"
+        )
+
+        prev_name_add = "merge_taxa2"
 
         for i in range(2, n + 1):
+            name_add = f"taxon_plus_traits{i}"
             self.nlp.add_pipe(
                 ADD_TRAITS,
-                name=f"taxon_plus_traits{i}",
+                name=name_add,
+                after=prev_name_add,
                 config={
                     "patterns": matcher_compiler.as_dicts(
                         [taxon_plus_patterns2.TAXON_PLUS2]
                     )
                 },
             )
-            self.nlp.add_pipe("merge_entities", name="merge_taxa3")
+            self.nlp.add_pipe(
+                "merge_entities", name=f"taxon_plus_merge_traits{i}", after=name_add
+            )
+            prev_name_add = name_add
 
-    def add_taxon_like_patterns(self):
+    def add_taxon_like_patterns(self, **kwargs):
         self.nlp.add_pipe(
             ADD_TRAITS,
             name="taxon_like",
+            **kwargs,
             config={
                 "patterns": matcher_compiler.as_dicts([taxon_like_patterns.TAXON_LIKE])
             },
         )
 
-    def add_group_traits_patterns(self):
+    def add_group_traits_patterns(self, **kwargs):
         self.nlp.add_pipe(
             ADD_TRAITS,
             name="group_traits",
+            **kwargs,
             config={
                 "patterns": matcher_compiler.as_dicts(
                     [
@@ -227,14 +258,16 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         )
 
     def add_delete_partial_traits_patterns(
-        self, name=DELETE_TRAITS, partial_traits=None
+        self, name=DELETE_TRAITS, partial_traits=None, **kwargs
     ):
         if partial_traits is None:
             partial_traits = delete_patterns.PARTIAL_TRAITS
-        self.nlp.add_pipe(DELETE_TRAITS, name=name, config={"delete": partial_traits})
+        self.nlp.add_pipe(
+            DELETE_TRAITS, name=name, **kwargs, config={"delete": partial_traits}
+        )
 
-    def add_merge_pipe(self):
-        self.nlp.add_pipe(MERGE_TRAITS)
+    def add_merge_pipe(self, **kwargs):
+        self.nlp.add_pipe(MERGE_TRAITS, **kwargs)
 
     def add_link_parts_patterns(self):
         self.nlp.add_pipe(
@@ -251,10 +284,11 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             },
         )
 
-    def add_link_parts_once_patterns(self):
+    def add_link_parts_once_patterns(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_parts_once",
+            **kwargs,
             config={
                 "parents": part_linker_patterns.LINK_PART_ONCE_PARENTS,
                 "children": part_linker_patterns.LINK_PART_ONCE_CHILDREN,
@@ -267,10 +301,11 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             },
         )
 
-    def add_link_subparts_patterns(self):
+    def add_link_subparts_patterns(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_subparts",
+            **kwargs,
             config={
                 "parents": subpart_linker_patterns.SUBPART_PARENTS,
                 "children": subpart_linker_patterns.SUBPART_CHILDREN,
@@ -281,10 +316,11 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             },
         )
 
-    def add_link_subparts_suffixes_patterns(self):
+    def add_link_subparts_suffixes_patterns(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_subparts_suffixes",
+            **kwargs,
             config={
                 "parents": subpart_linker_patterns.SUBPART_SUFFIX_PARENTS,
                 "children": subpart_linker_patterns.SUBPART_SUFFIX_CHILDREN,
@@ -295,10 +331,11 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             },
         )
 
-    def add_link_sex_patterns(self):
+    def add_link_sex_patterns(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_sex",
+            **kwargs,
             config={
                 "parents": sex_linker_patterns.SEX_PARENTS,
                 "children": sex_linker_patterns.SEX_CHILDREN,
@@ -307,10 +344,11 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             },
         )
 
-    def add_link_location_patterns(self):
+    def add_link_location_patterns(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_location",
+            **kwargs,
             config={
                 "parents": location_linker_patterns.LOCATION_PARENTS,
                 "children": location_linker_patterns.LOCATION_CHILDREN,
@@ -321,10 +359,11 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             },
         )
 
-    def add_link_taxa_like_patterns(self):
+    def add_link_taxa_like_patterns(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_taxa_like",
+            **kwargs,
             config={
                 "parents": taxon_like_linker_patterns.TAXON_LIKE_PARENTS,
                 "children": taxon_like_linker_patterns.TAXON_LIKE_CHILDREN,
@@ -335,7 +374,9 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             },
         )
 
-    def add_delete_unlinked_patterns(self, delete_unlinked=None, delete_when=None):
+    def add_delete_unlinked_patterns(
+        self, delete_unlinked=None, delete_when=None, **kwargs
+    ):
         if delete_when is None:
             delete_unlinked = delete_patterns.DELETE_UNLINKED
 
@@ -345,6 +386,7 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         self.nlp.add_pipe(
             DELETE_TRAITS,
             name="delete_unlinked",
+            **kwargs,
             config={"delete": delete_unlinked, "delete_when": delete_when},
         )
 
