@@ -34,21 +34,17 @@ from .patterns import term_patterns
 
 class PipelineBuilder(pipeline_builder.PipelineBuilder):
     def add_terms(self):
-        print(f"{len(term_patterns.BINOMIAL_TERMS)=}")
         self.nlp.add_pipe(
             TERM_PIPE,
             name="binomial_terms",
             before="parser",
-            config={
-                "terms": term_patterns.BINOMIAL_TERMS,
-                "replace": term_patterns.REPLACE,
-            },
+            config={"terms": term_patterns.BINOMIAL_TERMS},
         )
         self.nlp.add_pipe(
             TERM_PIPE,
             name="basic_terms",
             after="binomial_terms",
-            config={"terms": term_patterns.TERMS, "replace": term_patterns.REPLACE},
+            config={"terms": term_patterns.TERMS},
         )
         self.nlp.add_pipe("merge_entities", name="merge_terms")
 
