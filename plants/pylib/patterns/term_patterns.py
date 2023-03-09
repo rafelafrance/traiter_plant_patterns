@@ -3,23 +3,29 @@ from traiter.pylib import term_reader
 from .. import const
 
 # #########################################################################
+TAXA_TERMS = term_reader.read(const.TAXA_CSV)
+MONOMIAL_TERMS = term_reader.take(TAXA_TERMS, "monomial")
+BINOMIAL_TERMS = term_reader.take(TAXA_TERMS, "binomial")
+
 TERMS = term_reader.shared("colors")
 TERMS += term_reader.shared("units")
 TERMS += term_reader.shared("numerics")
-TERMS += term_reader.read(const.TAXA_CSV)
 TERMS += term_reader.read(const.VOCAB_DIR / "ranks.csv")
 TERMS += term_reader.read(const.VOCAB_DIR / "treatment.csv")
+TERMS += MONOMIAL_TERMS
 
 TERMS = term_reader.drop(TERMS, "imperial_length")
 TERMS = term_reader.drop(TERMS, "time_units")
 TERMS = term_reader.drop(TERMS, "ordinal numeric_units roman")
 
-REPLACE = term_reader.pattern_dict(TERMS, "replace")
 REMOVE = term_reader.pattern_dict(TERMS, "remove")
 SUFFIX_TERM = term_reader.pattern_dict(TERMS, "suffix_term")
 
-RANK1 = term_reader.pattern_dict(TERMS, "rank1")
-RANK_ABBREV = term_reader.pattern_dict(TERMS, "abbrev")
+ALL_TERMS = TERMS + BINOMIAL_TERMS
+
+REPLACE = term_reader.pattern_dict(ALL_TERMS, "replace")
+RANKS = term_reader.pattern_dict(ALL_TERMS, "ranks")
+RANK_ABBREV = term_reader.pattern_dict(ALL_TERMS, "abbrev")
 
 
 # #########################################################################

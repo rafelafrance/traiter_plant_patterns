@@ -10,17 +10,26 @@ LOWER_RANK = """
     """.split()
 LOWER_RANK_SET = set(LOWER_RANK)
 
-ANY_RANK = LOWER_RANK + """ higher_rank species_rank """.split()
+HIGHER_RANK = """
+    class_rank division_rank family_rank genus_rank infraclass_rank infradivision_rank
+    infrakingdom_rank kingdom_rank order_rank section_rank series_rank subclass_rank
+    subdivision_rank subfamily_rank subgenus_rank subkingdom_rank suborder_rank
+    subsection_rank subseries_rank subtribe_rank superclass_rank superdivision_rank
+    superorder_rank tribe_rank
+    """.split()
+HIGHER_RANK_SET = {r.removesuffix("_rank") for r in HIGHER_RANK}
+
+
+ANY_RANK = LOWER_RANK + HIGHER_RANK + ["species_rank"]
 ANY_RANK_SET = set(ANY_RANK)
 
 MAYBE = """ PROPN NOUN """.split()
 
 DECODER = common_patterns.COMMON_PATTERNS | {
     "maybe": {"POS": {"IN": MAYBE}},
-    "species": {"ENT_TYPE": "species_taxon"},
-    "lower": {"ENT_TYPE": "lower_taxon"},
-    "higher_taxon": {"ENT_TYPE": "higher_taxon"},
-    "higher_rank": {"ENT_TYPE": "higher_rank"},
+    "species": {"ENT_TYPE": "binomial"},
+    "monomial": {"ENT_TYPE": "monomial"},
+    "higher_rank": {"ENT_TYPE": {"IN": HIGHER_RANK}},
     "subspecies": {"ENT_TYPE": "subspecies_rank"},
     "variety": {"ENT_TYPE": "variety_rank"},
     "subvariety": {"ENT_TYPE": "subvariety_rank"},
@@ -30,49 +39,59 @@ DECODER = common_patterns.COMMON_PATTERNS | {
     "species_rank": {"ENT_TYPE": "species_rank"},
 }
 
+
+def is_genus(token):
+    return terms.RANKS.get(token.lower_).find("genus") > -1
+
+
 # ###################################################################################
-HIGHER_TAXON = MatcherCompiler(
+MONOMIAL = MatcherCompiler(
     "taxon.singleton",
     on_match="single_taxon_v1",
     decoder=DECODER,
     patterns=[
-        "higher_taxon",
-        "higher_rank  higher_taxon",
-        "lower_rank   lower",
-        "species_rank lower",
+        "monomial",
+        "higher_rank  monomial",
+        "lower_rank   monomial",
+        "species_rank monomial",
     ],
 )
 
 
-@registry.misc(HIGHER_TAXON.on_match)
+@registry.misc(MONOMIAL.on_match)
 def on_single_taxon_match(ent):
-    ent._.new_label = "taxon"
-    data = {}
-    rank_from_db = False
+    rank_from_csv = False
+    rank = None
+    taxon = None
 
     for token in ent:
+        label = token.ent_type_
 
         # Taxon and its rank
-        if token._.cached_label in ("higher_taxon", "lower_taxon"):
-            data["taxon"] = terms.REPLACE.get(token.lower_, token.text)
+        if label == "monomial":
+            taxon = terms.REPLACE.get(token.lower_, token.text)
 
             # A given rank will override the one in the DB
-            if not data.get("rank"):
-                rank_from_db = True
-                data["rank"] = terms.RANK1.get(token.lower_, "unknown")
+            if not rank:
+                rank_from_csv = True
+                rank = terms.RANKS.get(token.lower_, "unknown")
+                rank = rank.split()[0]
 
         # A given rank overrides the one in the DB
-        elif token._.cached_label in ANY_RANK_SET:
-            rank_from_db = False
-            data["rank"] = terms.REPLACE.get(token.lower_, token.lower_)
+        elif label in ANY_RANK_SET:
+            rank_from_csv = False
+            rank = terms.REPLACE.get(token.lower_, token.lower_)
 
         elif token.pos_ in MAYBE:
-            data["taxon"] = terms.REPLACE.get(token.lower_, token.text)
+            taxon = terms.REPLACE.get(token.lower_, token.text)
 
-    if rank_from_db and data["rank"] == "genus":
+    if rank_from_csv and rank == "genus":
         raise actions.RejectMatch()
 
-    ent._.data = data
+    taxon = taxon.title() if rank in HIGHER_RANK_SET else taxon.lower()
+
+    ent._.data = {"taxon": taxon, "rank": rank}
+    ent._.new_label = "taxon"
 
 
 # ###################################################################################
@@ -84,7 +103,7 @@ SPECIES_TAXON = MatcherCompiler(
     decoder=DECODER,
     patterns=[
         "species",
-        "higher_taxon lower",
+        "monomial monomial",
     ],
 )
 
@@ -93,8 +112,8 @@ SUBSPECIES_TAXON = MatcherCompiler(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species            lower",
-        "species subspecies lower",
+        "species            monomial",
+        "species subspecies monomial",
         "species subspecies maybe",
     ],
 )
@@ -104,10 +123,10 @@ VARIETY_TAXON = MatcherCompiler(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species                   variety lower",
-        "species subspecies? lower variety lower",
-        "species                   variety maybe",
-        # "species subspecies? lower variety maybe",
+        "species                      variety monomial",
+        "species subspecies? monomial variety monomial",
+        "species                      variety maybe",
+        # "species subspecies? monomial variety maybe",
         # "species subspecies? maybe variety maybe",
     ],
 )
@@ -117,16 +136,16 @@ SUBVARIETY_TAXON = MatcherCompiler(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species                   subvariety lower",
-        "species variety     lower subvariety lower",
-        "species subspecies? lower subvariety lower",
-        "species                   subvariety maybe",
-        "species variety     lower subvariety maybe",
-        "species subspecies? lower subvariety maybe",
-        "species variety     maybe subvariety maybe",
-        "species subspecies? maybe subvariety maybe",
-        "species variety     maybe subvariety lower",
-        "species subspecies? maybe subvariety lower",
+        "species                      subvariety monomial",
+        "species variety     monomial subvariety monomial",
+        "species subspecies? monomial subvariety monomial",
+        "species                      subvariety maybe",
+        "species variety     monomial subvariety maybe",
+        "species subspecies? monomial subvariety maybe",
+        "species variety     maybe    subvariety maybe",
+        "species subspecies? maybe    subvariety maybe",
+        "species variety     maybe    subvariety monomial",
+        "species subspecies? maybe    subvariety monomial",
     ],
 )
 
@@ -135,16 +154,16 @@ FORM_TAXON = MatcherCompiler(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species                   form lower",
-        "species variety     lower form lower",
-        "species subspecies? lower form lower",
-        "species                   form maybe",
-        "species variety     lower form maybe",
-        "species subspecies? lower form maybe",
-        "species variety     maybe form maybe",
-        "species subspecies? maybe form maybe",
-        "species variety     maybe form lower",
-        "species subspecies? maybe form lower",
+        "species                      form monomial",
+        "species variety     monomial form monomial",
+        "species subspecies? monomial form monomial",
+        "species                      form maybe",
+        "species variety     monomial form maybe",
+        "species subspecies? monomial form maybe",
+        "species variety     maybe    form maybe",
+        "species subspecies? maybe    form maybe",
+        "species variety     maybe    form monomial",
+        "species subspecies? maybe    form monomial",
     ],
 )
 
@@ -153,50 +172,50 @@ SUBFORM_TAXON = MatcherCompiler(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species                   subform lower",
-        "species variety     lower subform lower",
-        "species subspecies? lower subform lower",
-        "species                   subform maybe",
-        "species variety     lower subform maybe",
-        "species subspecies? lower subform maybe",
-        "species variety     maybe subform maybe",
-        "species subspecies? maybe subform maybe",
-        "species variety     maybe subform lower",
-        "species subspecies? maybe subform lower",
+        "species                      subform monomial",
+        "species variety     monomial subform monomial",
+        "species subspecies? monomial subform monomial",
+        "species                      subform maybe",
+        "species variety     monomial subform maybe",
+        "species subspecies? monomial subform maybe",
+        "species variety     maybe    subform maybe",
+        "species subspecies? maybe    subform maybe",
+        "species variety     maybe    subform monomial",
+        "species subspecies? maybe    subform monomial",
     ],
 )
 
 
 @registry.misc(ON_TAXON_MATCH)
 def on_taxon_match(ent):
-    name = []
+    taxon = []
     for i, token in enumerate(ent):
-        label = token._.cached_label
+        label = token.ent_type_
 
-        if label == "higher_taxon" and terms.RANK1.get(token.lower_) == "genus":
-            name.append(terms.REPLACE.get(token.lower_, token.text))
+        if label == "monomial" and is_genus(token):
+            taxon.append(terms.REPLACE.get(token.lower_, token.text))
 
-        elif label == "species_taxon":
-            name.append(terms.REPLACE.get(token.lower_, token.text))
+        elif label == "binomial":
+            taxon.append(terms.REPLACE.get(token.lower_, token.text))
 
-        elif label == "lower_taxon" and i != 3:
-            name.append(terms.REPLACE.get(token.lower_, token.text))
+        elif label == "monomial" and i != 3:
+            taxon.append(terms.REPLACE.get(token.lower_, token.text))
 
-        elif label == "lower_taxon" and i == 3:
-            name.append(terms.RANK_ABBREV["subspecies"])
-            name.append(terms.REPLACE.get(token.lower_, token.text))
+        elif label == "monomial" and i == 3:
+            taxon.append(terms.RANK_ABBREV["subspecies"])
+            taxon.append(terms.REPLACE.get(token.lower_, token.text))
 
         elif label in LOWER_RANK_SET:
-            name.append(terms.RANK_ABBREV.get(token.lower_, token.lower_))
+            taxon.append(terms.RANK_ABBREV.get(token.lower_, token.lower_))
 
         elif token.pos_ in MAYBE:
-            name.append(token.text)
+            taxon.append(token.text)
 
         else:
             actions.RejectMatch(f"Bad taxon: {ent.text}")
 
-    ent._.data = {
-        "taxon": " ".join(name),
-        "rank": ent.label_.split(".")[-1],
-    }
+    taxon = " ".join(taxon)
+    taxon = taxon[0].upper() + taxon[1:]
+
+    ent._.data = {"taxon": taxon, "rank": ent.label_.split(".")[-1]}
     ent._.new_label = "taxon"

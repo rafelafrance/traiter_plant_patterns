@@ -1,19 +1,18 @@
 from traiter.pylib.util import shorten
 
-from plants.pylib.patterns import term_patterns
 from plants.pylib.pipeline_builder import PipelineBuilder
 
 # Singleton for testing
 PIPELINE = PipelineBuilder(exclude=["ner"])
 PIPELINE.add_tokenizer_pipe()
-PIPELINE.add_term_patterns(term_patterns.TERMS, term_patterns.REPLACE)
+PIPELINE.add_terms()
 PIPELINE.add_range_patterns()
 PIPELINE.add_parts_patterns()
 PIPELINE.add_simple_patterns()
 PIPELINE.add_numeric_patterns()
 PIPELINE.add_part_locations_patterns()
-PIPELINE.add_taxa_patterns()
 # PIPELINE.add_debug_tokens_pipe()  # #########################################
+PIPELINE.add_taxa_patterns()
 PIPELINE.add_taxon_plus_patterns(n=2)
 PIPELINE.add_taxon_like_patterns()
 PIPELINE.add_color_patterns()

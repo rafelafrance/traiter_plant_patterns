@@ -293,3 +293,17 @@ class TestTaxon(unittest.TestCase):
                 }
             ],
         )
+
+    def test_taxon_18(self):
+        self.assertEqual(
+            test("""A. pachyphloia f. brevipinnula."""),
+            [
+                {
+                    "rank": "form",
+                    "taxon": "Acacia pachyphloia f. brevipinnula",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 30,
+                }
+            ],
+        )

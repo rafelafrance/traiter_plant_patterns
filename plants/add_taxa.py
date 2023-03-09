@@ -2,13 +2,14 @@
 """Use binomial species names but single taxon names for higher and lower ranks."""
 import argparse
 import csv
+import logging
 import os
 import shutil
 import sqlite3
 import sys
 import textwrap
 from collections import defaultdict
-from collections import namedtuple
+from dataclasses import dataclass
 from pathlib import Path
 
 import regex
@@ -17,62 +18,78 @@ from tqdm import tqdm
 from traiter.pylib import log
 from traiter.pylib import term_reader
 
-from plants.pylib.patterns import term_patterns
-
 ITIS_SPECIES_ID = 220
 
-Record = namedtuple("Record", "label pattern attr replace rank1 options")
+
+@dataclass
+class Record:
+    label: str
+    pattern: str
+    attr: str
+    replace: str
+    ranks: str
+    options: str
 
 
 class Ranks:
     def __init__(self):
-        self.ranks = self.get_ranks()
+        self.ranks = term_reader.read(const.VOCAB_DIR / "ranks.csv")
         self.id2rank = {int(r["rank_id"]): r["replace"] for r in self.ranks}
-        self.pattern2rank = {r["pattern"]: r["replace"] for r in self.ranks}
-        self.rank2id = {r["pattern"]: int(r["rank_id"]) for r in self.ranks}
-        self.all = {r["pattern"] for r in self.ranks}
+        self.rank_names = {r["pattern"]: r["replace"] for r in self.ranks}
         self.lower = {r for i, r in self.id2rank.items() if i > ITIS_SPECIES_ID}
         self.higher = {r for i, r in self.id2rank.items() if i < ITIS_SPECIES_ID}
-        self.abbrev_list = defaultdict(set)
-        for rank in self.ranks:
-            self.abbrev_list[rank["replace"]].add(rank["pattern"])
 
     def normalize_rank(self, rank):
         rank = rank.lower()
-        return self.pattern2rank.get(rank, "")
-
-    @staticmethod
-    def get_ranks():
-        return term_reader.read(const.VOCAB_DIR / "ranks.csv")
-
-    def has_rank_abbrev(self, rank, pattern):
-        return any(w in self.abbrev_list[rank] for w in pattern.split())
+        return self.rank_names.get(rank, "")
 
 
 class Taxa:
     def __init__(self, ranks):
         self.ranks = ranks
-        self.raw = defaultdict(set)  # Terms with possibly multiple ranks
-        self.taxa = {}  # Taxon terms with a single rank
-        self.terms = {}  # Terms that go into the DB
+        self.taxon = defaultdict(set)  # Ranks for each term
         self.valid_pattern = regex.compile(r"^\p{L}[\p{L}\s'.-]*\p{L}$")
         self.min_pattern_len = 3
         self.min_word_len = 2
 
-    def add_taxon_rank(self, pattern, rank):
-        pattern = pattern.lower()
-        rank = rank.lower()
+    def add_taxon_and_rank(self, pattern, rank):
+        words = pattern.split()
+
+        if any(w.lower() in ("temp", "uncertain", "unknown", "dummy") for w in words):
+            return
+
         if not self.valid_pattern.match(pattern) or len(pattern) < self.min_pattern_len:
             return
-        if any(len(w) < self.min_word_len for w in pattern.split()):
-            return
-        if rank not in self.ranks.pattern2rank:
-            return
-        self.raw[pattern].add(rank)
 
-    def add_taxon_ranks(self, pattern, ranks):
+        if any(len(w) < self.min_word_len for w in words):
+            return
+
+        if rank not in self.ranks.rank_names:
+            return
+
+        if len(words) == 1:
+            self.taxon[pattern.lower()].add(rank)
+
+        elif len(words) >= 2:
+            self.add_binomial(words)
+            rank = rank
+            for word in words[2:]:
+                if new_rank := self.ranks.rank_names.get(word):
+                    rank = new_rank
+                else:
+                    self.taxon[word.lower()].add(rank)
+
+    def add_binomial(self, words):
+        binomial = f"{words[0].title()} {words[1].lower()}"
+        genus = words[0].lower()
+        species = words[1].lower()
+        self.taxon[binomial].add("species")
+        self.taxon[genus].add("genus")
+        self.taxon[species].add("species")
+
+    def add_taxa_and_ranks(self, pattern, ranks):
         for rank in ranks:
-            self.add_taxon_rank(pattern, rank)
+            self.add_taxon_and_rank(pattern, rank)
 
     @staticmethod
     def abbreviate(pattern):
@@ -81,259 +98,177 @@ class Taxa:
         abbrev = " ".join([abbrev] + parts)
         return abbrev
 
-    def resolve_ranks(self):
-        """Choose only one rank per taxon."""
-        for pattern, ranks in self.raw.items():
-            if len(ranks) == 1:
-                rank = ranks.pop()
-            else:
-                word_count = len(pattern.split())
-                if "species" in ranks and "variety" in ranks and word_count == 2:
-                    rank = "species"
-                elif "species" in ranks and "variety" in ranks and word_count > 2:
-                    rank = "variety"
-                elif "genus" in ranks:
-                    rank = "genus"
-                elif "division" in ranks:
-                    rank = "division"
-                elif "family" in ranks:
-                    rank = "family"
-                elif "suborder" in ranks:
-                    rank = "suborder"
-                elif all(r in RANKS.lower for r in ranks):
-                    rank = "subspecies"
-                elif "subspecies" in ranks:
-                    rank = "subspecies"
-                elif "variety" in ranks:
-                    rank = "variety"
-                elif "section" in ranks:
-                    rank = "section"
-                else:
-                    rank = "error"
-                    print(
-                        f"Unhandled multiple ranks: {pattern} {ranks}", file=sys.stderr
-                    )
-            self.taxa[pattern] = rank
-
-    def fix_species(self):
-        new = {}
-        for pattern, rank in self.taxa.items():
-            if rank != "species":
-                new[pattern] = rank
-            else:
-                wc = len(pattern.split())
-                if wc < 2:
-                    pass
-                elif wc == 2:
-                    new[pattern] = rank
-                elif wc > 2 and RANKS.has_rank_abbrev("section", pattern):
-                    pass
-                elif wc > 2 and RANKS.has_rank_abbrev("variety", pattern):
-                    new[pattern] = "variety"
-                elif wc > 2 and RANKS.has_rank_abbrev("form", pattern):
-                    new[pattern] = "form"
-                elif wc == 3:
-                    new[pattern] = "subspecies"
-        self.taxa = new
-
-    def add_missing_species(self):
-        """Add species that are in trinomials but not in the binomials."""
-        new = {}
-        for pattern, rank in self.taxa.items():
-            new[pattern] = rank
-            if rank in RANKS.lower:
-                words = pattern.split()
-                if len(words) < 2:
-                    continue
-                species = " ".join(words[:2])
-                new[species] = "species"
-        self.taxa = new
-
     def remove_problem_taxa(self):
-        """Some upper taxa interfere with other parses."""
+        """Some single word taxa interfere with other parses."""
         new = {}
         problems = {"side"} | get_treatments()
-        for taxon, rank in self.taxa.items():
+        for taxon, rank in self.taxon.items():
             if taxon not in problems:
                 new[taxon] = rank
-        self.taxa = new
-
-    def split_words(self):
-        """Convert full taxa names into terms for the DB."""
-        bad_taxa = ("temp", "uncertain", "unknown")
-
-        # Have higher taxa block lower taxa from getting in
-        taxa = sorted(self.taxa.items(), key=lambda t: self.ranks.rank2id[t[1]])
-
-        for taxon, rank in taxa:
-            words = taxon.split()
-
-            if any(w in bad_taxa for w in words):
-                continue
-
-            words = [w for w in words if w not in self.terms]
-            words = [w for w in words if w not in self.ranks.all]
-
-            if rank == "species":
-                self.terms[taxon] = rank
-            else:
-                for word in words:
-                    self.terms[word] = rank
-
-    def higher(self):
-        for taxon, rank in self.terms.items():
-            if rank in self.ranks.higher:
-                yield taxon.title(), rank
-
-    def lower(self):
-        for taxon, rank in self.terms.items():
-            if rank in self.ranks.lower:
-                yield taxon.lower(), rank
-
-    def species(self):
-        for taxon, rank in self.terms.items():
-            if rank == "species":
-                name = taxon[0].upper() + taxon[1:]
-                yield name, rank
-
-
-RANKS = Ranks()
-TAXA = Taxa(RANKS)
+        self.taxon = new
 
 
 def main():
     log.started()
 
+    ranks = Ranks()
+    taxa = Taxa(ranks)
+
     args = parse_args()
-    get_raw_taxa(args)
 
-    TAXA.resolve_ranks()
+    read_taxa(args, taxa)
 
-    TAXA.fix_species()
-    TAXA.add_missing_species()
-    TAXA.remove_problem_taxa()
-    TAXA.split_words()
+    taxa.remove_problem_taxa()
 
-    higher = get_higher_taxa()
-    species = get_species()
-    lower = get_lower_taxa()
+    records = build_records(taxa)
+    counts = count_ranks(records)
+    sort_ranks(counts, records, taxa)
 
-    rows = higher + species + lower
-    write_csv(rows)
+    const.TAXA_VOCAB.unlink(missing_ok=True)
+    write_csv(records, const.TAXA_VOCAB)
 
     move_csv()
+
+    write_mock_csv(records)
 
     log.finished()
 
 
-def get_higher_taxa():
+def count_ranks(records):
+    counts = defaultdict(int)
+    for record in records:
+        ranks = record.ranks.split()
+        for rank in ranks:
+            counts[rank] += 1
+    return counts
+
+
+def sort_ranks(counts, records, taxa):
+    logging.info("Sorting ranks")
+
+    for record in records:
+        keys = []
+
+        for rank in record.ranks.split():
+            if rank in taxa.ranks.higher:
+                keys.append((1, -counts[rank], rank))
+            elif rank in taxa.ranks.lower:
+                keys.append((2, -counts[rank], rank))
+            else:
+                keys.append((3, -counts[rank], rank))
+
+        record.ranks = " ".join([k[2] for k in sorted(keys)])
+
+
+def build_records(taxa):
+    logging.info("Building records")
+
     records = []
-    for taxon, rank in tqdm(TAXA.higher(), desc="higher"):
-        records.append(
-            Record(
-                label="higher_taxon",
-                pattern=taxon.lower(),
-                attr="lower",
-                replace=taxon,
-                rank1=rank,
-                options="",
-            )
-        )
-    return records
-
-
-def get_lower_taxa():
-    records = []
-    for taxon, ranks in tqdm(TAXA.lower(), desc="lower"):
-        records.append(
-            Record(
-                label="lower_taxon",
-                pattern=taxon.lower(),
-                attr="text",
-                replace="",
-                rank1="",
-                options="",
-            )
-        )
-    return records
-
-
-def get_species():
-    species = []
     all_abbrevs = defaultdict(set)
 
-    for taxon, rank in tqdm(TAXA.species(), desc="species 1"):
-        species.append(
-            Record(
-                label="species_taxon",
-                pattern=taxon.lower(),
-                attr="lower",
-                replace=taxon,
-                rank1=rank,
-                options="",
+    for taxon, ranks in taxa.taxon.items():
+        word_count = len(taxon.split())
+        if word_count == 1:
+            records.append(
+                Record(
+                    label="monomial",
+                    pattern=taxon.lower(),
+                    attr="lower",
+                    replace=taxon,
+                    ranks=" ".join(ranks),
+                    options="",
+                )
             )
-        )
-        abbrev = TAXA.abbreviate(taxon)
-        all_abbrevs[abbrev].add(taxon)
 
-    for abbrev, options in tqdm(all_abbrevs.items(), desc="species 2"):
+        elif word_count == 2:
+            records.append(
+                Record(
+                    label="binomial",
+                    pattern=taxon.lower(),
+                    attr="lower",
+                    replace=taxon,
+                    ranks="species",
+                    options="",
+                )
+            )
+
+            abbrev = taxa.abbreviate(taxon)
+            all_abbrevs[abbrev].add(taxon)
+
+        else:
+            logging.error(f"Parse error: {taxon}")
+            sys.exit(1)
+
+    for abbrev, options in all_abbrevs.items():
         replace = options.pop() if len(options) == 1 else ""
-        options = ",".join(sorted(options)) if len(options) > 1 else ""
+        options = ";".join(sorted(options)) if len(options) > 1 else ""
 
         # F. interferes with the taxon form abbreviation f.
         if abbrev.startswith("F."):
-            pattern = abbrev
+            taxon = abbrev
             attr = "text"
         else:
-            pattern = abbrev.lower()
+            taxon = abbrev.lower()
             attr = "lower"
 
-        species.append(
+        records.append(
             Record(
-                label="species_taxon",
-                pattern=pattern,
+                label="binomial",
+                pattern=taxon,
                 attr=attr,
                 replace=replace,
-                rank1="species",
+                ranks="species",
                 options=options,
             )
         )
 
-    return species
+    return records
 
 
 def move_csv():
-    src = term_patterns.TAXA_VOCAB
+    src = const.TAXA_VOCAB
     dst = (const.DATA_DIR / src.name).absolute()
     dst.unlink(missing_ok=True)
     shutil.move(src, dst)
     os.symlink(dst, src)
 
 
-def write_csv(rows):
-    with open(term_patterns.TAXA_VOCAB, "w") as out_csv:
+def write_csv(rows, csv_path):
+    with open(csv_path, "w") as out_csv:
         writer = csv.writer(out_csv)
-        writer.writerow(""" label pattern attr replace rank1 options """.split())
+        writer.writerow(""" label pattern attr replace ranks options """.split())
         for r in rows:
-            r = [r.label, r.pattern, r.attr, r.replace, r.rank1, r.options]
-            writer.writerow(r)
+            writer.writerow([r.label, r.pattern, r.attr, r.replace, r.ranks, r.options])
 
 
-def get_raw_taxa(args):
+def write_mock_csv(records):
+    mock_path = const.VOCAB_DIR / "mock_taxa.csv"
+
+    with open(mock_path) as in_csv:
+        reader = csv.DictReader(in_csv)
+        old = {r["pattern"] for r in reader}
+
+    new = [r for r in records if r.pattern in old]
+    new = sorted(new, key=lambda n: (n.label, n.pattern))
+
+    write_csv(new, mock_path)
+
+
+def read_taxa(args, taxa):
     if args.itis_db:
-        get_itis_taxa(args.itis_db)
+        read_itis_taxa(args.itis_db, taxa)
 
     if args.wcvp_file:
-        get_wcvp_taxa(args.wcvp_file)
+        read_wcvp_taxa(args.wcvp_file, taxa)
 
     if args.wfot_tsv:
-        get_wfot_taxa(args.wfot_tsv)
+        read_wfot_taxa(args.wfot_tsv, taxa)
 
     if args.old_taxa_csv:
-        get_old_taxa(args.old_taxa_csv)
+        read_old_taxa(args.old_taxa_csv, taxa)
 
     if args.other_taxa_csv:
-        get_other_taxa(args.other_taxa_csv)
+        read_other_taxa(args.other_taxa_csv, taxa)
 
 
 def get_treatments():
@@ -343,14 +278,14 @@ def get_treatments():
     return treatments
 
 
-def get_other_taxa(other_taxa_csv):
+def read_other_taxa(other_taxa_csv, taxa):
     with open(other_taxa_csv) as in_file:
         reader = csv.DictReader(in_file)
         for row in reader:
-            TAXA.add_taxon_rank(row["taxon"], row["rank"])
+            taxa.add_taxon_and_rank(row["taxon"], row["rank"])
 
 
-def get_old_taxa(old_taxa_csv):
+def read_old_taxa(old_taxa_csv, taxa):
     with open(old_taxa_csv) as in_file:
         reader = csv.DictReader(in_file)
         for row in list(reader):
@@ -359,31 +294,28 @@ def get_old_taxa(old_taxa_csv):
             ranks -= {"species"}
             if not ranks:
                 continue
-            if all(r in RANKS.lower for r in ranks):
-                TAXA.add_taxon_ranks(pattern, ranks)
-            elif len(ranks) == 1 and all(r in RANKS.higher for r in ranks):
-                TAXA.add_taxon_rank(pattern, ranks.pop())
+            taxa.add_taxon_and_rank(pattern, ranks.pop())
 
 
-def get_wfot_taxa(wfot_tsv):
+def read_wfot_taxa(wfot_tsv, taxa):
     with open(wfot_tsv) as in_file:
         reader = csv.DictReader(in_file, delimiter="\t")
         for row in tqdm(reader, desc="wfot"):
-            rank = RANKS.normalize_rank(row["taxonRank"])
+            rank = taxa.ranks.normalize_rank(row["taxonRank"])
             pattern = row["scientificName"]
-            TAXA.add_taxon_rank(pattern, rank)
+            taxa.add_taxon_and_rank(pattern, rank)
 
 
-def get_wcvp_taxa(wcvp_file):
+def read_wcvp_taxa(wcvp_file, taxa):
     with open(wcvp_file) as in_file:
         reader = csv.DictReader(in_file, delimiter="|")
         for row in tqdm(reader, desc="wcvp"):
-            rank = RANKS.normalize_rank(row["taxonrank"])
+            rank = taxa.ranks.normalize_rank(row["taxonrank"])
             pattern = row["scientfiicname"]
-            TAXA.add_taxon_rank(pattern, rank)
+            taxa.add_taxon_and_rank(pattern, rank)
 
 
-def get_itis_taxa(itis_db):
+def read_itis_taxa(itis_db, taxa):
     itis_kingdom_id = 3
 
     with sqlite3.connect(itis_db) as cxn:
@@ -392,8 +324,8 @@ def get_itis_taxa(itis_db):
         rows = [t for t in tqdm(cxn.execute(sql, (itis_kingdom_id,)), desc="itis")]
 
     for row in rows:
-        rank, pattern = RANKS.id2rank[row["rank_id"]], row["complete_name"]
-        TAXA.add_taxon_rank(pattern, rank)
+        rank, pattern = taxa.ranks.id2rank[row["rank_id"]], row["complete_name"]
+        taxa.add_taxon_and_rank(pattern, rank)
 
 
 def parse_args():

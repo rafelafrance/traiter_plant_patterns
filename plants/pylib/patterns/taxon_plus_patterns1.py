@@ -37,7 +37,7 @@ def on_multi_taxon_match(ent):
     for token in ent:
         if token.ent_type_ == "taxon":
             taxa.append(terms.REPLACE.get(token.lower_, token.text))
-            ent._.data["rank"] = terms.RANK1.get(token.lower_, "unknown")
+            ent._.data["rank"] = terms.RANKS.get(token.lower_, "unknown")
 
     ent._.data["taxon"] = taxa
 

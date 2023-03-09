@@ -7,6 +7,7 @@ from traiter.pylib.pipes.delete_traits_pipe import DELETE_TRAITS
 from traiter.pylib.pipes.link_traits_pipe import LINK_TRAITS
 from traiter.pylib.pipes.merge_traits import MERGE_TRAITS
 from traiter.pylib.pipes.simple_traits_pipe import SIMPLE_TRAITS
+from traiter.pylib.pipes.term_pipe import TERM_PIPE
 
 from .patterns import count_patterns
 from .patterns import count_suffix_patterns
@@ -32,6 +33,25 @@ from .patterns import term_patterns
 
 
 class PipelineBuilder(pipeline_builder.PipelineBuilder):
+    def add_terms(self):
+        print(f"{len(term_patterns.BINOMIAL_TERMS)=}")
+        self.nlp.add_pipe(
+            TERM_PIPE,
+            name="binomial_terms",
+            before="parser",
+            config={
+                "terms": term_patterns.BINOMIAL_TERMS,
+                "replace": term_patterns.REPLACE,
+            },
+        )
+        self.nlp.add_pipe(
+            TERM_PIPE,
+            name="basic_terms",
+            after="binomial_terms",
+            config={"terms": term_patterns.TERMS, "replace": term_patterns.REPLACE},
+        )
+        self.nlp.add_pipe("merge_entities", name="merge_terms")
+
     def add_range_patterns(self):
         self.nlp.add_pipe(
             ADD_TRAITS,
@@ -120,7 +140,7 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             config={
                 "patterns": matcher_compiler.as_dicts(
                     [
-                        taxon_patterns.HIGHER_TAXON,
+                        taxon_patterns.MONOMIAL,
                         taxon_patterns.SPECIES_TAXON,
                         taxon_patterns.SUBSPECIES_TAXON,
                         taxon_patterns.VARIETY_TAXON,
