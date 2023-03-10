@@ -162,6 +162,7 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
                         taxon_patterns.SUBVARIETY_TAXON,
                         taxon_patterns.FORM_TAXON,
                         taxon_patterns.SUBFORM_TAXON,
+                        taxon_patterns.BAD_TAXON,
                     ]
                 )
             },
@@ -200,33 +201,35 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
                     [
                         taxon_plus_patterns1.TAXON_PLUS1,
                         taxon_plus_patterns1.MULTI_TAXON,
-                        taxon_plus_patterns1.BAD_TAXON,
                     ]
                 )
             },
         )
         self.nlp.add_pipe(
-            "merge_entities", name="merge_taxa2", after="taxon_plus_traits1"
+            "merge_entities",
+            name="taxon_plus_merge_traits1",
+            after="taxon_plus_traits1",
         )
 
-        prev_name_add = "merge_taxa2"
+        prev_name_merge = "taxon_plus_merge_traits1"
 
         for i in range(2, n + 1):
             name_add = f"taxon_plus_traits{i}"
+            name_merge = f"taxon_plus_merge_traits{i}"
+
             self.nlp.add_pipe(
                 ADD_TRAITS,
                 name=name_add,
-                after=prev_name_add,
+                after=prev_name_merge,
                 config={
                     "patterns": matcher_compiler.as_dicts(
                         [taxon_plus_patterns2.TAXON_PLUS2]
                     )
                 },
             )
-            self.nlp.add_pipe(
-                "merge_entities", name=f"taxon_plus_merge_traits{i}", after=name_add
-            )
-            prev_name_add = name_add
+
+            self.nlp.add_pipe("merge_entities", name=name_merge, after=name_add)
+            prev_name_merge = name_merge
 
     def add_taxon_like_patterns(self, **kwargs):
         self.nlp.add_pipe(

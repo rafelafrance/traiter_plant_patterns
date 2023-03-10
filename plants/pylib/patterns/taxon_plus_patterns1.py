@@ -7,13 +7,8 @@ from traiter.pylib.patterns import common_patterns
 from . import term_patterns as terms
 
 
-NOT_A_GENUS_PREFIX = """
-    de el la le no se costa santa &
-    """.split()
-
 DECODER = common_patterns.COMMON_PATTERNS | {
     "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
-    "bad": {"LOWER": {"IN": NOT_A_GENUS_PREFIX}},
     "taxon": {"ENT_TYPE": "taxon"},
     "_": {"TEXT": {"REGEX": r"^[:._;,]+$"}},
 }
@@ -40,16 +35,6 @@ def on_multi_taxon_match(ent):
             ent._.data["rank"] = terms.RANKS.get(token.lower_, "unknown")
 
     ent._.data["taxon"] = taxa
-
-
-# ###################################################################################
-BAD_TAXON = MatcherCompiler(
-    "bad_taxon",
-    decoder=DECODER,
-    patterns=[
-        "bad taxon",
-    ],
-)
 
 
 # ###################################################################################

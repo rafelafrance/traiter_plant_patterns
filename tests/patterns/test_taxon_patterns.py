@@ -182,6 +182,7 @@ class TestTaxon(unittest.TestCase):
         )
 
     def test_taxon_13(self):
+        """It handles 'F.' genus abbreviation vs 'f.' form abbreviation."""
         self.assertEqual(
             test(
                 """
@@ -295,6 +296,7 @@ class TestTaxon(unittest.TestCase):
         )
 
     def test_taxon_18(self):
+        """It handles 'f.' form abbreviation vs 'F.' genus abbreviation."""
         self.assertEqual(
             test("""A. pachyphloia f. brevipinnula."""),
             [

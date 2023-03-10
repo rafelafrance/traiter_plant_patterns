@@ -1,14 +1,18 @@
 from spacy import registry
 from traiter.pylib import actions
+from traiter.pylib.const import NAME_SHAPES
+from traiter.pylib.const import TITLE_SHAPES
 from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
 from traiter.pylib.patterns import common_patterns
 
 from . import term_patterns as terms
 
+MIN_TAXON_LEN = 3
+
 LOWER_RANK = """
     subspecies_rank variety_rank subvariety_rank form_rank subform_rank
     """.split()
-LOWER_RANK_SET = set(LOWER_RANK)
+LOWER_RANKS = set(LOWER_RANK)
 
 HIGHER_RANK = """
     class_rank division_rank family_rank genus_rank infraclass_rank infradivision_rank
@@ -17,31 +21,32 @@ HIGHER_RANK = """
     subsection_rank subseries_rank subtribe_rank superclass_rank superdivision_rank
     superorder_rank tribe_rank
     """.split()
-HIGHER_RANK_SET = {r.removesuffix("_rank") for r in HIGHER_RANK}
+HIGHER_RANK_NAMES = {r.removesuffix("_rank") for r in HIGHER_RANK}
 
+SPECIES_AND_LOWER = LOWER_RANK + ["species_rank"]
 
-ANY_RANK = LOWER_RANK + HIGHER_RANK + ["species_rank"]
-ANY_RANK_SET = set(ANY_RANK)
+ALL_RANKS = set(SPECIES_AND_LOWER + HIGHER_RANK)
 
 MAYBE = """ PROPN NOUN """.split()
 
+BAD_PREFIX = """ de el la le no se costa santa & """.split()
+BAD_SUFFIX = """ river mountain road """.split()
+
 DECODER = common_patterns.COMMON_PATTERNS | {
+    "bad_prefix": {"LOWER": {"IN": BAD_PREFIX}},
+    "bad_suffix": {"LOWER": {"IN": BAD_SUFFIX}},
     "maybe": {"POS": {"IN": MAYBE}},
-    "species": {"ENT_TYPE": "binomial"},
+    "binomial": {"ENT_TYPE": "binomial"},
     "monomial": {"ENT_TYPE": "monomial"},
     "higher_rank": {"ENT_TYPE": {"IN": HIGHER_RANK}},
-    "subspecies": {"ENT_TYPE": "subspecies_rank"},
-    "variety": {"ENT_TYPE": "variety_rank"},
-    "subvariety": {"ENT_TYPE": "subvariety_rank"},
-    "form": {"ENT_TYPE": "form_rank"},
-    "subform": {"ENT_TYPE": "subform_rank"},
+    "subsp.": {"ENT_TYPE": "subspecies_rank"},
+    "var.": {"ENT_TYPE": "variety_rank"},
+    "subvar.": {"ENT_TYPE": "subvariety_rank"},
+    "f.": {"ENT_TYPE": "form_rank"},
+    "subf.": {"ENT_TYPE": "subform_rank"},
     "lower_rank": {"ENT_TYPE": {"IN": LOWER_RANK}},
     "species_rank": {"ENT_TYPE": "species_rank"},
 }
-
-
-def is_genus(token):
-    return terms.RANKS.get(token.lower_).find("genus") > -1
 
 
 # ###################################################################################
@@ -60,7 +65,7 @@ MONOMIAL = MatcherCompiler(
 
 @registry.misc(MONOMIAL.on_match)
 def on_single_taxon_match(ent):
-    rank_from_csv = False
+    # rank_from_csv = False
     rank = None
     taxon = None
 
@@ -73,22 +78,29 @@ def on_single_taxon_match(ent):
 
             # A given rank will override the one in the DB
             if not rank:
-                rank_from_csv = True
-                rank = terms.RANKS.get(token.lower_, "unknown")
-                rank = rank.split()[0]
+                rank_ = terms.RANKS.get(token.lower_, "unknown")
+                rank_ = rank_.split()[0]
+                if rank_ in HIGHER_RANK_NAMES and token.shape_ in NAME_SHAPES:
+                    # rank_from_csv = True
+                    rank = rank_
+                elif rank_ in SPECIES_AND_LOWER and token.shape_ not in TITLE_SHAPES:
+                    # rank_from_csv = True
+                    rank = rank_
 
         # A given rank overrides the one in the DB
-        elif label in ANY_RANK_SET:
-            rank_from_csv = False
+        elif label in ALL_RANKS:
+            # rank_from_csv = False
             rank = terms.REPLACE.get(token.lower_, token.lower_)
 
         elif token.pos_ in MAYBE:
             taxon = terms.REPLACE.get(token.lower_, token.text)
 
-    if rank_from_csv and rank == "genus":
-        raise actions.RejectMatch()
+    # if rank_from_csv and rank in GENUS_AND_LOWER:
+    #     raise actions.RejectMatch()
 
-    taxon = taxon.title() if rank in HIGHER_RANK_SET else taxon.lower()
+    taxon = taxon.title() if rank in HIGHER_RANK_NAMES else taxon.lower()
+    if len(taxon) < MIN_TAXON_LEN:
+        raise actions.RejectMatch()
 
     ent._.data = {"taxon": taxon, "rank": rank}
     ent._.new_label = "taxon"
@@ -102,7 +114,7 @@ SPECIES_TAXON = MatcherCompiler(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species",
+        "binomial",
         "monomial monomial",
     ],
 )
@@ -112,9 +124,9 @@ SUBSPECIES_TAXON = MatcherCompiler(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species            monomial",
-        "species subspecies monomial",
-        "species subspecies maybe",
+        "binomial        monomial",
+        "binomial subsp. monomial",
+        "binomial subsp. maybe",
     ],
 )
 
@@ -123,11 +135,10 @@ VARIETY_TAXON = MatcherCompiler(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species                      variety monomial",
-        "species subspecies? monomial variety monomial",
-        "species                      variety maybe",
-        # "species subspecies? monomial variety maybe",
-        # "species subspecies? maybe variety maybe",
+        "binomial                  var. monomial",
+        "binomial subsp.? monomial var. monomial",
+        "binomial                  var. maybe",
+        "binomial subsp.? monomial var. maybe",
     ],
 )
 
@@ -136,16 +147,16 @@ SUBVARIETY_TAXON = MatcherCompiler(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species                      subvariety monomial",
-        "species variety     monomial subvariety monomial",
-        "species subspecies? monomial subvariety monomial",
-        "species                      subvariety maybe",
-        "species variety     monomial subvariety maybe",
-        "species subspecies? monomial subvariety maybe",
-        "species variety     maybe    subvariety maybe",
-        "species subspecies? maybe    subvariety maybe",
-        "species variety     maybe    subvariety monomial",
-        "species subspecies? maybe    subvariety monomial",
+        "binomial                  subvar. monomial",
+        "binomial var.    monomial subvar. monomial",
+        "binomial subsp.? monomial subvar. monomial",
+        "binomial                  subvar. maybe",
+        "binomial var.    monomial subvar. maybe",
+        "binomial subsp.? monomial subvar. maybe",
+        "binomial var.    maybe    subvar. maybe",
+        "binomial subsp.? maybe    subvar. maybe",
+        "binomial var.    maybe    subvar. monomial",
+        "binomial subsp.? maybe    subvar. monomial",
     ],
 )
 
@@ -154,16 +165,16 @@ FORM_TAXON = MatcherCompiler(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species                      form monomial",
-        "species variety     monomial form monomial",
-        "species subspecies? monomial form monomial",
-        "species                      form maybe",
-        "species variety     monomial form maybe",
-        "species subspecies? monomial form maybe",
-        "species variety     maybe    form maybe",
-        "species subspecies? maybe    form maybe",
-        "species variety     maybe    form monomial",
-        "species subspecies? maybe    form monomial",
+        "binomial                  f. monomial",
+        "binomial var.    monomial f. monomial",
+        "binomial subsp.? monomial f. monomial",
+        "binomial                  f. maybe",
+        "binomial var.    monomial f. maybe",
+        "binomial subsp.? monomial f. maybe",
+        "binomial var.    maybe    f. maybe",
+        "binomial subsp.? maybe    f. maybe",
+        "binomial var.    maybe    f. monomial",
+        "binomial subsp.? maybe    f. monomial",
     ],
 )
 
@@ -172,23 +183,28 @@ SUBFORM_TAXON = MatcherCompiler(
     on_match=ON_TAXON_MATCH,
     decoder=DECODER,
     patterns=[
-        "species                      subform monomial",
-        "species variety     monomial subform monomial",
-        "species subspecies? monomial subform monomial",
-        "species                      subform maybe",
-        "species variety     monomial subform maybe",
-        "species subspecies? monomial subform maybe",
-        "species variety     maybe    subform maybe",
-        "species subspecies? maybe    subform maybe",
-        "species variety     maybe    subform monomial",
-        "species subspecies? maybe    subform monomial",
+        "binomial                  subf. monomial",
+        "binomial var.    monomial subf. monomial",
+        "binomial subsp.? monomial subf. monomial",
+        "binomial                  subf. maybe",
+        "binomial var.    monomial subf. maybe",
+        "binomial subsp.? monomial subf. maybe",
+        "binomial var.    maybe    subf. maybe",
+        "binomial subsp.? maybe    subf. maybe",
+        "binomial var.    maybe    subf. monomial",
+        "binomial subsp.? maybe    subf. monomial",
     ],
 )
+
+
+def is_genus(token):
+    return terms.RANKS.get(token.lower_).find("genus") > -1
 
 
 @registry.misc(ON_TAXON_MATCH)
 def on_taxon_match(ent):
     taxon = []
+
     for i, token in enumerate(ent):
         label = token.ent_type_
 
@@ -205,7 +221,7 @@ def on_taxon_match(ent):
             taxon.append(terms.RANK_ABBREV["subspecies"])
             taxon.append(terms.REPLACE.get(token.lower_, token.text))
 
-        elif label in LOWER_RANK_SET:
+        elif label in LOWER_RANKS:
             taxon.append(terms.RANK_ABBREV.get(token.lower_, token.lower_))
 
         elif token.pos_ in MAYBE:
@@ -219,3 +235,18 @@ def on_taxon_match(ent):
 
     ent._.data = {"taxon": taxon, "rank": ent.label_.split(".")[-1]}
     ent._.new_label = "taxon"
+
+
+# ###################################################################################
+BAD_TAXON = MatcherCompiler(
+    "bad_taxon",
+    decoder=DECODER,
+    patterns=[
+        "bad_prefix monomial",
+        "           monomial bad_suffix",
+        "bad_prefix monomial bad_suffix",
+        "bad_prefix binomial",
+        "           binomial bad_suffix",
+        "bad_prefix binomial bad_suffix",
+    ],
+)

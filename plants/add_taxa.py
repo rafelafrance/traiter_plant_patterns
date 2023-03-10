@@ -18,8 +18,6 @@ from tqdm import tqdm
 from traiter.pylib import log
 from traiter.pylib import term_reader
 
-ITIS_SPECIES_ID = 220
-
 
 @dataclass
 class Record:
@@ -36,8 +34,8 @@ class Ranks:
         self.ranks = term_reader.read(const.VOCAB_DIR / "ranks.csv")
         self.id2rank = {int(r["rank_id"]): r["replace"] for r in self.ranks}
         self.rank_names = {r["pattern"]: r["replace"] for r in self.ranks}
-        self.lower = {r for i, r in self.id2rank.items() if i > ITIS_SPECIES_ID}
-        self.higher = {r for i, r in self.id2rank.items() if i < ITIS_SPECIES_ID}
+        self.lower = {r for i, r in self.id2rank.items() if i > const.ITIS_SPECIES_ID}
+        self.higher = {r for i, r in self.id2rank.items() if i < const.ITIS_SPECIES_ID}
 
     def normalize_rank(self, rank):
         rank = rank.lower()
@@ -49,8 +47,6 @@ class Taxa:
         self.ranks = ranks
         self.taxon = defaultdict(set)  # Ranks for each term
         self.valid_pattern = regex.compile(r"^\p{L}[\p{L}\s'.-]*\p{L}$")
-        self.min_pattern_len = 3
-        self.min_word_len = 2
 
     def add_taxon_and_rank(self, pattern, rank):
         words = pattern.split()
@@ -58,10 +54,10 @@ class Taxa:
         if any(w.lower() in ("temp", "uncertain", "unknown", "dummy") for w in words):
             return
 
-        if not self.valid_pattern.match(pattern) or len(pattern) < self.min_pattern_len:
+        if not self.valid_pattern.match(pattern) or len(pattern) < const.MIN_TAXON_LEN:
             return
 
-        if any(len(w) < self.min_word_len for w in words):
+        if any(len(w) < const.MIN_TAXON_WORD_LEN for w in words):
             return
 
         if rank not in self.ranks.rank_names:
@@ -98,13 +94,15 @@ class Taxa:
         abbrev = " ".join([abbrev] + parts)
         return abbrev
 
-    def remove_problem_taxa(self):
-        """Some single word taxa interfere with other parses."""
+    def remove_problem_taxa(self, traiter_vocab_dir):
+        """Some taxa interfere with other parses."""
         new = {}
-        problems = {"side"} | get_treatments()
+        problems = {"side"} | get_treatments() | get_traiter_terms(traiter_vocab_dir)
         for taxon, rank in self.taxon.items():
             if taxon not in problems:
                 new[taxon] = rank
+            else:
+                logging.info(f"Removed {taxon} {rank}")
         self.taxon = new
 
 
@@ -118,7 +116,7 @@ def main():
 
     read_taxa(args, taxa)
 
-    taxa.remove_problem_taxa()
+    taxa.remove_problem_taxa(args.traiter_vocab_dir)
 
     records = build_records(taxa)
     counts = count_ranks(records)
@@ -274,8 +272,23 @@ def read_taxa(args, taxa):
 def get_treatments():
     with open(const.VOCAB_DIR / "treatment.csv") as in_file:
         reader = csv.DictReader(in_file)
-        treatments = {t["pattern"] for t in reader}
-    return treatments
+        patterns = {t["pattern"] for t in reader}
+    return patterns
+
+
+def get_traiter_terms(traiter_vocab_dir):
+    patterns = set()
+
+    if not traiter_vocab_dir:
+        return patterns
+
+    for path in traiter_vocab_dir.glob("*.csv"):
+        with open(path) as in_file:
+            reader = csv.DictReader(in_file)
+            terms = {t["pattern"] for t in reader}
+        patterns |= terms
+
+    return patterns
 
 
 def read_other_taxa(other_taxa_csv, taxa):
@@ -367,6 +380,17 @@ def parse_args():
         type=Path,
         metavar="PATH",
         help="""Get even more taxa from this CSV file.""",
+    )
+
+    arg_parser.add_argument(
+        "--traiter-vocab-dir",
+        type=Path,
+        metavar="PATH",
+        help="""We want to remove taxa that interfere with parsing standard Traiter
+            terms. Enter the directory that contains the standard traiter vocabulary
+            and it will scan thru this for all CSVs and remove taxa that are a direct
+            match.
+            """,
     )
 
     args = arg_parser.parse_args()
