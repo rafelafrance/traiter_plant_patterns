@@ -95,6 +95,9 @@ def on_single_taxon_match(ent):
         elif token.pos_ in MAYBE:
             taxon = terms.REPLACE.get(token.lower_, token.text)
 
+    if not rank:
+        raise actions.RejectMatch()
+
     # if rank_from_csv and rank in GENUS_AND_LOWER:
     #     raise actions.RejectMatch()
 

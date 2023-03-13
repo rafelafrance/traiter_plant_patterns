@@ -8,7 +8,7 @@ from . import term_patterns
 PARTIAL_TRAITS = """ about authority bad_taxon color_mod cross dim dimension
     imperial_length imperial_mass joined length_units rank margin_leader metric_length
     metric_mass month not_a_range number_word per_count plant_taxon quest range
-    shape_leader shape_suffix skip units
+    shape_leader shape_suffix skip units surface_leader
     class_rank division_rank family_rank genus_rank infraclass_rank infradivision_rank
     infrakingdom_rank kingdom_rank order_rank section_rank series_rank subclass_rank
     subdivision_rank subfamily_rank subgenus_rank subkingdom_rank suborder_rank
@@ -88,8 +88,6 @@ def delete_missing_count(ent):
 
 
 # ####################################################################################
-DELETE_UNLINKED = """surface_leader """.split()
-
 DELETE_WHEN = {
     "count": [DELETE_MISSING_PARTS, DELETE_PAGE_NO],
     "count_group": DELETE_MISSING_PARTS,

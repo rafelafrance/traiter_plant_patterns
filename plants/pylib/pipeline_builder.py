@@ -380,8 +380,8 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
     def add_delete_unlinked_patterns(
         self, delete_unlinked=None, delete_when=None, **kwargs
     ):
-        if delete_when is None:
-            delete_unlinked = delete_patterns.DELETE_UNLINKED
+        if delete_unlinked is None:
+            delete_unlinked = delete_patterns.PARTIAL_TRAITS
 
         if delete_when is None:
             delete_when = delete_patterns.DELETE_WHEN
