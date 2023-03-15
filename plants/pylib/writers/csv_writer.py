@@ -4,7 +4,6 @@ import pandas as pd
 
 import plants.pylib.trait_lists
 from . import writer_utils as w_utils
-from plants.pylib.patterns import term as terms
 
 
 class CsvWriter:

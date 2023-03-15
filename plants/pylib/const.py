@@ -15,15 +15,15 @@ TREATMENT_CSV = VOCAB_DIR / "treatment.csv"
 
 # #########################################################################
 TAXA_VOCAB = VOCAB_DIR / "taxa.csv"
-TAXA_CSV = TAXA_VOCAB
+TAXON_CSV = TAXA_VOCAB
 
 try:
     use_mock_taxa = int(os.getenv("MOCK_TAXA"))
 except (TypeError, ValueError):
     use_mock_taxa = 0
 
-if not TAXA_CSV.exists() or use_mock_taxa:
-    TAXA_CSV = VOCAB_DIR / "mock_taxa.csv"
+if not TAXON_CSV.exists() or use_mock_taxa:
+    TAXON_CSV = VOCAB_DIR / "mock_taxa.csv"
 
 # #########################################################################
 MIN_TAXON_LEN = 3

@@ -4,7 +4,8 @@ from traiter.pylib import const as t_const
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from . import term as terms
+from .term import TAXON_RANKS
+from .term import TAXON_TERMS
 
 
 _DECODER = common.PATTERNS | {
@@ -31,8 +32,8 @@ def on_multi_taxon_match(ent):
 
     for token in ent:
         if token.ent_type_ == "taxon":
-            taxa.append(terms.REPLACE.get(token.lower_, token.text))
-            ent._.data["rank"] = terms.RANKS.get(token.lower_, "unknown")
+            taxa.append(TAXON_TERMS.replace.get(token.lower_, token.text))
+            ent._.data["rank"] = TAXON_RANKS.replace.get(token.lower_, "unknown")
 
     ent._.data["taxon"] = taxa
 
@@ -40,13 +41,15 @@ def on_multi_taxon_match(ent):
 # ###################################################################################
 TAXON_PLUS1 = Compiler(
     "taxon_auth",
-    on_match="plant_taxon2_v1",
+    on_match="plant_taxon_plus1_v1",
     decoder=_DECODER,
     patterns=[
         "taxon ( auth+           _? )",
         "taxon ( auth+ and auth+ _? )",
         "taxon   auth+               ",
         "taxon   auth+ and auth+     ",
+        "taxon ( auth+           _? ) auth+",
+        "taxon ( auth+ and auth+ _? ) auth+",
     ],
 )
 
@@ -55,8 +58,8 @@ TAXON_PLUS1 = Compiler(
 def on_taxon_auth_match(ent):
     auth = []
 
-    taxon = [e for e in ent.ents if e.label_ == "taxon"]
-    if len(taxon) != 1:
+    taxon_ = [e for e in ent.ents if e.label_ == "taxon"]
+    if len(taxon_) != 1:
         raise actions.RejectMatch()
 
     for token in ent:
@@ -69,7 +72,7 @@ def on_taxon_auth_match(ent):
         elif token.shape_ in t_const.NAME_SHAPES:
             auth.append(token.text)
 
-    ent._.data["taxon"] = taxon[0]._.data["taxon"]
-    ent._.data["rank"] = taxon[0]._.data["rank"]
+    ent._.data["taxon"] = taxon_[0]._.data["taxon"]
+    ent._.data["rank"] = taxon_[0]._.data["rank"]
     ent._.data["authority"] = " ".join(auth)
     ent._.new_label = "taxon"

@@ -4,8 +4,7 @@ from traiter.pylib.patterns import common
 
 ON_HABIT_MATCH = "plant_habit_v1"
 
-
-TREE = """ tree trees bush bushes """.split()
+_TREE = """ tree trees bush bushes """.split()
 
 
 HABIT = Compiler(
@@ -15,7 +14,7 @@ HABIT = Compiler(
     | {
         "habit": {"ENT_TYPE": "plant_habit"},
         "shape": {"ENT_TYPE": "shape"},
-        "tree": {"LOWER": {"IN": TREE}},
+        "tree": {"LOWER": {"IN": _TREE}},
     },
     patterns=[
         "habit",

@@ -1,61 +1,56 @@
 from spacy import registry
 from traiter.pylib import actions
-from traiter.pylib import term_reader
 from traiter.pylib.const import NAME_SHAPES
 from traiter.pylib.const import TITLE_SHAPES
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from . import term as terms
-from .. import const
+from .term import RANK_ABBREV
+from .term import RANK_TERMS
+from .term import TAXON_RANKS
+from .term import TAXON_TERMS
 
 MIN_TAXON_LEN = 3
 
-TAXON_TERMS = term_reader.read(const.TAXA_CSV)
-MONOMIAL_TERMS = term_reader.take(TAXON_TERMS, "monomial")
-BINOMIAL_TERMS = term_reader.take(TAXON_TERMS, "binomial")
-TAXON_REPLACE = term_reader.pattern_dict(TAXON_TERMS, "replace")
 
-RANK_TERMS = term_reader.read(const.VOCAB_DIR / "ranks.csv")
-RANK_REPLACE = term_reader.pattern_dict(RANK_TERMS, "ranks")
-RANK_ABBREV = term_reader.pattern_dict(RANK_TERMS, "abbrev")
+_RANKS = TAXON_TERMS.pattern_dict("ranks")
 
-LOWER_RANK = """
+_LOWER_RANK = """
     subspecies_rank variety_rank subvariety_rank form_rank subform_rank
     """.split()
-LOWER_RANKS = set(LOWER_RANK)
+_LOWER_RANKS = set(_LOWER_RANK)
 
-HIGHER_RANK = """
+_HIGHER_RANK = """
     class_rank division_rank family_rank genus_rank infraclass_rank infradivision_rank
     infrakingdom_rank kingdom_rank order_rank section_rank series_rank subclass_rank
     subdivision_rank subfamily_rank subgenus_rank subkingdom_rank suborder_rank
     subsection_rank subseries_rank subtribe_rank superclass_rank superdivision_rank
     superorder_rank tribe_rank
     """.split()
-HIGHER_RANK_NAMES = {r.removesuffix("_rank") for r in HIGHER_RANK}
+_HIGHER_RANK_NAMES = {r.removesuffix("_rank") for r in _HIGHER_RANK}
 
-SPECIES_AND_LOWER = LOWER_RANK + ["species_rank"]
+_SPECIES_AND_LOWER = _LOWER_RANK + ["species_rank"]
 
-ALL_RANKS = set(SPECIES_AND_LOWER + HIGHER_RANK)
+_ALL_RANKS = set(_SPECIES_AND_LOWER + _HIGHER_RANK)
 
-MAYBE = """ PROPN NOUN """.split()
+_MAYBE = """ PROPN NOUN """.split()
 
-BAD_PREFIX = """ de el la le no se costa santa & """.split()
-BAD_SUFFIX = """ river mountain road """.split()
+_BAD_PREFIX = """ de el la le no se costa santa & """.split()
+_BAD_SUFFIX = """ river mountain road """.split()
 
 _DECODER = common.PATTERNS | {
-    "bad_prefix": {"LOWER": {"IN": BAD_PREFIX}},
-    "bad_suffix": {"LOWER": {"IN": BAD_SUFFIX}},
-    "maybe": {"POS": {"IN": MAYBE}},
+    "bad_prefix": {"LOWER": {"IN": _BAD_PREFIX}},
+    "bad_suffix": {"LOWER": {"IN": _BAD_SUFFIX}},
+    "maybe": {"POS": {"IN": _MAYBE}},
     "binomial": {"ENT_TYPE": "binomial"},
     "monomial": {"ENT_TYPE": "monomial"},
-    "higher_rank": {"ENT_TYPE": {"IN": HIGHER_RANK}},
+    "higher_rank": {"ENT_TYPE": {"IN": _HIGHER_RANK}},
     "subsp.": {"ENT_TYPE": "subspecies_rank"},
     "var.": {"ENT_TYPE": "variety_rank"},
     "subvar.": {"ENT_TYPE": "subvariety_rank"},
     "f.": {"ENT_TYPE": "form_rank"},
     "subf.": {"ENT_TYPE": "subform_rank"},
-    "lower_rank": {"ENT_TYPE": {"IN": LOWER_RANK}},
+    "lower_rank": {"ENT_TYPE": {"IN": _LOWER_RANK}},
     "species_rank": {"ENT_TYPE": "species_rank"},
 }
 
@@ -78,33 +73,33 @@ MONOMIAL = Compiler(
 def on_single_taxon_match(ent):
     # rank_from_csv = False
     rank = None
-    taxon = None
+    taxon_ = None
 
     for token in ent:
         label = token.ent_type_
 
         # Taxon and its rank
         if label == "monomial":
-            taxon = terms.REPLACE.get(token.lower_, token.text)
+            taxon_ = TAXON_TERMS.replace.get(token.lower_, token.text)
 
             # A given rank will override the one in the DB
             if not rank:
-                rank_ = RANK_REPLACE.get(token.lower_, "unknown")
+                rank_ = TAXON_RANKS.get(token.lower_, "")
                 rank_ = rank_.split()[0]
-                if rank_ in HIGHER_RANK_NAMES and token.shape_ in NAME_SHAPES:
+                if rank_ in _HIGHER_RANK_NAMES and token.shape_ in NAME_SHAPES:
                     # rank_from_csv = True
                     rank = rank_
-                elif rank_ in SPECIES_AND_LOWER and token.shape_ not in TITLE_SHAPES:
+                elif rank_ in _SPECIES_AND_LOWER and token.shape_ not in TITLE_SHAPES:
                     # rank_from_csv = True
                     rank = rank_
 
         # A given rank overrides the one in the DB
-        elif label in ALL_RANKS:
+        elif label in _ALL_RANKS:
             # rank_from_csv = False
-            rank = terms.REPLACE.get(token.lower_, token.lower_)
+            rank = RANK_TERMS.replace.get(token.lower_, token.lower_)
 
-        elif token.pos_ in MAYBE:
-            taxon = terms.REPLACE.get(token.lower_, token.text)
+        elif token.pos_ in _MAYBE:
+            taxon_ = TAXON_TERMS.replace.get(token.lower_, token.text)
 
     if not rank:
         raise actions.RejectMatch()
@@ -112,11 +107,11 @@ def on_single_taxon_match(ent):
     # if rank_from_csv and rank in GENUS_AND_LOWER:
     #     raise actions.RejectMatch()
 
-    taxon = taxon.title() if rank in HIGHER_RANK_NAMES else taxon.lower()
-    if len(taxon) < MIN_TAXON_LEN:
+    taxon_ = taxon_.title() if rank in _HIGHER_RANK_NAMES else taxon_.lower()
+    if len(taxon_) < MIN_TAXON_LEN:
         raise actions.RejectMatch()
 
-    ent._.data = {"taxon": taxon, "rank": rank}
+    ent._.data = {"taxon": taxon_, "rank": rank}
     ent._.new_label = "taxon"
 
 
@@ -212,42 +207,42 @@ SUBFORM_TAXON = Compiler(
 
 
 def is_genus(token):
-    return RANK_REPLACE.get(token.lower_).find("genus") > -1
+    return _RANKS.get(token.lower_).find("genus") > -1
 
 
 @registry.misc(ON_TAXON_MATCH)
 def on_taxon_match(ent):
-    taxon = []
+    taxon_ = []
 
     for i, token in enumerate(ent):
         label = token.ent_type_
 
         if label == "monomial" and is_genus(token):
-            taxon.append(RANK_REPLACE.get(token.lower_, token.text))
+            taxon_.append(TAXON_TERMS.replace.get(token.lower_, token.text))
 
         elif label == "binomial":
-            taxon.append(RANK_REPLACE.get(token.lower_, token.text))
+            taxon_.append(TAXON_TERMS.replace.get(token.lower_, token.text))
 
         elif label == "monomial" and i != 3:
-            taxon.append(terms.REPLACE.get(token.lower_, token.text))
+            taxon_.append(TAXON_TERMS.replace.get(token.lower_, token.text))
 
         elif label == "monomial" and i == 3:
-            taxon.append(RANK_ABBREV["subspecies"])
-            taxon.append(RANK_REPLACE.get(token.lower_, token.text))
+            taxon_.append(RANK_ABBREV["subspecies"])
+            taxon_.append(RANK_TERMS.replace.get(token.lower_, token.text))
 
-        elif label in LOWER_RANKS:
-            taxon.append(RANK_ABBREV.get(token.lower_, token.lower_))
+        elif label in _LOWER_RANKS:
+            taxon_.append(RANK_ABBREV.get(token.lower_, token.lower_))
 
-        elif token.pos_ in MAYBE:
-            taxon.append(token.text)
+        elif token.pos_ in _MAYBE:
+            taxon_.append(token.text)
 
         else:
             actions.RejectMatch(f"Bad taxon: {ent.text}")
 
-    taxon = " ".join(taxon)
-    taxon = taxon[0].upper() + taxon[1:]
+    taxon_ = " ".join(taxon_)
+    taxon_ = taxon_[0].upper() + taxon_[1:]
 
-    ent._.data = {"taxon": taxon, "rank": ent.label_.split(".")[-1]}
+    ent._.data = {"taxon": taxon_, "rank": ent.label_.split(".")[-1]}
     ent._.new_label = "taxon"
 
 

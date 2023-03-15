@@ -4,18 +4,15 @@ from traiter.pylib.pattern_compilers.matcher import Compiler
 
 from . import common
 
-PREFIXES = " dr dr. mr mr. mrs mrs. miss doctor ".split()
-SUFFIXES = " ii iii jr jr. sr sr. phd. phd ".split()
-
-NOPE = """ of gps ° elev """.split()
+_NOPE = """ of gps ° elev """.split()
 
 _DECODER = common.PATTERNS | {
-    "jr": {"LOWER": {"IN": SUFFIXES}},
-    "dr": {"LOWER": {"IN": PREFIXES}},
+    "jr": {"ENT_TYPE": "name_suffix"},
+    "dr": {"ENT_TYPE": "name_prefix"},
     "person": {"ENT_TYPE": "PERSON"},
     "maybe": {"POS": "PROPN"},
     "conflict": {"ENT_TYPE": "us_county"},
-    "nope": {"LOWER": {"IN": NOPE}},
+    "nope": {"LOWER": {"IN": _NOPE}},
     "A": {"TEXT": {"REGEX": r"^[A-Z][._,]?$"}},
     "_": {"TEXT": {"REGEX": r"^[._,]+$"}},
 }

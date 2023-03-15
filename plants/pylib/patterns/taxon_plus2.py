@@ -3,20 +3,22 @@ from traiter.pylib import const as t_const
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from . import term as terms
+from .term import RANK_ABBREV
+from .term import RANK_TERMS
+from .term import TAXON_TERMS
 
-LOWER_RANK = """
+_LOWER_RANK = """
     subspecies_rank variety_rank subvariety_rank form_rank subform_rank
     """.split()
-LOWER_RANK_SET = set(LOWER_RANK)
+_LOWER_RANK_SET = set(_LOWER_RANK)
 
-MAYBE = """ PROPN NOUN """.split()
+_MAYBE = """ PROPN NOUN """.split()
 
 _DECODER = common.PATTERNS | {
     "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
-    "maybe": {"POS": {"IN": MAYBE}},
+    "maybe": {"POS": {"IN": _MAYBE}},
     "taxon": {"ENT_TYPE": "taxon"},
-    "lower_rank": {"ENT_TYPE": {"IN": LOWER_RANK}},
+    "lower_rank": {"ENT_TYPE": {"IN": _LOWER_RANK}},
     "lower": {"ENT_TYPE": "lower_taxon"},
 }
 
@@ -24,7 +26,7 @@ _DECODER = common.PATTERNS | {
 # ###################################################################################
 TAXON_PLUS2 = Compiler(
     "taxon_auth",
-    on_match="plant_taxon3_v1",
+    on_match="plant_taxon_plus2_v1",
     decoder=_DECODER,
     patterns=[
         "taxon lower_rank lower",
@@ -32,6 +34,10 @@ TAXON_PLUS2 = Compiler(
         "taxon lower_rank lower ( auth+ maybe auth+           )",
         "taxon lower_rank lower ( auth+             and auth+ )",
         "taxon lower_rank lower ( auth+ maybe auth+ and auth+ )",
+        "taxon lower_rank lower ( auth+                       ) auth+",
+        "taxon lower_rank lower ( auth+ maybe auth+           ) auth+",
+        "taxon lower_rank lower ( auth+             and auth+ ) auth+",
+        "taxon lower_rank lower ( auth+ maybe auth+ and auth+ ) auth+",
         "taxon lower_rank lower   auth+                        ",
         "taxon lower_rank lower   auth+ maybe auth+            ",
         "taxon lower_rank lower   auth+             and auth+  ",
@@ -41,6 +47,10 @@ TAXON_PLUS2 = Compiler(
         "taxon lower_rank maybe ( auth+ maybe auth+           )",
         "taxon lower_rank maybe ( auth+             and auth+ )",
         "taxon lower_rank maybe ( auth+ maybe auth+ and auth+ )",
+        "taxon lower_rank maybe ( auth+                       ) auth+",
+        "taxon lower_rank maybe ( auth+ maybe auth+           ) auth+",
+        "taxon lower_rank maybe ( auth+             and auth+ ) auth+",
+        "taxon lower_rank maybe ( auth+ maybe auth+ and auth+ ) auth+",
         "taxon lower_rank maybe   auth+                        ",
         "taxon lower_rank maybe   auth+ maybe auth+            ",
         "taxon lower_rank maybe   auth+             and auth+  ",
@@ -55,7 +65,7 @@ def on_taxon_auth_match(ent):
 
     next_is_lower_taxon = False
 
-    taxon = [taxon_ent._.data["taxon"]]
+    taxon_ = [taxon_ent._.data["taxon"]]
     auth = [taxon_ent._.data["authority"]]
     rank = taxon_ent._.data["rank"]
 
@@ -66,19 +76,19 @@ def on_taxon_auth_match(ent):
         if auth and token.lower_ in common.AND:
             auth.append("and")
 
-        elif token.ent_type_ in LOWER_RANK:
-            taxon.append(terms.RANK_ABBREV.get(token.lower_, token.lower_))
-            rank = terms.REPLACE.get(token.lower_, token.text)
+        elif token.ent_type_ in _LOWER_RANK:
+            taxon_.append(RANK_ABBREV.get(token.lower_, token.lower_))
+            rank = RANK_TERMS.replace.get(token.lower_, token.text)
             next_is_lower_taxon = True
 
         elif next_is_lower_taxon:
-            taxon.append(terms.REPLACE.get(token.lower_, token.text))
+            taxon_.append(TAXON_TERMS.replace.get(token.lower_, token.text))
             next_is_lower_taxon = False
 
-        elif token.shape_ in t_const.NAME_SHAPES or token.pos_ in MAYBE:
+        elif token.shape_ in t_const.NAME_SHAPES or token.pos_ in _MAYBE:
             auth.append(token.text)
 
-    ent._.data["taxon"] = " ".join(taxon)
+    ent._.data["taxon"] = " ".join(taxon_)
     ent._.data["rank"] = rank
     ent._.data["authority"] = auth
     ent._.new_label = "taxon"

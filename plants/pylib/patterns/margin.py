@@ -5,13 +5,13 @@ from traiter.pylib import const as t_const
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from . import term
+from .term import PLANT_TERMS
 
-TEMP = ["\\" + c for c in t_const.DASH[:2]]
+_TEMP = ["\\" + c for c in t_const.DASH[:2]]
 
-LEADERS = """ shape shape_leader margin_leader """.split()
-FOLLOWERS = """ margin margin_follower """.split()
-SHAPES = """ margin shape """.split()
+_LEADERS = """ shape shape_leader margin_leader """.split()
+_FOLLOWERS = """ margin margin_follower """.split()
+_SHAPES = """ margin shape """.split()
 
 MARGIN = Compiler(
     "margin",
@@ -20,8 +20,8 @@ MARGIN = Compiler(
     | {
         "margin": {"ENT_TYPE": "margin"},
         "shape": {"ENT_TYPE": "shape"},
-        "leader": {"ENT_TYPE": {"IN": LEADERS}},
-        "follower": {"ENT_TYPE": {"IN": FOLLOWERS}},
+        "leader": {"ENT_TYPE": {"IN": _LEADERS}},
+        "follower": {"ENT_TYPE": {"IN": _FOLLOWERS}},
     },
     patterns=[
         "leader* -* margin+",
@@ -34,13 +34,13 @@ MARGIN = Compiler(
 
 @registry.misc(MARGIN.on_match)
 def on_margin_match(ent):
-    multi_dashes = rf'[{"".join(TEMP)}]{{2,}}'
+    multi_dashes = rf'[{"".join(_TEMP)}]{{2,}}'
     value = {
         r: 1
         for t in ent
-        if (r := term_patterns.REPLACE.get(t.text, t.text))
+        if (r := PLANT_TERMS.replace.get(t.text, t.text))
         and t._.cached_label in ["margin", "shape"]
     }
     value = "-".join(value.keys())
     value = re.sub(rf"\s*{multi_dashes}\s*", r"-", value)
-    ent._.data["margin"] = term_patterns.REPLACE.get(value, value)
+    ent._.data["margin"] = PLANT_TERMS.replace.get(value, value)

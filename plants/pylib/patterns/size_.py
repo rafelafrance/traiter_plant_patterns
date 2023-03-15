@@ -4,20 +4,19 @@ from collections import deque
 from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
-from traiter.pylib import term_reader
 from traiter.pylib import util as t_util
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-UNIT_TERMS = term_reader.shared("units")
-UNIT_REPLACE = term_reader.pattern_dict(UNIT_TERMS, "replace")
-UNIT_FACTORS = term_reader.pattern_dict(UNIT_TERMS, "factor", float)
+from .term import PLANT_TERMS
 
-FOLLOW = """ dim sex """.split()
-NOT_A_SIZE = """ for below above """.split()
-SIZE_FIELDS = """ min low high max """.split()
+_FACTORS = PLANT_TERMS.pattern_dict("factor", float)
 
-SWITCH_DIM = t_const.CROSS + t_const.COMMA
+_FOLLOW = """ dim sex """.split()
+_NOT_A_SIZE = """ for below above """.split()
+_SIZE_FIELDS = """ min low high max """.split()
+
+_SWITCH_DIM = t_const.CROSS + t_const.COMMA
 
 _DECODER = common.PATTERNS | {
     "99.9": {"TEXT": {"REGEX": t_const.FLOAT_TOKEN_RE}},
@@ -26,8 +25,8 @@ _DECODER = common.PATTERNS | {
     "and": {"LOWER": "and"},
     "cm": {"ENT_TYPE": "metric_length"},
     "dim": {"ENT_TYPE": "dim"},
-    "follow": {"ENT_TYPE": {"IN": FOLLOW}},
-    "not_size": {"LOWER": {"IN": NOT_A_SIZE}},
+    "follow": {"ENT_TYPE": {"IN": _FOLLOW}},
+    "not_size": {"LOWER": {"IN": _NOT_A_SIZE}},
     "sex": {"ENT_TYPE": "sex"},
     "x": {"LOWER": {"IN": t_const.CROSS}},
 }
@@ -67,7 +66,7 @@ SIZE_DOUBLE_DIM = Compiler(
     ],
 )
 
-NOT_A_SIZE = Compiler(
+_NOT_A_SIZE = Compiler(
     "not_a_size",
     on_match=actions.REJECT_MATCH,
     decoder=_DECODER,
@@ -94,7 +93,9 @@ def on_size_double_dim_match(ent):
 
     Like: Legumes 2.8-4.5 mm high and wide
     """
-    dims = [terms.REPLACE.get(t.lower_, t.lower_) for t in ent if t.ent_type_ == "dim"]
+    dims = [
+        PLANT_TERMS.replace.get(t.lower_, t.lower_) for t in ent if t.ent_type_ == "dim"
+    ]
 
     ranges = [e for e in ent.ents if e.label_ == "range"]
 
@@ -105,7 +106,7 @@ def on_size_double_dim_match(ent):
         _size(range_, units=units)
         for key, value in range_._.data.items():
             key_parts = key.split("_")
-            if key_parts[-1] in SIZE_FIELDS:
+            if key_parts[-1] in _SIZE_FIELDS:
                 new_key = f"{dim}_{key_parts[-1]}"
                 ent._.data[new_key] = value
             else:
@@ -136,7 +137,7 @@ def scan_tokens(ent, high_only):
 
         if label == "range":
             has_range = True
-            for field in SIZE_FIELDS:
+            for field in _SIZE_FIELDS:
                 if field in token._.data:
                     dims[-1][field] = t_util.to_positive_float(token._.data[field])
 
@@ -145,10 +146,10 @@ def scan_tokens(ent, high_only):
                 del dims[-1]["low"]
 
         elif label == "metric_length":
-            dims[-1]["units"] = UNIT_REPLACE[token.lower_]
+            dims[-1]["units"] = PLANT_TERMS.replace[token.lower_]
 
         elif label == "dim":
-            dims[-1]["dimension"] = terms.REPLACE[token.lower_]
+            dims[-1]["dimension"] = PLANT_TERMS.replace[token.lower_]
 
         elif label == "sex":
             dims[-1]["sex"] = re.sub(r"\W+", "", token.lower_)
@@ -156,7 +157,7 @@ def scan_tokens(ent, high_only):
         elif label in ("quest", "about"):
             dims[-1]["uncertain"] = True
 
-        elif token.lower_ in SWITCH_DIM:
+        elif token.lower_ in _SWITCH_DIM:
             dims.append({})
 
     if not has_range:
@@ -194,14 +195,11 @@ def fill_data(dims, ent):
 
         units = dim["units"].lower()
 
-        for field in SIZE_FIELDS:
+        for field in _SIZE_FIELDS:
             if value := dim.get(field):
                 key = f"{dimension}_{field}"
-                factor = UNIT_FACTORS[units]
+                factor = _FACTORS[units]
                 ent._.data[key] = round(value * factor, 3)
-
-        # key = f"{dimension}_units"
-        # ent._.data[key] = units.lower()
 
         if sex := dim.get("sex"):
             ent._.data["sex"] = sex

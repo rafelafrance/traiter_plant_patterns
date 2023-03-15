@@ -1,13 +1,9 @@
 import regex as re
 from spacy.util import registry
 from traiter.pylib import actions
-from traiter.pylib.const import VOCAB_DIR as TRAITER_VOCAB
 from traiter.pylib.pattern_compilers.matcher import Compiler
-from traiter.pylib.term_list import TermList
 
 from . import common
-
-TERMS = TermList.read(TRAITER_VOCAB / "labels.csv")
 
 _CONJ = ["CCONJ", "ADP"]
 _COLLECTOR_NO = r"^[A-Za-z]*\d+[A-Za-z]*$"
@@ -37,7 +33,7 @@ _DECODER = common.PATTERNS | {
 # ####################################################################################
 COLLECTOR = Compiler(
     "collector",
-    on_match="digi_leap.collector.v1",
+    on_match="plants.collector.v1",
     decoder=_DECODER,
     patterns=[
         "                  name+                     num_label? :* col_no",

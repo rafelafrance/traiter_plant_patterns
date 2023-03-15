@@ -9,12 +9,18 @@ PARTS = """
     part
     """.split()
 PARTS_SET = set(PARTS)
+
 LOCATIONS = """ location flower_location part_as_loc subpart_as_loc """.split()
+
 MORPHOLOGIES = """ flower_morphology plant_morphology """.split()
+
 PLANT_TRAITS = """ plant_duration plant_habit """.split()
+
 TAXA = ["taxon", "multi_taxon"]
+
 SUBPARTS = ["subpart", "subpart_suffix"]
 SUBPART_SET = set(SUBPARTS)
+
 TRAITS = """
     color
     color_mod
@@ -35,8 +41,10 @@ TRAITS = """
     woodiness
 """.split()
 TRAITS_SET = set(TRAITS)
+
 ALL_TRAITS = LOCATIONS + MORPHOLOGIES + PARTS + PLANT_TRAITS + SUBPARTS + TRAITS
 ALL_TRAITS_SET = set(ALL_TRAITS)
+
 NO_LINK = """ duration habit habitat leaf_duration """.split()
 
 

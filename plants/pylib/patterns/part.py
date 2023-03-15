@@ -1,16 +1,19 @@
 from spacy import registry
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
+from traiter.pylib.term_list import TermList
 
-import plants.pylib.trait_lists
-from . import term
+from ..const import TREATMENT_CSV
+from ..trait_lists import PARTS
+from ..trait_lists import PARTS_SET
+from ..trait_lists import SUBPARTS
 
-PART_LEADER = """ primary secondary """.split()
+_PART_LEADER = """ primary secondary """.split()
 
 _DECODER = common.PATTERNS | {
-    "leader": {"LOWER": {"IN": PART_LEADER}},
-    "part": {"ENT_TYPE": {"IN": plants.pylib.trait_lists.PARTS}},
-    "subpart": {"ENT_TYPE": {"IN": plants.pylib.trait_lists.SUBPARTS}},
+    "leader": {"LOWER": {"IN": _PART_LEADER}},
+    "part": {"ENT_TYPE": {"IN": PARTS}},
+    "subpart": {"ENT_TYPE": {"IN": SUBPARTS}},
 }
 
 # ####################################################################################
@@ -30,14 +33,14 @@ PART = Compiler(
 
 @registry.misc(PART.on_match)
 def on_part_match(ent):
-    if any(t._.cached_label in plants.pylib.trait_lists.SUBPARTS for t in ent):
+    if any(t._.cached_label in SUBPARTS for t in ent):
         ent._.new_label = next(t._.cached_label for t in ent)
     elif any(t.lower_ in common.AND for t in ent):
         ent._.new_label = "multiple_parts"
         ent._.data["multiple_parts"] = [
-            term_patterns.REPLACE.get(t.lower_, t.lower_)
+            PART_TERMS.replace.get(t.lower_, t.lower_)
             for t in ent
-            if t.ent_type_ in plants.pylib.trait_lists.PARTS_SET
+            if t.ent_type_ in PARTS_SET
         ]
 
 

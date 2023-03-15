@@ -1,7 +1,6 @@
 from traiter.pylib import const as t_const
 from traiter.pylib import pipeline_builder
 from traiter.pylib.pattern_compilers.matcher import Compiler
-from traiter.pylib.pipes import debug
 from traiter.pylib.pipes.add import ADD_TRAITS
 from traiter.pylib.pipes.delete import DELETE_TRAITS
 from traiter.pylib.pipes.link import LINK_TRAITS
@@ -33,143 +32,46 @@ from .patterns import term
 
 
 class PipelineBuilder(pipeline_builder.PipelineBuilder):
-    def add_taxon_terms(self, **kwargs):
+    def taxon_terms(self, **kwargs):
         self.nlp.add_pipe(
             TERM_PIPE,
             name="binomial_terms",
+            before="ner",
             **kwargs,
-            config={"terms": term_patterns.BINOMIAL_TERMS},
+            config={"terms": term.BINOMIAL_TERMS.data + term.RANK_TERMS.data},
         )
         self.nlp.add_pipe(
             TERM_PIPE,
             name="monomial_terms",
-            after="binomial_terms",
-            config={"terms": term_patterns.MONOMIAL_TERMS},
+            before="ner",
+            config={"terms": term.MONOMIAL_TERMS.data},
         )
-        self.nlp.add_pipe(
-            "merge_entities", name="merge_taxon_terms", after="monomial_terms"
-        )
+        self.nlp.add_pipe("merge_entities", name="merge_taxon_terms", before="ner")
 
-    def add_basic_terms(self, terms, **kwargs):
-        self.nlp.add_pipe(
-            TERM_PIPE,
-            name="basic_terms",
-            **kwargs,
-            config={"terms": terms},
-        )
-        self.nlp.add_pipe(
-            "merge_entities", name="merge_basic_terms", after="basic_terms"
-        )
-
-    def add_range_patterns(self, **kwargs):
+    def taxa(self, **kwargs):
         self.nlp.add_pipe(
             ADD_TRAITS,
-            name="range_pipe",
+            name="taxa",
+            before="ner",
             **kwargs,
             config={
-                "patterns": matcher_compiler.as_dicts(
+                "patterns": Compiler.as_dicts(
                     [
-                        range_patterns.RANGE_LOW,
-                        range_patterns.RANGE_MIN_LOW,
-                        range_patterns.RANGE_LOW_HIGH,
-                        range_patterns.RANGE_LOW_MAX,
-                        range_patterns.RANGE_MIN_LOW_HIGH,
-                        range_patterns.RANGE_MIN_LOW_MAX,
-                        range_patterns.RANGE_LOW_HIGH_MAX,
-                        range_patterns.RANGE_MIN_LOW_HIGH_MAX,
-                        range_patterns.NOT_A_RANGE,
+                        taxon.MONOMIAL,
+                        taxon.SPECIES_TAXON,
+                        taxon.SUBSPECIES_TAXON,
+                        taxon.VARIETY_TAXON,
+                        taxon.SUBVARIETY_TAXON,
+                        taxon.FORM_TAXON,
+                        taxon.SUBFORM_TAXON,
+                        taxon.BAD_TAXON,
                     ]
                 )
             },
         )
-        self.nlp.add_pipe("merge_entities")
+        self.nlp.add_pipe("merge_entities", name="taxon_merge", before="ner")
 
-    def add_parts_patterns(self, **kwargs):
-        self.nlp.add_pipe(
-            ADD_TRAITS,
-            name="parts",
-            **kwargs,
-            config={
-                "patterns": matcher_compiler.as_dicts(
-                    [
-                        part_patterns.PART,
-                        part_patterns.MISSING_PART,
-                        subpart_patterns.SUBPART,
-                        subpart_patterns.SUBPART_SUFFIX,
-                    ]
-                )
-            },
-        )
-
-    def add_simple_patterns(self, **kwargs):
-        self.nlp.add_pipe(
-            SIMPLE_TRAITS,
-            **kwargs,
-            config={
-                "replace": term_patterns.REPLACE,
-                "exclude": ["multiple_parts", "subpart_suffix"],
-            },
-        )
-
-    def add_numeric_patterns(self, **kwargs):
-        self.nlp.add_pipe(
-            ADD_TRAITS,
-            name="numeric_traits",
-            **kwargs,
-            config={
-                "patterns": matcher_compiler.as_dicts(
-                    [
-                        size_patterns.SIZE,
-                        size_patterns.SIZE_HIGH_ONLY,
-                        size_patterns.SIZE_DOUBLE_DIM,
-                        size_patterns.NOT_A_SIZE,
-                        count_patterns.COUNT,
-                        count_patterns.COUNT_WORD,
-                        count_patterns.NOT_A_COUNT,
-                        count_suffix_patterns.COUNT_SUFFIX,
-                        count_suffix_patterns.COUNT_SUFFIX_WORD,
-                    ]
-                )
-            },
-        )
-
-    def add_part_locations_patterns(self, **kwargs):
-        self.nlp.add_pipe(
-            ADD_TRAITS,
-            name="part_locations_traits",
-            **kwargs,
-            config={
-                "patterns": matcher_compiler.as_dicts(
-                    [
-                        part_location_patterns.PART_AS_DISTANCE,
-                    ]
-                )
-            },
-        )
-
-    def add_taxa_patterns(self, **kwargs):
-        self.nlp.add_pipe(
-            ADD_TRAITS,
-            name="taxon_traits",
-            **kwargs,
-            config={
-                "patterns": matcher_compiler.as_dicts(
-                    [
-                        taxon_patterns.MONOMIAL,
-                        taxon_patterns.SPECIES_TAXON,
-                        taxon_patterns.SUBSPECIES_TAXON,
-                        taxon_patterns.VARIETY_TAXON,
-                        taxon_patterns.SUBVARIETY_TAXON,
-                        taxon_patterns.FORM_TAXON,
-                        taxon_patterns.SUBFORM_TAXON,
-                        taxon_patterns.BAD_TAXON,
-                    ]
-                )
-            },
-        )
-        self.nlp.add_pipe("merge_entities", name="merge_taxa", after="taxon_traits")
-
-    def add_taxon_plus_patterns(self, n=1, **kwargs):
+    def taxon_plus(self, n=1, **kwargs):
         """Get taxon patterns that are build up from previous taxon notations:
 
         a) A taxon with an authority like: "Canis lupus Lineus". The authority is Lineus
@@ -194,197 +96,272 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         """
         self.nlp.add_pipe(
             ADD_TRAITS,
-            name="taxon_plus_traits1",
+            name="taxon_plus1",
+            before="ner",
             **kwargs,
             config={
-                "patterns": matcher_compiler.as_dicts(
+                "patterns": Compiler.as_dicts(
                     [
-                        taxon_plus_patterns1.TAXON_PLUS1,
-                        taxon_plus_patterns1.MULTI_TAXON,
+                        taxon_plus1.TAXON_PLUS1,
+                        taxon_plus1.MULTI_TAXON,
                     ]
                 )
             },
         )
         self.nlp.add_pipe(
             "merge_entities",
-            name="taxon_plus_merge_traits1",
-            after="taxon_plus_traits1",
+            name="taxon_plus1_merge",
+            before="ner",
         )
 
-        prev_name_merge = "taxon_plus_merge_traits1"
-
         for i in range(2, n + 1):
-            name_add = f"taxon_plus_traits{i}"
-            name_merge = f"taxon_plus_merge_traits{i}"
+            name_add = f"taxon_plus{i}"
+            name_merge = f"taxon_plus_merge{i}"
 
             self.nlp.add_pipe(
                 ADD_TRAITS,
                 name=name_add,
-                after=prev_name_merge,
-                config={
-                    "patterns": matcher_compiler.as_dicts(
-                        [taxon_plus_patterns2.TAXON_PLUS2]
-                    )
-                },
+                before="ner",
+                config={"patterns": Compiler.as_dicts([taxon_plus2.TAXON_PLUS2])},
             )
+            self.nlp.add_pipe("merge_entities", name=name_merge, before="ner")
 
-            self.nlp.add_pipe("merge_entities", name=name_merge, after=name_add)
-            prev_name_merge = name_merge
-
-    def add_taxon_like_patterns(self, **kwargs):
+    def plant_terms(self, terms=None, **kwargs):
+        terms = terms if terms else term.PLANT_TERMS.data
         self.nlp.add_pipe(
-            ADD_TRAITS,
-            name="taxon_like",
+            TERM_PIPE,
+            name="plant_terms",
             **kwargs,
-            config={
-                "patterns": matcher_compiler.as_dicts([taxon_like_patterns.TAXON_LIKE])
-            },
+            config={"terms": terms},
+        )
+        self.nlp.add_pipe(
+            "merge_entities", name="plant_terms_merge", after="plant_terms"
         )
 
-    def add_group_traits_patterns(self, **kwargs):
+    def ranges(self, **kwargs):
         self.nlp.add_pipe(
             ADD_TRAITS,
-            name="group_traits",
+            name="range",
             **kwargs,
             config={
-                "patterns": matcher_compiler.as_dicts(
+                "patterns": Compiler.as_dicts(
                     [
-                        margin_patterns.MARGIN,
-                        shape_patterns.N_SHAPE,
-                        shape_patterns.SHAPE,
-                        part_location_patterns.PART_AS_LOCATION,
-                        part_location_patterns.SUBPART_AS_LOCATION,
-                        habit_patterns.HABIT,
+                        range_.RANGE_LOW,
+                        range_.RANGE_MIN_LOW,
+                        range_.RANGE_LOW_HIGH,
+                        range_.RANGE_LOW_MAX,
+                        range_.RANGE_MIN_LOW_HIGH,
+                        range_.RANGE_MIN_LOW_MAX,
+                        range_.RANGE_LOW_HIGH_MAX,
+                        range_.RANGE_MIN_LOW_HIGH_MAX,
+                        range_.NOT_A_RANGE,
+                    ]
+                )
+            },
+        )
+        self.nlp.add_pipe("merge_entities", name="range_merge")
+
+    def parts(self, **kwargs):
+        self.nlp.add_pipe(
+            ADD_TRAITS,
+            name="parts",
+            **kwargs,
+            config={
+                "patterns": Compiler.as_dicts(
+                    [
+                        part.PART,
+                        part.MISSING_PART,
+                        subpart.SUBPART,
+                        subpart.SUBPART_SUFFIX,
                     ]
                 )
             },
         )
 
-    def add_delete_partial_traits_patterns(
-        self, name=DELETE_TRAITS, partial_traits=None, **kwargs
-    ):
+    def simple(self, **kwargs):
+        self.nlp.add_pipe(
+            SIMPLE_TRAITS,
+            **kwargs,
+            config={
+                # "replace": term.REPLACE,
+                "exclude": ["multiple_parts", "subpart_suffix"],
+            },
+        )
+
+    def numeric(self, **kwargs):
+        self.nlp.add_pipe(
+            ADD_TRAITS,
+            name="numeric_traits",
+            **kwargs,
+            config={
+                "patterns": Compiler.as_dicts(
+                    [
+                        size_.SIZE,
+                        size_.SIZE_HIGH_ONLY,
+                        size_.SIZE_DOUBLE_DIM,
+                        size_._NOT_A_SIZE,
+                        count_.COUNT,
+                        count_.COUNT_WORD,
+                        count_.NOT_A_COUNT,
+                        count_suffix.COUNT_SUFFIX,
+                        count_suffix.COUNT_SUFFIX_WORD,
+                    ]
+                )
+            },
+        )
+
+    def part_locations(self, **kwargs):
+        self.nlp.add_pipe(
+            ADD_TRAITS,
+            name="part_locations_traits",
+            **kwargs,
+            config={
+                "patterns": Compiler.as_dicts(
+                    [
+                        part_location.PART_AS_DISTANCE,
+                    ]
+                )
+            },
+        )
+
+    def taxon_like(self, **kwargs):
+        self.nlp.add_pipe(
+            ADD_TRAITS,
+            name="taxon_like",
+            **kwargs,
+            config={"patterns": Compiler.as_dicts([taxon_like.TAXON_LIKE])},
+        )
+
+    def group_traits(self, **kwargs):
+        self.nlp.add_pipe(
+            ADD_TRAITS,
+            name="group_traits",
+            **kwargs,
+            config={
+                "patterns": Compiler.as_dicts(
+                    [
+                        margin.MARGIN,
+                        shape.N_SHAPE,
+                        shape.SHAPE,
+                        part_location.PART_AS_LOCATION,
+                        part_location.SUBPART_AS_LOCATION,
+                        habit.HABIT,
+                    ]
+                )
+            },
+        )
+
+    def delete_partial_traits(self, name=DELETE_TRAITS, partial_traits=None, **kwargs):
         if partial_traits is None:
-            partial_traits = delete_patterns.PARTIAL_TRAITS
+            partial_traits = delete.PARTIAL_TRAITS
         self.nlp.add_pipe(
             DELETE_TRAITS, name=name, **kwargs, config={"delete": partial_traits}
         )
 
-    def add_merge_pipe(self, **kwargs):
+    def merge_pipe(self, **kwargs):
         self.nlp.add_pipe(MERGE_TRAITS, **kwargs)
 
-    def add_link_parts_patterns(self):
+    def link_parts(self):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_parts",
             config={
-                "parents": part_linker_patterns.PART_PARENTS,
-                "children": part_linker_patterns.PART_CHILDREN,
+                "parents": part_linker._PART_PARENTS,
+                "children": part_linker._PART_CHILDREN,
                 "weights": t_const.TOKEN_WEIGHTS,
                 "reverse_weights": t_const.REVERSE_WEIGHTS,
-                "patterns": matcher_compiler.as_dicts(
-                    [part_linker_patterns.PART_LINKER]
-                ),
+                "patterns": Compiler.as_dicts([part_linker.PART_LINKER]),
             },
         )
 
-    def add_link_parts_once_patterns(self, **kwargs):
+    def link_parts_once(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_parts_once",
             **kwargs,
             config={
-                "parents": part_linker_patterns.LINK_PART_ONCE_PARENTS,
-                "children": part_linker_patterns.LINK_PART_ONCE_CHILDREN,
+                "parents": part_linker._LINK_PART_ONCE_PARENTS,
+                "children": part_linker._LINK_PART_ONCE_CHILDREN,
                 "weights": t_const.TOKEN_WEIGHTS,
                 "max_links": 1,
                 "differ": ["sex", "dimensions"],
-                "patterns": matcher_compiler.as_dicts(
-                    [part_linker_patterns.LINK_PART_ONCE]
-                ),
+                "patterns": Compiler.as_dicts([part_linker.LINK_PART_ONCE]),
             },
         )
 
-    def add_link_subparts_patterns(self, **kwargs):
+    def link_subparts(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_subparts",
             **kwargs,
             config={
-                "parents": subpart_linker_patterns.SUBPART_PARENTS,
-                "children": subpart_linker_patterns.SUBPART_CHILDREN,
+                "parents": subpart_linker._SUBPART_PARENTS,
+                "children": subpart_linker._SUBPART_CHILDREN,
                 "weights": t_const.TOKEN_WEIGHTS,
-                "patterns": matcher_compiler.as_dicts(
-                    [subpart_linker_patterns.SUBPART_LINKER]
-                ),
+                "patterns": Compiler.as_dicts([subpart_linker.SUBPART_LINKER]),
             },
         )
 
-    def add_link_subparts_suffixes_patterns(self, **kwargs):
+    def link_subparts_suffixes(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_subparts_suffixes",
             **kwargs,
             config={
-                "parents": subpart_linker_patterns.SUBPART_SUFFIX_PARENTS,
-                "children": subpart_linker_patterns.SUBPART_SUFFIX_CHILDREN,
+                "parents": subpart_linker._SUBPART_SUFFIX_PARENTS,
+                "children": subpart_linker._SUBPART_SUFFIX_CHILDREN,
                 "weights": t_const.TOKEN_WEIGHTS,
-                "patterns": matcher_compiler.as_dicts(
-                    [subpart_linker_patterns.SUBPART_SUFFIX_LINKER]
-                ),
+                "patterns": Compiler.as_dicts([subpart_linker.SUBPART_SUFFIX_LINKER]),
             },
         )
 
-    def add_link_sex_patterns(self, **kwargs):
+    def link_sex(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_sex",
             **kwargs,
             config={
-                "parents": sex_linker_patterns.SEX_PARENTS,
-                "children": sex_linker_patterns.SEX_CHILDREN,
+                "parents": sex_linker._SEX_PARENTS,
+                "children": sex_linker._SEX_CHILDREN,
                 "weights": t_const.TOKEN_WEIGHTS,
-                "patterns": matcher_compiler.as_dicts([sex_linker_patterns.SEX_LINKER]),
+                "patterns": Compiler.as_dicts([sex_linker.SEX_LINKER]),
             },
         )
 
-    def add_link_location_patterns(self, **kwargs):
+    def link_location(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_location",
             **kwargs,
             config={
-                "parents": location_linker_patterns.LOCATION_PARENTS,
-                "children": location_linker_patterns.LOCATION_CHILDREN,
+                "parents": location_linker._LOCATION_PARENTS,
+                "children": location_linker._LOCATION_CHILDREN,
                 "weights": t_const.TOKEN_WEIGHTS,
-                "patterns": matcher_compiler.as_dicts(
-                    [location_linker_patterns.LOCATION_LINKER],
+                "patterns": Compiler.as_dicts(
+                    [location_linker.LOCATION_LINKER],
                 ),
             },
         )
 
-    def add_link_taxa_like_patterns(self, **kwargs):
+    def link_taxa_like(self, **kwargs):
         self.nlp.add_pipe(
             LINK_TRAITS,
             name="link_taxa_like",
             **kwargs,
             config={
-                "parents": taxon_like_linker_patterns.TAXON_LIKE_PARENTS,
-                "children": taxon_like_linker_patterns.TAXON_LIKE_CHILDREN,
+                "parents": taxon_like_linker._TAXON_LIKE_PARENTS,
+                "children": taxon_like_linker._TAXON_LIKE_CHILDREN,
                 "weights": t_const.TOKEN_WEIGHTS,
-                "patterns": matcher_compiler.as_dicts(
-                    [taxon_like_linker_patterns.TAXON_LIKE_LINKER]
-                ),
+                "patterns": Compiler.as_dicts([taxon_like_linker.TAXON_LIKE_LINKER]),
             },
         )
 
-    def add_delete_unlinked_patterns(
-        self, delete_unlinked=None, delete_when=None, **kwargs
-    ):
+    def delete_unlinked(self, delete_unlinked=None, delete_when=None, **kwargs):
         if delete_unlinked is None:
-            delete_unlinked = delete_patterns.PARTIAL_TRAITS
+            delete_unlinked = delete.PARTIAL_TRAITS
 
         if delete_when is None:
-            delete_when = delete_patterns.DELETE_WHEN
+            delete_when = delete.DELETE_WHEN
 
         self.nlp.add_pipe(
             DELETE_TRAITS,
@@ -392,9 +369,3 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
             config={"delete": delete_unlinked, "delete_when": delete_when},
         )
-
-    def add_debug_ents_pipe(self, **kwargs):
-        debug_pipes.ents(self.nlp, **kwargs)
-
-    def add_debug_tokens_pipe(self, **kwargs):
-        debug_pipes.tokens(self.nlp, **kwargs)

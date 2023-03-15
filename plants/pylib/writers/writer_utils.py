@@ -1,5 +1,4 @@
 import plants.pylib.trait_lists
-from plants.pylib.patterns import term as terms
 
 TITLE_SKIPS = ["start", "end"]
 FIELD_SKIPS = TITLE_SKIPS + ["trait", "dimensions"]

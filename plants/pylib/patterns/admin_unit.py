@@ -1,11 +1,9 @@
 from spacy.util import registry
 from traiter.pylib.actions import RejectMatch
 from traiter.pylib.pattern_compilers.matcher import Compiler
-from traiter.pylib.term_list import TermList
 
 from . import common
-
-ADMIN_UNIT_TERMS = TermList.shared("us_locations")
+from .term import ADMIN_UNIT_TERMS
 
 _COUNTY_IN = ADMIN_UNIT_TERMS.pattern_dict("inside")
 _POSTAL = ADMIN_UNIT_TERMS.pattern_dict("postal")

@@ -4,7 +4,6 @@ from spacy import registry
 from traiter.pylib import const as t_const
 
 import plants.pylib.trait_lists
-from . import term
 
 PARTIAL_TRAITS = """ about authority bad_taxon color_mod cross dim dimension
     imperial_length imperial_mass joined length_units rank margin_leader metric_length

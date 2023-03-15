@@ -4,13 +4,11 @@ from traiter.pylib import const as t_const
 from traiter.pylib import util as t_util
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
-from traiter.pylib.term_list import TermList
 
 from .. import trait_lists
-from ..const import TREATMENT_CSV
+from .term import PLANT_TERMS
 
 # ####################################################################################
-COUNT_TERMS = TermList.pick(TREATMENT_CSV, "count_word dim per_count")
 
 _NOT_COUNT_WORDS = (
     t_const.CROSS
@@ -75,11 +73,11 @@ def on_count_match(ent):
 
     if per_count := next((e for e in ent.ents if e.label_ == "per_count"), None):
         text = per_count.text.lower()
-        ent._.data["count_group"] = COUNT_TERMS.replace.get(text, text)
+        ent._.data["count_group"] = PLANT_TERMS.replace.get(text, text)
 
     if per_part := next((e for e in ent.ents if e.label_ in trait_lists.PARTS), None):
         text = per_part.text.lower()
-        ent._.data["per_part"] = COUNT_TERMS.replace.REPLACE.get(text, text)
+        ent._.data["per_part"] = PLANT_TERMS.replace.REPLACE.get(text, text)
 
 
 # ####################################################################################
@@ -98,7 +96,7 @@ def on_count_word_match(ent):
     ent._.new_label = "count"
     word = next(e for e in ent.ents if e.label_ == "count_word")
     word._.data = {
-        "low": t_util.to_positive_int(COUNT_TERMS.replace[word.text.lower()])
+        "low": t_util.to_positive_int(PLANT_TERMS.replace[word.text.lower()])
     }
 
 

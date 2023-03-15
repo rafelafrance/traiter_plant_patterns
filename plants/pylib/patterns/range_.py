@@ -7,7 +7,7 @@ from traiter.pylib.patterns import common
 
 ON_RANGE_MATCH = "plant_range_v1"
 
-SKIP = """ p. pg pg. page pi pi. fig fig. sheet sheets bis bis.
+_SKIP = """ p. pg pg. page pi pi. fig fig. sheet sheets bis bis.
     sp. spp. no. no map """.split()
 
 _DECODER = common.PATTERNS | {
@@ -17,7 +17,7 @@ _DECODER = common.PATTERNS | {
     # These are for patterns that are not a real range = NOT_A_RANGE
     "month": {"ENT_TYPE": "month"},
     "nope": {"TEXT": {"REGEX": r"^[&/:°'\"]+$"}},
-    "skip": {"LOWER": {"IN": SKIP}},
+    "skip": {"LOWER": {"IN": _SKIP}},
     "a.": {"LOWER": {"REGEX": r"^[a-ln-wyz]\.?$"}},  # Keep meters and a cross
     "bad-leader": {"LOWER": {"REGEX": r"^[.=]$"}},
     "bad-follower": {"LOWER": {"REGEX": r"^[=:]$"}},

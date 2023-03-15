@@ -3,18 +3,18 @@ from traiter.pylib import actions
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-import plants.pylib.trait_lists
 from . import size_
-from . import term
+from .. import trait_lists
+from .term import PLANT_TERMS
 
 _DECODER = common.PATTERNS | {
     "adj": {"POS": "ADJ"},
     "cm": {"ENT_TYPE": "metric_length"},
     "joined": {"ENT_TYPE": "joined"},
     "leader": {"LOWER": {"IN": """to at embracing immersed from""".split()}},
-    "location": {"ENT_TYPE": {"IN": plants.pylib.trait_lists.LOCATIONS}},
+    "location": {"ENT_TYPE": {"IN": trait_lists.LOCATIONS}},
     "of": {"LOWER": "of"},
-    "part": {"ENT_TYPE": {"IN": plants.pylib.trait_lists.PARTS}},
+    "part": {"ENT_TYPE": {"IN": trait_lists.PARTS}},
     "prep": {"POS": "ADP"},
     "sex": {"ENT_TYPE": "sex"},
     "subpart": {"ENT_TYPE": "subpart"},
@@ -24,16 +24,16 @@ _DECODER = common.PATTERNS | {
 def get_joined(ent):
     if joined := [e for e in ent.ents if e.label_ == "joined"]:
         text = joined[0].text.lower()
-        return term_patterns.REPLACE.get(text, text)
+        return PLANT_TERMS.replace.get(text, text)
     return ""
 
 
 # ####################################################################################
-ON_AS_LOCATION_MATCH = "plant_as_location_v1"
+_ON_AS_LOCATION_MATCH = "plant_as_location_v1"
 
 PART_AS_LOCATION = Compiler(
     "part_as_loc",
-    on_match=ON_AS_LOCATION_MATCH,
+    on_match=_ON_AS_LOCATION_MATCH,
     decoder=_DECODER,
     patterns=[
         "joined?  leader part",
@@ -44,7 +44,7 @@ PART_AS_LOCATION = Compiler(
 
 SUBPART_AS_LOCATION = Compiler(
     "subpart_as_loc",
-    on_match=ON_AS_LOCATION_MATCH,
+    on_match=_ON_AS_LOCATION_MATCH,
     decoder=_DECODER,
     patterns=[
         "joined?  leader subpart",
@@ -55,7 +55,7 @@ SUBPART_AS_LOCATION = Compiler(
 )
 
 
-@registry.misc(ON_AS_LOCATION_MATCH)
+@registry.misc(_ON_AS_LOCATION_MATCH)
 def on_as_location_match(ent):
     if joined := get_joined(ent):
         ent._.data["joined"] = joined
@@ -78,5 +78,5 @@ PART_AS_DISTANCE = Compiler(
 def on_part_as_distance_match(ent):
     if joined := get_joined(ent):
         ent._.data["joined"] = joined
-    size_patterns.on_size_match(ent)
+    size_.on_size_match(ent)
     ent._.new_label = "part_as_loc"
