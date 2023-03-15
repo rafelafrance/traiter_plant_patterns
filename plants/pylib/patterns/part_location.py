@@ -1,19 +1,20 @@
 from spacy import registry
 from traiter.pylib import actions
-from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
-from traiter.pylib.patterns import common_patterns
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
-from . import size_patterns
-from . import term_patterns
+import plants.pylib.trait_lists
+from . import size_
+from . import term
 
-DECODER = common_patterns.COMMON_PATTERNS | {
+_DECODER = common.PATTERNS | {
     "adj": {"POS": "ADJ"},
     "cm": {"ENT_TYPE": "metric_length"},
     "joined": {"ENT_TYPE": "joined"},
     "leader": {"LOWER": {"IN": """to at embracing immersed from""".split()}},
-    "location": {"ENT_TYPE": {"IN": term_patterns.LOCATIONS}},
+    "location": {"ENT_TYPE": {"IN": plants.pylib.trait_lists.LOCATIONS}},
     "of": {"LOWER": "of"},
-    "part": {"ENT_TYPE": {"IN": term_patterns.PARTS}},
+    "part": {"ENT_TYPE": {"IN": plants.pylib.trait_lists.PARTS}},
     "prep": {"POS": "ADP"},
     "sex": {"ENT_TYPE": "sex"},
     "subpart": {"ENT_TYPE": "subpart"},
@@ -30,10 +31,10 @@ def get_joined(ent):
 # ####################################################################################
 ON_AS_LOCATION_MATCH = "plant_as_location_v1"
 
-PART_AS_LOCATION = MatcherCompiler(
+PART_AS_LOCATION = Compiler(
     "part_as_loc",
     on_match=ON_AS_LOCATION_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "joined?  leader part",
         "location leader part",
@@ -41,10 +42,10 @@ PART_AS_LOCATION = MatcherCompiler(
     ],
 )
 
-SUBPART_AS_LOCATION = MatcherCompiler(
+SUBPART_AS_LOCATION = Compiler(
     "subpart_as_loc",
     on_match=ON_AS_LOCATION_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "joined?  leader subpart",
         "joined?  leader subpart of adj? subpart",
@@ -62,10 +63,10 @@ def on_as_location_match(ent):
 
 
 # ####################################################################################
-PART_AS_DISTANCE = MatcherCompiler(
+PART_AS_DISTANCE = Compiler(
     "part_as_distance",
     on_match="plant_part_as_distance_v1",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "joined?  leader part prep? 99-99 cm",
         "location leader part prep? 99-99 cm",

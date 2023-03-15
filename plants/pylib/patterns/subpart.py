@@ -1,16 +1,16 @@
 from spacy import registry
-from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
-from traiter.pylib.patterns import common_patterns
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
-DECODER = common_patterns.COMMON_PATTERNS | {
+_DECODER = common.PATTERNS | {
     "part": {"ENT_TYPE": "part"},
     "subpart": {"ENT_TYPE": "subpart"},
 }
 
 # ####################################################################################
-SUBPART = MatcherCompiler(
+SUBPART = Compiler(
     "subpart",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "subpart - subpart",
         "part - subpart",
@@ -19,10 +19,10 @@ SUBPART = MatcherCompiler(
 )
 
 # ####################################################################################
-SUBPART_SUFFIX = MatcherCompiler(
+SUBPART_SUFFIX = Compiler(
     "subpart_suffix",
     on_match="plant_subpart_suffix_v1",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "- subpart",
     ],

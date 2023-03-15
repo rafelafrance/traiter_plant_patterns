@@ -2,10 +2,10 @@ import re
 
 from spacy import registry
 from traiter.pylib import const as t_const
-from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
-from traiter.pylib.patterns import common_patterns
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
-from . import term_patterns
+from . import term
 
 
 TEMP = ["\\" + c for c in t_const.DASH[:2]]
@@ -14,7 +14,7 @@ MULTIPLE_DASHES = rf'[{"".join(TEMP)}]{{2,}}'
 SHAPE_LOC = ["shape", "shape_leader", "location"]
 SHAPE_WORD = ["shape", "shape_leader"]
 
-DECODER = common_patterns.COMMON_PATTERNS | {
+_DECODER = common.PATTERNS | {
     "shape": {"ENT_TYPE": "shape"},
     "shape_leader": {"ENT_TYPE": "shape_leader"},
     "shape_loc": {"ENT_TYPE": {"IN": SHAPE_LOC}},
@@ -24,10 +24,10 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 
 
 # #####################################################################################
-SHAPE = MatcherCompiler(
+SHAPE = Compiler(
     "shape",
     on_match="plant_shape_v1",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "shape_loc* -* shape+",
         "shape_loc* -* shape -* shape+",
@@ -58,10 +58,10 @@ def on_shape_match(ent):
 
 
 # #####################################################################################
-N_SHAPE = MatcherCompiler(
+N_SHAPE = Compiler(
     "n_shape",
     on_match="plant_n_shape_v1",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "shape_loc* 9 - angular",
     ],

@@ -2,15 +2,15 @@ import regex as re
 from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
-from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
-from traiter.pylib.patterns import common_patterns
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
 ON_RANGE_MATCH = "plant_range_v1"
 
 SKIP = """ p. pg pg. page pi pi. fig fig. sheet sheets bis bis.
     sp. spp. no. no map """.split()
 
-DECODER = common_patterns.COMMON_PATTERNS | {
+_DECODER = common.PATTERNS | {
     "99.9": {"TEXT": {"REGEX": t_const.FLOAT_TOKEN_RE}},
     "ambiguous": {"LOWER": {"IN": ["few", "many"]}},
     "conj": {"POS": {"IN": ["CCONJ"]}},
@@ -23,10 +23,10 @@ DECODER = common_patterns.COMMON_PATTERNS | {
     "bad-follower": {"LOWER": {"REGEX": r"^[=:]$"}},
 }
 
-RANGE_LOW = MatcherCompiler(
+RANGE_LOW = Compiler(
     "range.low",
     on_match=ON_RANGE_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "99.9",
         "( 99.9 -/or ) ambiguous ( -/to ambiguous )",
@@ -34,20 +34,20 @@ RANGE_LOW = MatcherCompiler(
     ],
 )
 
-RANGE_MIN_LOW = MatcherCompiler(
+RANGE_MIN_LOW = Compiler(
     "range.min.low",
     on_match=ON_RANGE_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "( 99.9 -/or ) 99.9",
         "( 99.9 -/to ) 99.9",
     ],
 )
 
-RANGE_LOW_HIGH = MatcherCompiler(
+RANGE_LOW_HIGH = Compiler(
     "range.low.high",
     on_match=ON_RANGE_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "99.9 and/or 99.9",
         "99.9 -/to   99.9",
@@ -55,20 +55,20 @@ RANGE_LOW_HIGH = MatcherCompiler(
     ],
 )
 
-RANGE_LOW_MAX = MatcherCompiler(
+RANGE_LOW_MAX = Compiler(
     "range.low.max",
     on_match=ON_RANGE_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "99.9 ( and/or 99.9 )",
         "99.9 ( -/to   99.9 )",
     ],
 )
 
-RANGE_MIN_LOW_HIGH = MatcherCompiler(
+RANGE_MIN_LOW_HIGH = Compiler(
     "range.min.low.high",
     on_match=ON_RANGE_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "( 99.9   -/or )   99.9 -/to     99.9",
         "( 99.9   -/or )   99.9 - and/or 99.9",
@@ -77,10 +77,10 @@ RANGE_MIN_LOW_HIGH = MatcherCompiler(
     ],
 )
 
-RANGE_MIN_LOW_MAX = MatcherCompiler(
+RANGE_MIN_LOW_MAX = Compiler(
     "range.min.low.max",
     on_match=ON_RANGE_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "( 99.9 - ) 99.9 -? ( -/to 99.9 [+]? )",
         "  99.9 -   99.9 - ( -/to 99.9 )",
@@ -88,10 +88,10 @@ RANGE_MIN_LOW_MAX = MatcherCompiler(
     ],
 )
 
-RANGE_LOW_HIGH_MAX = MatcherCompiler(
+RANGE_LOW_HIGH_MAX = Compiler(
     "range.low.high.max",
     on_match=ON_RANGE_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "99.9 ( and/or 99.9 -/or 99.9 [+]? )",
         "99.9 - 99.9   ( -/to 99.9 [+]? )",
@@ -103,10 +103,10 @@ RANGE_LOW_HIGH_MAX = MatcherCompiler(
     ],
 )
 
-RANGE_MIN_LOW_HIGH_MAX = MatcherCompiler(
+RANGE_MIN_LOW_HIGH_MAX = Compiler(
     "range.min.low.high.max",
     on_match=ON_RANGE_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "( 99.9 - ) 99.9 - 99.9 ( -/to 99.9 [+]? )",
         "( 99.9 -/or ) 99.9 - and/or 99.9 ( -/or 99.9 [+]? )",
@@ -119,10 +119,10 @@ RANGE_MIN_LOW_HIGH_MAX = MatcherCompiler(
     ],
 )
 
-NOT_A_RANGE = MatcherCompiler(
+NOT_A_RANGE = Compiler(
     "not_a_range",
     on_match=actions.REJECT_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "9 nope",
         "  nope 9",

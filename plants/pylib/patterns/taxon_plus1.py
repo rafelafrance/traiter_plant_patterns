@@ -1,13 +1,13 @@
 from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
-from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
-from traiter.pylib.patterns import common_patterns
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
-from . import term_patterns as terms
+from . import term as terms
 
 
-DECODER = common_patterns.COMMON_PATTERNS | {
+_DECODER = common.PATTERNS | {
     "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
     "taxon": {"ENT_TYPE": "taxon"},
     "_": {"TEXT": {"REGEX": r"^[:._;,]+$"}},
@@ -15,10 +15,10 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 
 
 # ###################################################################################
-MULTI_TAXON = MatcherCompiler(
+MULTI_TAXON = Compiler(
     "multi_taxon",
     on_match="plant_multi_taxon_v1",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "taxon and taxon",
     ],
@@ -38,10 +38,10 @@ def on_multi_taxon_match(ent):
 
 
 # ###################################################################################
-TAXON_PLUS1 = MatcherCompiler(
+TAXON_PLUS1 = Compiler(
     "taxon_auth",
     on_match="plant_taxon2_v1",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "taxon ( auth+           _? )",
         "taxon ( auth+ and auth+ _? )",
@@ -63,7 +63,7 @@ def on_taxon_auth_match(ent):
         if token.ent_type_ == "taxon":
             continue
 
-        if auth and token.lower_ in common_patterns.AND:
+        if auth and token.lower_ in common.AND:
             auth.append("and")
 
         elif token.shape_ in t_const.NAME_SHAPES:

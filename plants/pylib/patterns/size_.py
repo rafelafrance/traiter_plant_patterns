@@ -4,12 +4,14 @@ from collections import deque
 from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
+from traiter.pylib import term_reader
 from traiter.pylib import util as t_util
-from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
-from traiter.pylib.patterns import common_patterns
-from traiter.pylib.patterns import term_patterns as t_terms
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
-from . import term_patterns as terms
+UNIT_TERMS = term_reader.shared("units")
+UNIT_REPLACE = term_reader.pattern_dict(UNIT_TERMS, "replace")
+UNIT_FACTORS = term_reader.pattern_dict(UNIT_TERMS, "factor", float)
 
 FOLLOW = """ dim sex """.split()
 NOT_A_SIZE = """ for below above """.split()
@@ -17,7 +19,7 @@ SIZE_FIELDS = """ min low high max """.split()
 
 SWITCH_DIM = t_const.CROSS + t_const.COMMA
 
-DECODER = common_patterns.COMMON_PATTERNS | {
+_DECODER = common.PATTERNS | {
     "99.9": {"TEXT": {"REGEX": t_const.FLOAT_TOKEN_RE}},
     "[?]": {"ENT_TYPE": "quest"},
     "about": {"ENT_TYPE": "about"},
@@ -30,10 +32,10 @@ DECODER = common_patterns.COMMON_PATTERNS | {
     "x": {"LOWER": {"IN": t_const.CROSS}},
 }
 
-SIZE = MatcherCompiler(
+SIZE = Compiler(
     "size",
     on_match="plant_size_v1",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "about? 99.9-99.9 cm  follow*",
         "about? 99.9-99.9 cm? follow* x to? about? 99.9-99.9 cm follow*",
@@ -46,29 +48,29 @@ SIZE = MatcherCompiler(
     ],
 )
 
-SIZE_HIGH_ONLY = MatcherCompiler(
+SIZE_HIGH_ONLY = Compiler(
     "size.high_only",
     on_match="plant_size_high_only_v1",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "to about? 99.9 [?]? cm follow*",
     ],
 )
 
-SIZE_DOUBLE_DIM = MatcherCompiler(
+SIZE_DOUBLE_DIM = Compiler(
     "size.double_dim",
     on_match="plant_size_double_dim_v1",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "about? 99.9-99.9 cm  sex? ,? dim and dim",
         "about? 99.9-99.9 cm? sex? ,? 99.9-99.9 cm dim and? ,? dim",
     ],
 )
 
-NOT_A_SIZE = MatcherCompiler(
+NOT_A_SIZE = Compiler(
     "not_a_size",
     on_match=actions.REJECT_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "not_size about? 99.9-99.9 cm",
         "not_size about? 99.9-99.9 cm? x about? 99.9-99.9 cm",
@@ -143,7 +145,7 @@ def scan_tokens(ent, high_only):
                 del dims[-1]["low"]
 
         elif label == "metric_length":
-            dims[-1]["units"] = terms.REPLACE[token.lower_]
+            dims[-1]["units"] = UNIT_REPLACE[token.lower_]
 
         elif label == "dim":
             dims[-1]["dimension"] = terms.REPLACE[token.lower_]
@@ -195,7 +197,7 @@ def fill_data(dims, ent):
         for field in SIZE_FIELDS:
             if value := dim.get(field):
                 key = f"{dimension}_{field}"
-                factor = t_terms.UNIT_FACTORS[units]
+                factor = UNIT_FACTORS[units]
                 ent._.data[key] = round(value * factor, 3)
 
         # key = f"{dimension}_units"

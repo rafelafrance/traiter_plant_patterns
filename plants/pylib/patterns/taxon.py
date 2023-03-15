@@ -1,13 +1,24 @@
 from spacy import registry
 from traiter.pylib import actions
+from traiter.pylib import term_reader
 from traiter.pylib.const import NAME_SHAPES
 from traiter.pylib.const import TITLE_SHAPES
-from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
-from traiter.pylib.patterns import common_patterns
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
-from . import term_patterns as terms
+from . import term as terms
+from .. import const
 
 MIN_TAXON_LEN = 3
+
+TAXON_TERMS = term_reader.read(const.TAXA_CSV)
+MONOMIAL_TERMS = term_reader.take(TAXON_TERMS, "monomial")
+BINOMIAL_TERMS = term_reader.take(TAXON_TERMS, "binomial")
+TAXON_REPLACE = term_reader.pattern_dict(TAXON_TERMS, "replace")
+
+RANK_TERMS = term_reader.read(const.VOCAB_DIR / "ranks.csv")
+RANK_REPLACE = term_reader.pattern_dict(RANK_TERMS, "ranks")
+RANK_ABBREV = term_reader.pattern_dict(RANK_TERMS, "abbrev")
 
 LOWER_RANK = """
     subspecies_rank variety_rank subvariety_rank form_rank subform_rank
@@ -32,7 +43,7 @@ MAYBE = """ PROPN NOUN """.split()
 BAD_PREFIX = """ de el la le no se costa santa & """.split()
 BAD_SUFFIX = """ river mountain road """.split()
 
-DECODER = common_patterns.COMMON_PATTERNS | {
+_DECODER = common.PATTERNS | {
     "bad_prefix": {"LOWER": {"IN": BAD_PREFIX}},
     "bad_suffix": {"LOWER": {"IN": BAD_SUFFIX}},
     "maybe": {"POS": {"IN": MAYBE}},
@@ -50,10 +61,10 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 
 
 # ###################################################################################
-MONOMIAL = MatcherCompiler(
+MONOMIAL = Compiler(
     "taxon.singleton",
     on_match="single_taxon_v1",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "monomial",
         "higher_rank  monomial",
@@ -78,7 +89,7 @@ def on_single_taxon_match(ent):
 
             # A given rank will override the one in the DB
             if not rank:
-                rank_ = terms.RANKS.get(token.lower_, "unknown")
+                rank_ = RANK_REPLACE.get(token.lower_, "unknown")
                 rank_ = rank_.split()[0]
                 if rank_ in HIGHER_RANK_NAMES and token.shape_ in NAME_SHAPES:
                     # rank_from_csv = True
@@ -112,20 +123,20 @@ def on_single_taxon_match(ent):
 # ###################################################################################
 ON_TAXON_MATCH = "plant_taxon_pattern_v1"
 
-SPECIES_TAXON = MatcherCompiler(
+SPECIES_TAXON = Compiler(
     "taxon.species",
     on_match=ON_TAXON_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "binomial",
         "monomial monomial",
     ],
 )
 
-SUBSPECIES_TAXON = MatcherCompiler(
+SUBSPECIES_TAXON = Compiler(
     "taxon.subspecies",
     on_match=ON_TAXON_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "binomial        monomial",
         "binomial subsp. monomial",
@@ -133,10 +144,10 @@ SUBSPECIES_TAXON = MatcherCompiler(
     ],
 )
 
-VARIETY_TAXON = MatcherCompiler(
+VARIETY_TAXON = Compiler(
     "taxon.variety",
     on_match=ON_TAXON_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "binomial                  var. monomial",
         "binomial subsp.? monomial var. monomial",
@@ -145,10 +156,10 @@ VARIETY_TAXON = MatcherCompiler(
     ],
 )
 
-SUBVARIETY_TAXON = MatcherCompiler(
+SUBVARIETY_TAXON = Compiler(
     "taxon.subvariety",
     on_match=ON_TAXON_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "binomial                  subvar. monomial",
         "binomial var.    monomial subvar. monomial",
@@ -163,10 +174,10 @@ SUBVARIETY_TAXON = MatcherCompiler(
     ],
 )
 
-FORM_TAXON = MatcherCompiler(
+FORM_TAXON = Compiler(
     "taxon.form",
     on_match=ON_TAXON_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "binomial                  f. monomial",
         "binomial var.    monomial f. monomial",
@@ -181,10 +192,10 @@ FORM_TAXON = MatcherCompiler(
     ],
 )
 
-SUBFORM_TAXON = MatcherCompiler(
+SUBFORM_TAXON = Compiler(
     "taxon.subform",
     on_match=ON_TAXON_MATCH,
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "binomial                  subf. monomial",
         "binomial var.    monomial subf. monomial",
@@ -201,7 +212,7 @@ SUBFORM_TAXON = MatcherCompiler(
 
 
 def is_genus(token):
-    return terms.RANKS.get(token.lower_).find("genus") > -1
+    return RANK_REPLACE.get(token.lower_).find("genus") > -1
 
 
 @registry.misc(ON_TAXON_MATCH)
@@ -212,20 +223,20 @@ def on_taxon_match(ent):
         label = token.ent_type_
 
         if label == "monomial" and is_genus(token):
-            taxon.append(terms.REPLACE.get(token.lower_, token.text))
+            taxon.append(RANK_REPLACE.get(token.lower_, token.text))
 
         elif label == "binomial":
-            taxon.append(terms.REPLACE.get(token.lower_, token.text))
+            taxon.append(RANK_REPLACE.get(token.lower_, token.text))
 
         elif label == "monomial" and i != 3:
             taxon.append(terms.REPLACE.get(token.lower_, token.text))
 
         elif label == "monomial" and i == 3:
-            taxon.append(terms.RANK_ABBREV["subspecies"])
-            taxon.append(terms.REPLACE.get(token.lower_, token.text))
+            taxon.append(RANK_ABBREV["subspecies"])
+            taxon.append(RANK_REPLACE.get(token.lower_, token.text))
 
         elif label in LOWER_RANKS:
-            taxon.append(terms.RANK_ABBREV.get(token.lower_, token.lower_))
+            taxon.append(RANK_ABBREV.get(token.lower_, token.lower_))
 
         elif token.pos_ in MAYBE:
             taxon.append(token.text)
@@ -241,9 +252,9 @@ def on_taxon_match(ent):
 
 
 # ###################################################################################
-BAD_TAXON = MatcherCompiler(
+BAD_TAXON = Compiler(
     "bad_taxon",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "bad_prefix monomial",
         "           monomial bad_suffix",

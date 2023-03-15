@@ -1,6 +1,6 @@
 from traiter.pylib.util import shorten
 
-from plants.pylib.patterns.term_patterns import BASIC_TERMS
+from plants.pylib.patterns.term import BASIC_TERMS
 from plants.pylib.pipeline_builder import PipelineBuilder
 
 # Singleton for testing

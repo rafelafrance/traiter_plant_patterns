@@ -1,35 +1,35 @@
 from traiter.pylib import const as t_const
 from traiter.pylib import pipeline_builder
-from traiter.pylib.pattern_compilers import matcher_compiler
-from traiter.pylib.pipes import debug_pipes
-from traiter.pylib.pipes.add_traits_pipe import ADD_TRAITS
-from traiter.pylib.pipes.delete_traits_pipe import DELETE_TRAITS
-from traiter.pylib.pipes.link_traits_pipe import LINK_TRAITS
-from traiter.pylib.pipes.merge_traits import MERGE_TRAITS
-from traiter.pylib.pipes.simple_traits_pipe import SIMPLE_TRAITS
-from traiter.pylib.pipes.term_pipe import TERM_PIPE
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.pipes import debug
+from traiter.pylib.pipes.add import ADD_TRAITS
+from traiter.pylib.pipes.delete import DELETE_TRAITS
+from traiter.pylib.pipes.link import LINK_TRAITS
+from traiter.pylib.pipes.merge import MERGE_TRAITS
+from traiter.pylib.pipes.simple import SIMPLE_TRAITS
+from traiter.pylib.pipes.term import TERM_PIPE
 
-from .patterns import count_patterns
-from .patterns import count_suffix_patterns
-from .patterns import delete_patterns
-from .patterns import habit_patterns
-from .patterns import location_linker_patterns
-from .patterns import margin_patterns
-from .patterns import part_linker_patterns
-from .patterns import part_location_patterns
-from .patterns import part_patterns
-from .patterns import range_patterns
-from .patterns import sex_linker_patterns
-from .patterns import shape_patterns
-from .patterns import size_patterns
-from .patterns import subpart_linker_patterns
-from .patterns import subpart_patterns
-from .patterns import taxon_like_linker_patterns
-from .patterns import taxon_like_patterns
-from .patterns import taxon_patterns
-from .patterns import taxon_plus_patterns1
-from .patterns import taxon_plus_patterns2
-from .patterns import term_patterns
+from .patterns import count_
+from .patterns import count_suffix
+from .patterns import delete
+from .patterns import habit
+from .patterns import location_linker
+from .patterns import margin
+from .patterns import part
+from .patterns import part_linker
+from .patterns import part_location
+from .patterns import range_
+from .patterns import sex_linker
+from .patterns import shape
+from .patterns import size_
+from .patterns import subpart
+from .patterns import subpart_linker
+from .patterns import taxon
+from .patterns import taxon_like
+from .patterns import taxon_like_linker
+from .patterns import taxon_plus1
+from .patterns import taxon_plus2
+from .patterns import term
 
 
 class PipelineBuilder(pipeline_builder.PipelineBuilder):
@@ -393,8 +393,8 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             config={"delete": delete_unlinked, "delete_when": delete_when},
         )
 
-    def add_debug_ents_pipe(self):
-        debug_pipes.ents(self.nlp)
+    def add_debug_ents_pipe(self, **kwargs):
+        debug_pipes.ents(self.nlp, **kwargs)
 
-    def add_debug_tokens_pipe(self):
-        debug_pipes.tokens(self.nlp)
+    def add_debug_tokens_pipe(self, **kwargs):
+        debug_pipes.tokens(self.nlp, **kwargs)

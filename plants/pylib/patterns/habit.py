@@ -1,6 +1,6 @@
 from spacy import registry
-from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
-from traiter.pylib.patterns import common_patterns
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
 ON_HABIT_MATCH = "plant_habit_v1"
 
@@ -8,10 +8,10 @@ ON_HABIT_MATCH = "plant_habit_v1"
 TREE = """ tree trees bush bushes """.split()
 
 
-HABIT = MatcherCompiler(
+HABIT = Compiler(
     "habit",
     on_match=ON_HABIT_MATCH,
-    decoder=common_patterns.COMMON_PATTERNS
+    decoder=common.PATTERNS
     | {
         "habit": {"ENT_TYPE": "plant_habit"},
         "shape": {"ENT_TYPE": "shape"},

@@ -11,6 +11,7 @@ ROOT_DIR = Path("../.." if IS_SUBDIR else ".")
 
 DATA_DIR = ROOT_DIR / "data"
 
+TREATMENT_CSV = VOCAB_DIR / "treatment.csv"
 
 # #########################################################################
 TAXA_VOCAB = VOCAB_DIR / "taxa.csv"

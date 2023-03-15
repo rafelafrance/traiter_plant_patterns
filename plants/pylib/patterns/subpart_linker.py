@@ -5,24 +5,25 @@ For example: "leaves are covered with white hairs 1-(1.5) mm long."
 Should link "hairs" with the color "white" and to the length "1 to 1.5 mm".
 Named entity recognition (NER) must be run first.
 """
-from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
-from traiter.pylib.patterns import common_patterns
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
-from . import term_patterns
+import plants.pylib.trait_lists
+from . import term
 
 # ####################################################################################
 SUBPART_PARENTS = ["subpart"]
-SUBPART_CHILDREN = term_patterns.all_traits_except(
+SUBPART_CHILDREN = plants.pylib.trait_lists.all_traits_except(
     " subpart sex reproduction plant_habit habit ".split()
-    + term_patterns.LOCATIONS
-    + term_patterns.PARTS
-    + term_patterns.PLANT_TRAITS
-    + term_patterns.NO_LINK
+    + plants.pylib.trait_lists.LOCATIONS
+    + plants.pylib.trait_lists.PARTS
+    + plants.pylib.trait_lists.PLANT_TRAITS
+    + plants.pylib.trait_lists.NO_LINK
 )
 
-SUBPART_LINKER = MatcherCompiler(
+SUBPART_LINKER = Compiler(
     "subpart_linker",
-    decoder=common_patterns.COMMON_PATTERNS
+    decoder=common.PATTERNS
     | {
         "subpart": {"ENT_TYPE": {"IN": SUBPART_PARENTS}},
         "trait": {"ENT_TYPE": {"IN": SUBPART_CHILDREN}},
@@ -36,9 +37,9 @@ SUBPART_LINKER = MatcherCompiler(
 # ####################################################################################
 SUBPART_SUFFIX_PARENTS = ["subpart_suffix"]
 SUBPART_SUFFIX_CHILDREN = SUBPART_CHILDREN
-SUBPART_SUFFIX_LINKER = MatcherCompiler(
+SUBPART_SUFFIX_LINKER = Compiler(
     "subpart_suffix_linker",
-    decoder=common_patterns.COMMON_PATTERNS
+    decoder=common.PATTERNS
     | {
         "subpart_suffix": {"ENT_TYPE": {"IN": SUBPART_SUFFIX_PARENTS}},
         "trait": {"ENT_TYPE": {"IN": SUBPART_SUFFIX_CHILDREN}},

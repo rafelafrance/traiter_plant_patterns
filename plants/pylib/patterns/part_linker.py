@@ -4,25 +4,26 @@ We are linking parts like "petal" or "leaf" to traits like color or size.
 For example: "with thick, woody rootstock" should link the "rootstock" part with
 the "woody" trait.
 """
-from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
-from traiter.pylib.patterns import common_patterns
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
-from . import term_patterns
+import plants.pylib.trait_lists
+from . import term
 
 
 # ####################################################################################
-PART_PARENTS = term_patterns.PARTS
-PART_CHILDREN = term_patterns.all_traits_except(
+PART_PARENTS = plants.pylib.trait_lists.PARTS
+PART_CHILDREN = plants.pylib.trait_lists.all_traits_except(
     ["leaf_duration", "sex", "taxon", "size", "count", "habit"]
-    + term_patterns.PARTS
-    + term_patterns.LOCATIONS
-    + term_patterns.PLANT_TRAITS
-    + term_patterns.NO_LINK
+    + plants.pylib.trait_lists.PARTS
+    + plants.pylib.trait_lists.LOCATIONS
+    + plants.pylib.trait_lists.PLANT_TRAITS
+    + plants.pylib.trait_lists.NO_LINK
 )
 
-PART_LINKER = MatcherCompiler(
+PART_LINKER = Compiler(
     "part_linker",
-    decoder=common_patterns.COMMON_PATTERNS
+    decoder=common.PATTERNS
     | {
         "part": {"ENT_TYPE": {"IN": PART_PARENTS}},
         "trait": {"ENT_TYPE": {"IN": PART_CHILDREN}},
@@ -36,9 +37,9 @@ PART_LINKER = MatcherCompiler(
 # ####################################################################################
 LINK_PART_ONCE_PARENTS = PART_PARENTS
 LINK_PART_ONCE_CHILDREN = ["size", "count"]
-LINK_PART_ONCE = MatcherCompiler(
+LINK_PART_ONCE = Compiler(
     "link_part_once",
-    decoder=common_patterns.COMMON_PATTERNS
+    decoder=common.PATTERNS
     | {
         "part": {"ENT_TYPE": {"IN": LINK_PART_ONCE_PARENTS}},
         "trait": {"ENT_TYPE": {"IN": LINK_PART_ONCE_CHILDREN}},

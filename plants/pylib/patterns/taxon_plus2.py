@@ -1,9 +1,9 @@
 from spacy import registry
 from traiter.pylib import const as t_const
-from traiter.pylib.pattern_compilers.matcher_compiler import MatcherCompiler
-from traiter.pylib.patterns import common_patterns
+from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
-from . import term_patterns as terms
+from . import term as terms
 
 LOWER_RANK = """
     subspecies_rank variety_rank subvariety_rank form_rank subform_rank
@@ -12,7 +12,7 @@ LOWER_RANK_SET = set(LOWER_RANK)
 
 MAYBE = """ PROPN NOUN """.split()
 
-DECODER = common_patterns.COMMON_PATTERNS | {
+_DECODER = common.PATTERNS | {
     "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
     "maybe": {"POS": {"IN": MAYBE}},
     "taxon": {"ENT_TYPE": "taxon"},
@@ -22,10 +22,10 @@ DECODER = common_patterns.COMMON_PATTERNS | {
 
 
 # ###################################################################################
-TAXON_PLUS2 = MatcherCompiler(
+TAXON_PLUS2 = Compiler(
     "taxon_auth",
     on_match="plant_taxon3_v1",
-    decoder=DECODER,
+    decoder=_DECODER,
     patterns=[
         "taxon lower_rank lower",
         "taxon lower_rank lower ( auth+                       )",
@@ -63,7 +63,7 @@ def on_taxon_auth_match(ent):
         if token.ent_type_ == "taxon":
             continue
 
-        if auth and token.lower_ in common_patterns.AND:
+        if auth and token.lower_ in common.AND:
             auth.append("and")
 
         elif token.ent_type_ in LOWER_RANK:
