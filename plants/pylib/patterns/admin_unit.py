@@ -3,7 +3,7 @@ from traiter.pylib.actions import RejectMatch
 from traiter.pylib.pattern_compilers.matcher import Compiler
 
 from . import common
-from .term import ADMIN_UNIT_TERMS
+from .terms import ADMIN_UNIT_TERMS
 
 _COUNTY_IN = ADMIN_UNIT_TERMS.pattern_dict("inside")
 _POSTAL = ADMIN_UNIT_TERMS.pattern_dict("postal")

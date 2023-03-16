@@ -5,10 +5,10 @@ from traiter.pylib.const import TITLE_SHAPES
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from .term import RANK_ABBREV
-from .term import RANK_TERMS
-from .term import TAXON_RANKS
-from .term import TAXON_TERMS
+from .terms import RANK_ABBREV
+from .terms import RANK_TERMS
+from .terms import TAXON_RANKS
+from .terms import TAXON_TERMS
 
 MIN_TAXON_LEN = 3
 

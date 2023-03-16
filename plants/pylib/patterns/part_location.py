@@ -5,7 +5,7 @@ from traiter.pylib.patterns import common
 
 from . import size_
 from .. import trait_lists
-from .term import PLANT_TERMS
+from .terms import PLANT_TERMS
 
 _DECODER = common.PATTERNS | {
     "adj": {"POS": "ADJ"},

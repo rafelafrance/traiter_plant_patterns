@@ -4,8 +4,8 @@ from traiter.pylib import const as t_const
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from .term import TAXON_RANKS
-from .term import TAXON_TERMS
+from .terms import TAXON_RANKS
+from .terms import TAXON_TERMS
 
 
 _DECODER = common.PATTERNS | {

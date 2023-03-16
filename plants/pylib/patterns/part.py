@@ -3,10 +3,10 @@ from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 from traiter.pylib.term_list import TermList
 
-from ..const import TREATMENT_CSV
 from ..trait_lists import PARTS
 from ..trait_lists import PARTS_SET
 from ..trait_lists import SUBPARTS
+from .terms import PLANT_TERMS
 
 _PART_LEADER = """ primary secondary """.split()
 
@@ -38,7 +38,7 @@ def on_part_match(ent):
     elif any(t.lower_ in common.AND for t in ent):
         ent._.new_label = "multiple_parts"
         ent._.data["multiple_parts"] = [
-            PART_TERMS.replace.get(t.lower_, t.lower_)
+            PLANT_TERMS.replace.get(t.lower_, t.lower_)
             for t in ent
             if t.ent_type_ in PARTS_SET
         ]

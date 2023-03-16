@@ -1,7 +1,7 @@
 from traiter.pylib.util import shorten
 
 from plants.pylib.patterns.delete import PARTIAL_TRAITS
-from plants.pylib.patterns.term import PLANT_TERMS
+from plants.pylib.patterns.terms import PLANT_TERMS
 from plants.pylib.pipeline_builder import PipelineBuilder
 
 # Singleton for testing
@@ -11,8 +11,8 @@ PIPELINE.taxa()
 # PIPELINE.debug_ents()  # ################################################
 PIPELINE.taxon_plus(n=2)
 PIPELINE.plant_terms(before="ner")
-# PIPELINE.add_range_patterns()
-# PIPELINE.add_parts_patterns()
+PIPELINE.ranges()
+PIPELINE.parts()
 # PIPELINE.add_simple_patterns()
 # PIPELINE.add_numeric_patterns()
 # PIPELINE.add_part_locations_patterns()

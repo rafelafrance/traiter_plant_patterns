@@ -28,7 +28,7 @@ from .patterns import taxon_like
 from .patterns import taxon_like_linker
 from .patterns import taxon_plus1
 from .patterns import taxon_plus2
-from .patterns import term
+from .patterns import terms
 
 
 class PipelineBuilder(pipeline_builder.PipelineBuilder):
@@ -38,13 +38,13 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             name="binomial_terms",
             before="ner",
             **kwargs,
-            config={"terms": term.BINOMIAL_TERMS.data + term.RANK_TERMS.data},
+            config={"terms": terms.BINOMIAL_TERMS.data + terms.RANK_TERMS.data},
         )
         self.nlp.add_pipe(
             TERM_PIPE,
             name="monomial_terms",
             before="ner",
-            config={"terms": term.MONOMIAL_TERMS.data},
+            config={"terms": terms.MONOMIAL_TERMS.data},
         )
         self.nlp.add_pipe("merge_entities", name="merge_taxon_terms", before="ner")
 
@@ -126,13 +126,13 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             )
             self.nlp.add_pipe("merge_entities", name=name_merge, before="ner")
 
-    def plant_terms(self, terms=None, **kwargs):
-        terms = terms if terms else term.PLANT_TERMS.data
+    def plant_terms(self, term_list=None, **kwargs):
+        term_list = term_list if term_list else terms.PLANT_TERMS.data
         self.nlp.add_pipe(
             TERM_PIPE,
             name="plant_terms",
             **kwargs,
-            config={"terms": terms},
+            config={"terms": term_list},
         )
         self.nlp.add_pipe(
             "merge_entities", name="plant_terms_merge", after="plant_terms"
@@ -183,7 +183,6 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             SIMPLE_TRAITS,
             **kwargs,
             config={
-                # "replace": term.REPLACE,
                 "exclude": ["multiple_parts", "subpart_suffix"],
             },
         )

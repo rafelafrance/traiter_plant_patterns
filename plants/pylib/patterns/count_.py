@@ -6,7 +6,7 @@ from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
 from .. import trait_lists
-from .term import PLANT_TERMS
+from .terms import PLANT_TERMS
 
 # ####################################################################################
 

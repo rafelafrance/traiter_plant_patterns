@@ -5,7 +5,7 @@ from traiter.pylib import const as t_const
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from .term import PLANT_TERMS
+from .terms import PLANT_TERMS
 
 _SHAPE_LOC = ["shape", "shape_leader", "location"]
 _SHAPE_WORD = ["shape", "shape_leader"]
