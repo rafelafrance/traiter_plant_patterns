@@ -14,18 +14,17 @@ DATA_DIR = ROOT_DIR / "data"
 TREATMENT_CSV = VOCAB_DIR / "treatment.csv"
 
 # #########################################################################
-TAXA_VOCAB = VOCAB_DIR / "taxa.csv"
-TAXON_CSV = TAXA_VOCAB
+TAXA_VOCAB = VOCAB_DIR / "taxa.zip"
+TAXON_FILE = TAXA_VOCAB
 
 try:
     use_mock_taxa = int(os.getenv("MOCK_TAXA"))
 except (TypeError, ValueError):
     use_mock_taxa = 0
 
-if not TAXON_CSV.exists() or use_mock_taxa:
-    TAXON_CSV = VOCAB_DIR / "mock_taxa.csv"
+if not TAXON_FILE.exists() or use_mock_taxa:
+    TAXON_FILE = VOCAB_DIR / "mock_taxa.csv"
 
 # #########################################################################
 MIN_TAXON_LEN = 3
 MIN_TAXON_WORD_LEN = 2
-ITIS_SPECIES_ID = 220

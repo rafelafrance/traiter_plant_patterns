@@ -1,44 +1,41 @@
-label,pattern,attr,replace,ranks,options
-binomial,F. gracilis,text,,species,Fagara gracilis;Fagelia gracilis;Fagraea gracilis;Fallaciella gracilis;Faujasia gracilis;Ferocactus gracilis;Ferula gracilis;Festuca gracilis;Feuilleea gracilis;Ficinia gracilis;Ficus gracilis;Fiebrigiella gracilis;Fimbristylis gracilis;Fissidens gracilis;Flemingia gracilis;Flueggea gracilis;Fockea gracilis;Fontinalis gracilis;Forrestia gracilis;Forsteronia gracilis;Fosterella gracilis;Fragaria gracilis;Frankenia gracilis;Freirea gracilis;Friesodielsia gracilis;Fritillaria gracilis;Froelichia gracilis;Frullania gracilis;Fuchsia gracilis;Fuirena gracilis;Funaria gracilis;Fusifilum gracilis
-binomial,a. pachyphloia,lower,Acacia pachyphloia,species,
-binomial,acacia pachyphloia,lower,Acacia pachyphloia,species,
-binomial,acmispon maritimus,lower,Acmispon maritimus,species,
-binomial,ambrosia deltoidea,lower,Ambrosia deltoidea,species,
-binomial,aristida adscensionis,lower,Aristida adscensionis,species,
-binomial,cephalanthus occidentalis,lower,Cephalanthus occidentalis,species,
-binomial,cercidium microphyllum,lower,Cercidium microphyllum,species,
-binomial,chaenactis carphoclinia,lower,Chaenactis carphoclinia,species,
-binomial,cornus obliqua,lower,Cornus obliqua,species,
-binomial,cryptantha angustifolia,lower,Cryptantha angustifolia,species,
-binomial,cylindropuntia acanthocarpa,lower,Cylindropuntia acanthocarpa,species,
-binomial,cylindropuntia bigelovii,lower,Cylindropuntia bigelovii,species,
-binomial,echinocereus engelmannii,lower,Echinocereus engelmannii,species,
-binomial,encelia farinosa,lower,Encelia farinosa,species,
-binomial,fouquieria splendens,lower,Fouquieria splendens,species,
-binomial,larrea tridentata,lower,Larrea tridentata,species,
-binomial,lupinus arizonicus,lower,Lupinus arizonicus,species,
-binomial,lycium berlandieri,lower,Lycium berlandieri,species,
-binomial,m. polycarpa,lower,,species,Malva polycarpa;Mangifera polycarpa;Marsilea polycarpa;Mascagnia polycarpa;Medicago polycarpa;Melothria polycarpa;Mesochlaena polycarpa;Micrampelis polycarpa;Micromeles polycarpa;Microtropis polycarpa;Mimosa polycarpa;Mollinedia polycarpa;Myrica polycarpa
-binomial,m. sensitiva,lower,Mimosa sensitiva,species,
-binomial,mimosa sensitiva,lower,Mimosa sensitiva,species,
-binomial,neptunia gracilis,lower,Neptunia gracilis,species,
-binomial,pterostegia drymarioides,lower,Pterostegia drymarioides,species,
-binomial,schismus arabicus,lower,Schismus arabicus,species,
-binomial,sphaeralcea ambigua,lower,Sphaeralcea ambigua,species,
-binomial,vicia villosa,lower,Vicia villosa,species,
-monomial,brevipinnula,lower,brevipinnula,subspecies species,
-monomial,brevivexillus,lower,brevivexillus,variety subspecies,
-monomial,cornaceae,lower,cornaceae,family,
-monomial,fabaceae,lower,fabaceae,family,
-monomial,floridana,lower,floridana,variety subspecies form subvariety species,
-monomial,gracilis,lower,gracilis,variety subspecies form subvariety subform species,
-monomial,mimosa,lower,mimosa,genus subspecies species,
-monomial,nuttallii,lower,nuttallii,variety subspecies form species,
-monomial,pachyphloia,lower,pachyphloia,subspecies species,
-monomial,palma,lower,palma,genus species,
-monomial,rhombifolia,lower,rhombifolia,variety subspecies form species,
-monomial,spegazzinii,lower,spegazzinii,variety subspecies species,
-monomial,splendens,lower,splendens,variety subspecies form subvariety species,
-monomial,ticanto,lower,ticanto,genus,
-monomial,villosula,lower,villosula,variety subspecies form species,
-monomial,vulpinae,lower,vulpinae,section,
+label,pattern,ranks
+binomial,acacia pachyphloia,species
+binomial,acmispon maritimus,species
+binomial,ambrosia deltoidea,species
+binomial,aristida adscensionis,species
+binomial,cephalanthus occidentalis,species
+binomial,cercidium microphyllum,species
+binomial,chaenactis carphoclinia,species
+binomial,cornus obliqua,species
+binomial,cryptantha angustifolia,species
+binomial,cylindropuntia acanthocarpa,species
+binomial,cylindropuntia bigelovii,species
+binomial,echinocereus engelmannii,species
+binomial,encelia farinosa,species
+binomial,fouquieria splendens,species
+binomial,larrea tridentata,species
+binomial,lupinus arizonicus,species
+binomial,lycium berlandieri,species
+binomial,mimosa sensitiva,species
+binomial,neptunia gracilis,species
+binomial,pterostegia drymarioides,species
+binomial,schismus arabicus,species
+binomial,sphaeralcea ambigua,species
+binomial,vicia villosa,species
+monomial,brevipinnula,subspecies species
+monomial,brevivexillus,variety subspecies
+monomial,cornaceae,family
+monomial,fabaceae,family
+monomial,floridana,variety subspecies form subvariety species
+monomial,gracilis,variety subspecies form subvariety subform species
+monomial,mimosa,genus subspecies species
+monomial,nuttallii,variety subspecies form species
+monomial,pachyphloia,subspecies species
+monomial,palma,genus species
+monomial,rhombifolia,variety subspecies form species
+monomial,sensitiva,genus variety subspecies species
+monomial,spegazzinii,variety subspecies form species
+monomial,splendens,variety subspecies form subvariety species
+monomial,ticanto,genus
+monomial,villosula,variety subspecies form species
+monomial,vulpinae,section

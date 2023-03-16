@@ -1,7 +1,6 @@
 from spacy import registry
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
-from traiter.pylib.term_list import TermList
 
 from ..trait_lists import PARTS
 from ..trait_lists import PARTS_SET
