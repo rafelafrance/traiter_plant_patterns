@@ -32,6 +32,7 @@ PART = Compiler(
 
 @registry.misc(PART.on_match)
 def on_part_match(ent):
+    print(ent)
     if any(t._.cached_label in SUBPARTS for t in ent):
         ent._.new_label = next(t._.cached_label for t in ent)
     elif any(t.lower_ in common.AND for t in ent):

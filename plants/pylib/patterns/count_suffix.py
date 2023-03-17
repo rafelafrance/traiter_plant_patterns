@@ -46,7 +46,7 @@ def on_count_suffix_match(ent):
 
     lower = suffix.text.lower()
     label = _SUFFIX_TERMS.get(lower, "subpart")
-    ent._.data[label] = COUNT_SUFFIX_TERMS.replace.get(lower, lower)
+    ent._.data[label] = PLANT_TERMS.replace.get(lower, lower)
 
 
 # ####################################################################################
@@ -65,12 +65,10 @@ def on_count_suffix_word_match(ent):
     ent._.new_label = "count"
 
     word = next(e for e in ent.ents if e.label_ in _COUNT_WORDS)
-    ent._.data["low"] = t_util.to_positive_int(
-        COUNT_SUFFIX_TERMS.replace[word.text.lower()]
-    )
+    ent._.data["low"] = t_util.to_positive_int(PLANT_TERMS.replace[word.text.lower()])
 
     if not (suffix := next((t for t in ent if t.ent_type_ == "count_suffix"), None)):
         raise actions.RejectMatch()
     lower = suffix.text.lower()
     label = _SUFFIX_TERMS.get(lower, "subpart")
-    ent._.data[label] = COUNT_SUFFIX_TERMS.replace.get(lower, lower)
+    ent._.data[label] = PLANT_TERMS.replace.get(lower, lower)

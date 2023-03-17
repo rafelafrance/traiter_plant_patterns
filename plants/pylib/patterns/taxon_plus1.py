@@ -1,3 +1,24 @@
+"""Get taxon patterns that are build up from previous taxon notations:
+
+a) A taxon with an authority like: "Canis lupus Linnaeus".
+   The authority is Linnaeus.
+b) Multiple taxa like: "Mimosa sensitiva and Canis lupus".
+
+Use the n parameter to build up taxa with authorities at multiple ranks.
+
+1 if your taxa have at maximum one citation per taxon like:
+    "Canis lupus Linnaeus"
+    "Linnaeus" is the single authority.
+
+2 if you may have 2 citations per taxon like:
+    "Vicia villosa Roth ssp. varia (Khan)"
+    The species authority is "Roth" and the subspecies authority is "Khan".
+    The taxon rank is subspecies.
+
+3 if you have up to 3 citations in a taxon like:
+    "Mimosa gracilis Barneby subsp. capillipes Khan var. brevissima (Bozo)"
+    Three authorities: Barneby, Khan, and Bozo. The rank here is variant.
+"""
 from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
