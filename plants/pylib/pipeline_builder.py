@@ -1,6 +1,7 @@
 from traiter.pylib import const as t_const
 from traiter.pylib import pipeline_builder
 
+from . import tokenizer
 from .patterns import count_
 from .patterns import count_suffix
 from .patterns import delete
@@ -11,6 +12,7 @@ from .patterns import part
 from .patterns import part_linker
 from .patterns import part_location
 from .patterns import range_
+from .patterns import sex
 from .patterns import sex_linker
 from .patterns import shape
 from .patterns import size_
@@ -25,8 +27,11 @@ from .patterns import terms
 
 
 class PipelineBuilder(pipeline_builder.PipelineBuilder):
+    def tokenizer(self):
+        tokenizer.setup_tokenizer(self.nlp)
+
     def taxon_terms(self, name="taxon_terms", **kwargs):
-        self.add_terms(terms.BINOMIAL_TERMS.data, name=name, **kwargs)
+        self.add_terms(terms.BINOMIAL_TERMS + terms.RANK_TERMS, name=name, **kwargs)
         self.add_terms(
             terms.MONOMIAL_TERMS, name=f"{name}_monomial", after=name, merge=True
         )
@@ -56,25 +61,17 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-        prev = "taxon_plus1_merge"
-
         for i in range(2, n + 1):
-            name_add = f"taxon_plus{i}"
-            name_merge = f"taxon_plus{i}_merge"
             self.add_traits(
-                [taxon_plus2.TAXON_PLUS2],
-                name=name_add,
-                merge=True,
-                after=prev,
-                **kwargs,
+                [taxon_plus2.TAXON_PLUS2], name=f"taxon_plus{i}", merge=True, **kwargs
             )
-            prev = name_merge
 
     def plant_terms(self, name="plant_terms", **kwargs):
         self.add_terms(
-            terms.PLANT_TERMS.data,
+            terms.PLANT_TERMS,
             name=name,
             replace=terms.PLANT_TERMS.pattern_dict("replace"),
+            merge=True,
             **kwargs,
         )
 
@@ -82,18 +79,12 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         self.add_traits(
             [
                 part.PART,
+                part.MULTIPLE_PARTS,
                 part.MISSING_PART,
                 subpart.SUBPART,
                 subpart.SUBPART_SUFFIX,
             ],
             name="parts",
-            **kwargs,
-        )
-
-    def parts_plus(self, **kwargs):
-        self.simple_traits(
-            name="parts_plus",
-            exclude=["multiple_parts", "subpart_suffix"],
             **kwargs,
         )
 
@@ -134,10 +125,13 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         self.add_traits([taxon_like.TAXON_LIKE], name="taxon_like", **kwargs)
 
     def margins(self, **kwargs):
-        self.add_traits([margin.MARGIN], name="margin", **kwargs)
+        self.add_traits([margin.MARGIN], name="margins", **kwargs)
 
     def shapes(self, **kwargs):
-        self.add_traits([shape.N_SHAPE, shape.SHAPE], name="shape", **kwargs)
+        self.add_traits([shape.N_SHAPE, shape.SHAPE], name="shapes", **kwargs)
+
+    def sex(self, **kwargs):
+        self.add_traits([sex.SEX], name="sex", **kwargs)
 
     def part_locations(self, **kwargs):
         self.add_traits(
@@ -151,7 +145,7 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         )
 
     def habits(self, **kwargs):
-        self.add_traits([habit.HABIT], name="habit", **kwargs)
+        self.add_traits([habit.HABIT], name="habits", **kwargs)
 
     def link_parts(self, **kwargs):
         self.add_links(

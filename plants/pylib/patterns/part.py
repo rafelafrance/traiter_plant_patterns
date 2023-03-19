@@ -21,27 +21,51 @@ PART = Compiler(
     on_match="plant_part_v1",
     decoder=_DECODER,
     patterns=[
-        "leader  part",
-        "leader? part -?  part",
-        "leader? part -?  subpart",
-        "leader? part     subpart+",
-        "leader? part and part",
+        "leader? part",
+        "leader? part -? part",
+        "leader? part -? subpart",
+        "leader? part    subpart+",
     ],
 )
 
 
 @registry.misc(PART.on_match)
 def on_part_match(ent):
-    print(ent)
-    if any(t._.cached_label in SUBPARTS for t in ent):
-        ent._.new_label = next(t._.cached_label for t in ent)
-    elif any(t.lower_ in common.AND for t in ent):
-        ent._.new_label = "multiple_parts"
-        ent._.data["multiple_parts"] = [
-            PLANT_TERMS.replace.get(t.lower_, t.lower_)
-            for t in ent
-            if t.ent_type_ in PARTS_SET
-        ]
+    words = []
+    new_label = None
+
+    for token in ent:
+        label = token._.cached_label
+        if label in PARTS:
+            new_label = label
+
+        words.append(PLANT_TERMS.replace.get(token.lower_, token.lower_))
+
+    ent._.data[new_label] = " ".join(words)
+    ent._.data[new_label] = ent._.data[new_label].replace(" - ", "-")
+    ent._.new_label = new_label
+
+
+# ####################################################################################
+MULTIPLE_PARTS = Compiler(
+    "multiple_parts",
+    on_match="plant_multiple_parts_v1",
+    decoder=_DECODER,
+    patterns=[
+        "leader? part and part",
+    ],
+)
+
+
+@registry.misc(MULTIPLE_PARTS.on_match)
+def on_multiple_parts_match(ent):
+    print(f"{ent=}")
+    ent._.new_label = "multiple_parts"
+    ent._.data["multiple_parts"] = [
+        PLANT_TERMS.replace.get(t.lower_, t.lower_)
+        for t in ent
+        if t._.cached_label in PARTS_SET
+    ]
 
 
 # ####################################################################################
@@ -62,4 +86,5 @@ MISSING_PART = Compiler(
 @registry.misc(MISSING_PART.on_match)
 def missing_part_match(ent):
     if part := next((t for t in ent if t.ent_type_ == "part"), None):
-        ent._.data["part"] = part.lower_
+        ent._.data["part"] = PLANT_TERMS.replace.get(part.lower_, part.lower_)
+    ent._.data["missing_part"] = ent.text.lower()

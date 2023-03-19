@@ -77,7 +77,7 @@ def on_count_match(ent):
 
     if per_part := next((e for e in ent.ents if e.label_ in trait_lists.PARTS), None):
         text = per_part.text.lower()
-        ent._.data["per_part"] = PLANT_TERMS.replace.REPLACE.get(text, text)
+        ent._.data["per_part"] = PLANT_TERMS.replace.get(text, text)
 
 
 # ####################################################################################

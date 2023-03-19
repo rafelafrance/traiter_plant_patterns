@@ -1,8 +1,7 @@
 from spacy.util import registry
 from traiter.pylib.actions import REJECT_MATCH
 from traiter.pylib.pattern_compilers.matcher import Compiler
-
-from . import common
+from traiter.pylib.patterns import common
 
 _NOPE = """ of gps ° elev """.split()
 

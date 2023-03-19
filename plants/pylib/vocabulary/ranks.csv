@@ -37,9 +37,9 @@ subseries_rank,subser,lower,subseries,215,subser.
 subseries_rank,subser.,lower,subseries,215,subser.
 subseries_rank,subseries,lower,subseries,215,subser.
 species_rank,sp,lower,species,220,sp.
-species_rank,Sp,text,species,220,sp.
+species_rank,sp,lower,species,220,sp.
 species_rank,sp.,lower,species,220,sp.
-species_rank,Sp.,text,species,220,sp.
+species_rank,sp.,lower,species,220,sp.
 species_rank,species,lower,species,220,sp.
 subspecies_rank,ssp,lower,subspecies,230,subsp.
 subspecies_rank,ssp.,lower,subspecies,230,subsp.
@@ -51,10 +51,13 @@ variety_rank,var.,lower,variety,240,var.
 variety_rank,variant,lower,variety,240,var.
 variety_rank,varietas,lower,variety,240,var.
 variety_rank,variety,lower,variety,240,var.
+subvariety_rank,subvar,lower,subvariety,250,subvar.
 subvariety_rank,subvar.,lower,subvariety,250,subvar.
 subvariety_rank,subvariety,lower,subvariety,250,subvar.
+form_rank,f,text,form,260,f.
 form_rank,f.,text,form,260,f.
 form_rank,form,lower,form,260,f.
 form_rank,forma,lower,form,260,f.
+subform_rank,subf,lower,subform,270,subf.
 subform_rank,subf.,lower,subform,270,subf.
 subform_rank,subform,lower,subform,270,subf.

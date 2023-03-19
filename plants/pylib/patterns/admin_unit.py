@@ -1,8 +1,8 @@
 from spacy.util import registry
 from traiter.pylib.actions import RejectMatch
 from traiter.pylib.pattern_compilers.matcher import Compiler
+from traiter.pylib.patterns import common
 
-from . import common
 from .terms import ADMIN_UNIT_TERMS
 
 _COUNTY_IN = ADMIN_UNIT_TERMS.pattern_dict("inside")

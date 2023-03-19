@@ -110,7 +110,7 @@ class TestTaxon(unittest.TestCase):
     def test_taxon_08(self):
         self.assertEqual(
             test("""All species are trees"""),
-            [{"end": 21, "part": "trees", "start": 16, "trait": "part"}],
+            [{"end": 21, "part": "tree", "start": 16, "trait": "part"}],
         )
 
     def test_taxon_09(self):

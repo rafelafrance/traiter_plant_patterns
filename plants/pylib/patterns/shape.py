@@ -38,8 +38,9 @@ SHAPE = Compiler(
 
 @registry.misc(SHAPE.on_match)
 def on_shape_match(ent):
-    # Sets do not preserve order
     cached_labels = ["shape", "shape_suffix"]
+
+    # Sets do not preserve order
     parts = {
         r: 1
         for t in ent

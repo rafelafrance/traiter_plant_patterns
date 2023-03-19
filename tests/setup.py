@@ -3,15 +3,15 @@ from traiter.pylib.util import shorten
 from plants.pylib.patterns.delete import PARTIAL_TRAITS
 from plants.pylib.pipeline_builder import PipelineBuilder
 
-# Singleton for testing
 PIPELINE = PipelineBuilder()
+PIPELINE.tokenizer()
 PIPELINE.taxon_terms(before="ner")
+# PIPELINE.debug_tokens(before="ner")  # ####################################
 PIPELINE.taxa(before="ner")
 PIPELINE.taxa_plus(n=2, before="ner")
 PIPELINE.plant_terms(before="ner")
-PIPELINE.debug_tokens(before="ner")  # ####################################
 PIPELINE.parts(before="ner")
-PIPELINE.parts_plus(before="ner")
+PIPELINE.sex(before="ner")
 PIPELINE.numerics(before="ner")
 PIPELINE.part_locations(before="ner")
 PIPELINE.colors(before="ner")
@@ -37,7 +37,8 @@ def test(text: str) -> list[dict]:
     doc = PIPELINE(text)
     traits = [e._.data for e in doc.ents]
 
-    # from pprint import pp
-    # pp(traits, compact=True)
+    from pprint import pp
+
+    pp(traits, compact=True)
 
     return traits

@@ -2,8 +2,7 @@ import regex as re
 from spacy.util import registry
 from traiter.pylib import actions
 from traiter.pylib.pattern_compilers.matcher import Compiler
-
-from . import common
+from traiter.pylib.patterns import common
 
 _CONJ = ["CCONJ", "ADP"]
 _COLLECTOR_NO = r"^[A-Za-z]*\d+[A-Za-z]*$"

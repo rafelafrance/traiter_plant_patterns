@@ -3,18 +3,17 @@ from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
 from traiter.pylib.pattern_compilers.matcher import Compiler
-from traiter.pylib.patterns import common
+from traiter.pylib.patterns.common import PATTERNS as P
 
 ON_RANGE_MATCH = "plant_range_v1"
 
 _SKIP = """ p. pg pg. page pi pi. fig fig. sheet sheets bis bis.
     sp. spp. no. no map """.split()
 
-_DECODER = common.PATTERNS | {
-    "99.9": {"TEXT": {"REGEX": t_const.FLOAT_TOKEN_RE}},
+_DECODER = P | {
+    "9.9": {"TEXT": {"REGEX": t_const.FLOAT_TOKEN_RE}},
     "ambiguous": {"LOWER": {"IN": ["few", "many"]}},
     "conj": {"POS": {"IN": ["CCONJ"]}},
-    # These are for patterns that are not a real range = NOT_A_RANGE
     "month": {"ENT_TYPE": "month"},
     "nope": {"TEXT": {"REGEX": r"^[&/:°'\"]+$"}},
     "skip": {"LOWER": {"IN": _SKIP}},
@@ -28,9 +27,9 @@ RANGE_LOW = Compiler(
     on_match=ON_RANGE_MATCH,
     decoder=_DECODER,
     patterns=[
-        "99.9",
-        "( 99.9 -/or ) ambiguous ( -/to ambiguous )",
-        "99.9 ( -/to [?] )",
+        "9.9",
+        "( 9.9 -/or ) ambiguous ( -/to ambiguous )",
+        "9.9 ( -/to [?] )",
     ],
 )
 
@@ -39,8 +38,8 @@ RANGE_MIN_LOW = Compiler(
     on_match=ON_RANGE_MATCH,
     decoder=_DECODER,
     patterns=[
-        "( 99.9 -/or ) 99.9",
-        "( 99.9 -/to ) 99.9",
+        "( 9.9 -/or ) 9.9",
+        "( 9.9 -/to ) 9.9",
     ],
 )
 
@@ -49,8 +48,8 @@ RANGE_LOW_HIGH = Compiler(
     on_match=ON_RANGE_MATCH,
     decoder=_DECODER,
     patterns=[
-        "99.9 and/or 99.9",
-        "99.9 -/to   99.9",
+        "9.9 and/or 9.9",
+        "9.9 -/to   9.9",
         "9 -* conj 9",
     ],
 )
@@ -60,8 +59,8 @@ RANGE_LOW_MAX = Compiler(
     on_match=ON_RANGE_MATCH,
     decoder=_DECODER,
     patterns=[
-        "99.9 ( and/or 99.9 )",
-        "99.9 ( -/to   99.9 )",
+        "9.9 ( and/or 9.9 )",
+        "9.9 ( -/to   9.9 )",
     ],
 )
 
@@ -70,10 +69,10 @@ RANGE_MIN_LOW_HIGH = Compiler(
     on_match=ON_RANGE_MATCH,
     decoder=_DECODER,
     patterns=[
-        "( 99.9   -/or )   99.9 -/to     99.9",
-        "( 99.9   -/or )   99.9 - and/or 99.9",
-        "( 99.9   and/or ) 99.9   and/or 99.9",
-        "  99.9 ( and/or   99.9    -/to  99.9 )",
+        "( 9.9   -/or )   9.9 -/to     9.9",
+        "( 9.9   -/or )   9.9 - and/or 9.9",
+        "( 9.9   and/or ) 9.9   and/or 9.9",
+        "  9.9 ( and/or   9.9    -/to  9.9 )",
     ],
 )
 
@@ -82,9 +81,9 @@ RANGE_MIN_LOW_MAX = Compiler(
     on_match=ON_RANGE_MATCH,
     decoder=_DECODER,
     patterns=[
-        "( 99.9 - ) 99.9 -? ( -/to 99.9 [+]? )",
-        "  99.9 -   99.9 - ( -/to 99.9 )",
-        "  99.9 - and/or 99.9 -/to 99.9",
+        "( 9.9 - ) 9.9 -? ( -/to 9.9 [+]? )",
+        "  9.9 -   9.9 - ( -/to 9.9 )",
+        "  9.9 - and/or 9.9 -/to 9.9",
     ],
 )
 
@@ -93,13 +92,13 @@ RANGE_LOW_HIGH_MAX = Compiler(
     on_match=ON_RANGE_MATCH,
     decoder=_DECODER,
     patterns=[
-        "99.9 ( and/or 99.9 -/or 99.9 [+]? )",
-        "99.9 - 99.9   ( -/to 99.9 [+]? )",
-        "99.9 - 99.9 - ( -/to 99.9 [+]? )",
-        "99.9 - 99.9 - 99.9",
-        "99.9 -/to 99.9 and/or 99.9",
-        "99.9 - and/or 99.9 ( -/or 99.9 [+]? )",
-        "99.9 and/or 99.9 ( and/or 99.9 [+]? )",
+        "9.9 ( and/or 9.9 -/or 9.9 [+]? )",
+        "9.9 - 9.9   ( -/to 9.9 [+]? )",
+        "9.9 - 9.9 - ( -/to 9.9 [+]? )",
+        "9.9 - 9.9 - 9.9",
+        "9.9 -/to 9.9 and/or 9.9",
+        "9.9 - and/or 9.9 ( -/or 9.9 [+]? )",
+        "9.9 and/or 9.9 ( and/or 9.9 [+]? )",
     ],
 )
 
@@ -108,14 +107,14 @@ RANGE_MIN_LOW_HIGH_MAX = Compiler(
     on_match=ON_RANGE_MATCH,
     decoder=_DECODER,
     patterns=[
-        "( 99.9 - ) 99.9 - 99.9 ( -/to 99.9 [+]? )",
-        "( 99.9 -/or ) 99.9 - and/or 99.9 ( -/or 99.9 [+]? )",
-        "( 99.9 and/or ) 99.9 - and/or 99.9 ( and/or 99.9 [+]? )",
-        "99.9 - and/or 99.9 - and/or 99.9 -/to 99.9",
-        "99.9 - and/or 99.9 -/to 99.9 ( -/or 99.9 [+]? )",
-        "99.9 -/to 99.9 ( -/or 99.9 ) ( -/or 99.9 [+]? )",
-        "99.9 99.9 -/to and/or 99.9 ( -/or 99.9 [+]? )",
-        "99.9 and/or 99.9 - 99.9 ( -/or 99.9 [+]? )",
+        "( 9.9 - ) 9.9 - 9.9 ( -/to 9.9 [+]? )",
+        "( 9.9 -/or ) 9.9 - and/or 9.9 ( -/or 9.9 [+]? )",
+        "( 9.9 and/or ) 9.9 - and/or 9.9 ( and/or 9.9 [+]? )",
+        "9.9 - and/or 9.9 - and/or 9.9 -/to 9.9",
+        "9.9 - and/or 9.9 -/to 9.9 ( -/or 9.9 [+]? )",
+        "9.9 -/to 9.9 ( -/or 9.9 ) ( -/or 9.9 [+]? )",
+        "9.9 9.9 -/to and/or 9.9 ( -/or 9.9 [+]? )",
+        "9.9 and/or 9.9 - 9.9 ( -/or 9.9 [+]? )",
     ],
 )
 
@@ -143,14 +142,15 @@ NOT_A_RANGE = Compiler(
 @registry.misc(ON_RANGE_MATCH)
 def on_range_match(ent):
     keys = ent.label_.split(".")[1:]
-    nums = [t.text for t in ent if re.match(r"^[\d.]+$", t.text)]
+
+    nums = []
+    for token in ent:
+        nums += re.findall(r"\d*\.?\d+", token.text)
 
     # Reject big numbers
     if any(float(n) >= 1000.0 for n in nums):
         raise actions.RejectMatch()
 
-    ent._.data = {k: v for k, v in zip(keys, nums)}
-    for token in ent:
-        token._.data = ent._.data
-
+    ent[0]._.data = {k: v for k, v in zip(keys, nums)}
+    # ent._.data = {k: v for k, v in zip(keys, nums)}
     ent._.new_label = "range"

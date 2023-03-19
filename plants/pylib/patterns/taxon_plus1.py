@@ -65,12 +65,15 @@ TAXON_PLUS1 = Compiler(
     on_match="plant_taxon_plus1_v1",
     decoder=_DECODER,
     patterns=[
-        "taxon ( auth+           _? )",
-        "taxon ( auth+ and auth+ _? )",
-        "taxon   auth+               ",
-        "taxon   auth+ and auth+     ",
-        "taxon ( auth+           _? ) auth+",
-        "taxon ( auth+ and auth+ _? ) auth+",
+        "taxon ( auth? .? auth? .? auth+           _? )",
+        "taxon ( auth? .? auth? .? auth+ and auth+ _? )",
+        "taxon   auth? .? auth? .? auth+               ",
+        "taxon   auth? .? auth? .? auth+ and auth? .?   auth? .? auth+     ",
+        "taxon ( auth? .? auth? .? auth+           _? ) auth? .? auth? .? auth+",
+        (
+            "taxon ( auth? .? auth? .? auth+ and auth? .? auth? .? auth+ _? )"
+            " auth? .? auth? .? auth+"
+        ),
     ],
 )
 
@@ -91,7 +94,10 @@ def on_taxon_auth_match(ent):
             auth.append("and")
 
         elif token.shape_ in t_const.NAME_SHAPES:
-            auth.append(token.text)
+            if len(token) == 1:
+                auth.append(token.text + ".")
+            else:
+                auth.append(token.text)
 
     ent._.data["taxon"] = taxon_[0]._.data["taxon"]
     ent._.data["rank"] = taxon_[0]._.data["rank"]

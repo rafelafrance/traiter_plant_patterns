@@ -31,6 +31,7 @@ COUNT_SUFFIX = Compiler(
 
 @registry.misc(COUNT_SUFFIX.on_match)
 def on_count_suffix_match(ent):
+    print("on_count_suffix_match")
     ent._.new_label = "count"
     range_ = next(t for t in ent if t.ent_type_ == "range")
     suffix = next(t for t in ent if t.ent_type_ == "count_suffix")
@@ -44,9 +45,10 @@ def on_count_suffix_match(ent):
     if ent._.data.get("range"):
         del ent._.data["range"]
 
-    lower = suffix.text.lower()
-    label = _SUFFIX_TERMS.get(lower, "subpart")
-    ent._.data[label] = PLANT_TERMS.replace.get(lower, lower)
+    suffix = suffix.lower_.replace("-", "")
+    suffix = PLANT_TERMS.replace.get(suffix, suffix)
+    label = _SUFFIX_TERMS.get(suffix, "subpart")
+    ent._.data[label] = suffix
 
 
 # ####################################################################################
