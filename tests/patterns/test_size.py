@@ -276,7 +276,12 @@ class TestSize(unittest.TestCase):
                     "leaf_part": "leaflet",
                     "location": "terminal",
                 },
-                {"trait": "part", "start": 25, "end": 40, "part": "leaf petiolule"},
+                {
+                    "trait": "leaf_part",
+                    "start": 25,
+                    "end": 40,
+                    "leaf_part": "leaf petiolule",
+                },
                 {
                     "length_low": 0.3,
                     "length_high": 1.2,
@@ -284,7 +289,7 @@ class TestSize(unittest.TestCase):
                     "trait": "size",
                     "start": 41,
                     "end": 48,
-                    "part": "leaf petiolule",
+                    "leaf_part": "leaf petiolule",
                 },
             ],
         )

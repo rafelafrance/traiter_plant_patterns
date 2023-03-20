@@ -102,11 +102,10 @@ class TestPart(unittest.TestCase):
                 },
                 {
                     "low": 2,
+                    "flower_part": "flower",
                     "trait": "count",
                     "start": 16,
                     "end": 26,
-                    "subpart": "flower",
-                    "inflorescence": "head",
                 },
             ],
         )

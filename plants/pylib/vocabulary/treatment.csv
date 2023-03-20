@@ -31,6 +31,31 @@ count_suffix,- ribbed,rib,venation
 count_suffix,- seeded,seed,fruit_part
 count_suffix,- toothed,tooth,leaf_margin
 count_suffix,- veined,vein,venation
+count_suffix,-androus,androus,male_part
+count_suffix,-bracteolate,bracteolate,leaf_part
+count_suffix,-callose,callose,subpart
+count_suffix,-carpellate,carpellate,female_flower_part
+count_suffix,-columned,column,part
+count_suffix,-flowered,flower,flower_part
+count_suffix,-foliolate,lobe,subpart
+count_suffix,-horned,horn,subpart
+count_suffix,-incised,incised,subpart
+count_suffix,-jointed,joint,subpart
+count_suffix,-jug,pairs,count_group
+count_suffix,-jug.,pairs,count_group
+count_suffix,-lobed,lobe,subpart
+count_suffix,-locular,locular,subpart
+count_suffix,-merous,merous,count
+count_suffix,-nate,nate,subpart
+count_suffix,-nerved,vein,venation
+count_suffix,-paired,pairs,count_group
+count_suffix,-pairs,pairs,count_group
+count_suffix,-ranked,ranked,subpart
+count_suffix,-rayed,ray,subpart
+count_suffix,-ribbed,rib,venation
+count_suffix,-seeded,seed,fruit_part
+count_suffix,-toothed,tooth,leaf_margin
+count_suffix,-veined,vein,venation
 count_word,absent,0,
 count_word,decamerous,10,
 count_word,decamery,10,
@@ -340,11 +365,11 @@ leaf_part,leafstalks,leaf-stalk,
 leaf_part,leaved,,
 leaf_part,leaves,leaf,
 leaf_part,lf,leaf,
-leaf_part,lf-stk,leaf-stalk,
-leaf_part,lf-stks,leaf-stalk,
 leaf_part,lf-axes,leaf-axis,
 leaf_part,lf-axis,leaf-axis,
 leaf_part,lf-stk,leaf-stalk,
+leaf_part,lf-stk,leaf-stalk,
+leaf_part,lf-stks,leaf-stalk,
 leaf_part,lf-stks,leaf-stalk,
 leaf_part,lfstk,leaf-stalk,
 leaf_part,lfstks,leaf-stalk,

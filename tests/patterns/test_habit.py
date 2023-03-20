@@ -10,8 +10,8 @@ class TestHabit(unittest.TestCase):
             [
                 {"part": "stem", "trait": "part", "start": 0, "end": 5},
                 {
-                    "habit": "cespitose",
-                    "trait": "habit",
+                    "plant_habit": "cespitose",
+                    "trait": "plant_habit",
                     "start": 12,
                     "end": 22,
                 },
@@ -37,14 +37,14 @@ class TestHabit(unittest.TestCase):
                 },
                 {"part": "shrub", "trait": "part", "start": 19, "end": 28},
                 {
-                    "habit": "epiphytic",
-                    "trait": "habit",
+                    "plant_habit": "epiphytic",
+                    "trait": "plant_habit",
                     "start": 30,
                     "end": 39,
                 },
                 {
-                    "habit": "epilithic",
-                    "trait": "habit",
+                    "plant_habit": "epilithic",
+                    "trait": "plant_habit",
                     "start": 43,
                     "end": 52,
                 },

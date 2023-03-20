@@ -1,20 +1,21 @@
 from traiter.pylib.util import shorten
 
-from plants.pylib.patterns.delete import PARTIAL_TRAITS
 from plants.pylib.pipeline_builder import PipelineBuilder
 
-PIPELINE = PipelineBuilder()
+PIPELINE = PipelineBuilder(exclude="ner")
 PIPELINE.tokenizer()
-PIPELINE.taxon_terms(before="ner")
-# PIPELINE.debug_tokens(before="ner")  # ####################################
-PIPELINE.taxa(before="ner")
-PIPELINE.taxa_plus(n=2, before="ner")
-PIPELINE.plant_terms(before="ner")
-PIPELINE.parts(before="ner")
-PIPELINE.sex(before="ner")
-PIPELINE.numerics(before="ner")
-PIPELINE.part_locations(before="ner")
-PIPELINE.colors(before="ner")
+PIPELINE.taxon_terms()
+PIPELINE.taxa()
+PIPELINE.taxa_plus(n=2)
+PIPELINE.plant_terms()
+PIPELINE.parts()
+PIPELINE.sex()
+# PIPELINE.debug_tokens()  # ####################################
+PIPELINE.numerics()
+PIPELINE.shapes()
+PIPELINE.margins()
+PIPELINE.colors()
+PIPELINE.part_locations()
 PIPELINE.taxa_like()
 PIPELINE.delete_partial_traits()
 PIPELINE.link_parts()
@@ -26,7 +27,8 @@ PIPELINE.link_locations()
 PIPELINE.link_taxa_like()
 PIPELINE.delete_unlinked()
 PIPELINE.delete_spacy_ents()
-PIPELINE.delete_partial_traits(partial_traits=PARTIAL_TRAITS, name="final_deletes")
+PIPELINE.delete_partial_traits(name="final_deletes")
+# PIPELINE.debug_ents()  # ####################################
 
 # for name in PIPELINE.nlp.pipe_names:
 #     print(name)
@@ -37,8 +39,7 @@ def test(text: str) -> list[dict]:
     doc = PIPELINE(text)
     traits = [e._.data for e in doc.ents]
 
-    from pprint import pp
-
-    pp(traits, compact=True)
+    # from pprint import pp
+    # pp(traits, compact=True)
 
     return traits

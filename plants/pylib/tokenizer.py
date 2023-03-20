@@ -26,6 +26,7 @@ _INFIX = [
     rf"(?<=[{ALPHA}0-9])[:<>=/+](?=[{ALPHA}])",  # word=word etc.
     r"""[\\\[\]()/:;’'“”'+±_]""",  # Break on these characters
     DASHES,
+    rf"(?<=\d)[{ALPHA}]+",
 ]
 
 

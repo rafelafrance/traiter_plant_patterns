@@ -106,17 +106,22 @@ class TestPartLinker(unittest.TestCase):
                     "trait": "subpart",
                     "start": 68,
                     "end": 72,
-                    "part": "primary pulvinus",
+                    "leaf_part": "primary pulvinus",
                 },
                 {
                     "shape": "pulvinate",
                     "trait": "shape",
                     "start": 82,
                     "end": 91,
-                    "part": "primary pulvinus",
+                    "leaf_part": "primary pulvinus",
                     "subpart": "axis",
                 },
-                {"trait": "part", "start": 97, "end": 113, "part": "primary pulvinus"},
+                {
+                    "trait": "leaf_part",
+                    "start": 97,
+                    "end": 113,
+                    "leaf_part": "primary pulvinus",
+                },
             ],
         )
 

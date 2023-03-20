@@ -59,7 +59,6 @@ MULTIPLE_PARTS = Compiler(
 
 @registry.misc(MULTIPLE_PARTS.on_match)
 def on_multiple_parts_match(ent):
-    print(f"{ent=}")
     ent._.new_label = "multiple_parts"
     ent._.data["multiple_parts"] = [
         PLANT_TERMS.replace.get(t.lower_, t.lower_)
