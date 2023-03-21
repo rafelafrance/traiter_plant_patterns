@@ -8,6 +8,7 @@ def pipeline():
 
     pipes.taxon_terms()
     pipes.taxa()
+    # pipes.debug_tokens()  # ####################################
     pipes.taxa_plus(n=2)
     pipes.taxa_like()
 
@@ -31,7 +32,5 @@ def pipeline():
 
     pipes.delete_unlinked()
     pipes.delete_partial_traits(name="final_deletes")
-
-    # pipes.debug_tokens()  # ####################################
 
     return pipes

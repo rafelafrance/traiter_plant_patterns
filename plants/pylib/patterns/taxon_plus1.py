@@ -25,11 +25,19 @@ from traiter.pylib import const as t_const
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
+from . import terms
+
+_LOWER_RANK = """
+    subspecies_rank variety_rank subvariety_rank form_rank subform_rank
+    """.split()
+_LOWER_RANKS = set(_LOWER_RANK)
 
 _DECODER = common.PATTERNS | {
     "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
     "taxon": {"ENT_TYPE": "taxon"},
     "_": {"TEXT": {"REGEX": r"^[:._;,]+$"}},
+    "monomial": {"ENT_TYPE": "monomial"},
+    "lower_rank": {"ENT_TYPE": {"IN": _LOWER_RANK}},
 }
 
 
@@ -53,6 +61,29 @@ def on_multi_taxon_match(ent):
         ent._.data["rank"] = sub_ent._.data["rank"]
 
     ent._.data["taxon"] = taxa
+
+
+# ###################################################################################
+LOWER_MONOMIAL = Compiler(
+    "taxon.lower.monomial",
+    on_match="lower_monomial_v1",
+    decoder=_DECODER,
+    patterns=[
+        "lower_rank monomial",
+    ],
+)
+
+
+@registry.misc(LOWER_MONOMIAL.on_match)
+def on_lower_monomial_match(ent):
+    token = next(t for t in ent if t.ent_type_ in _LOWER_RANKS)
+    rank = terms.RANK_TERMS.replace.get(token.lower_, token.lower_)
+
+    token = next(t for t in ent if t.ent_type_ == "monomial")
+    taxon_ = terms.TAXON_TERMS.replace.get(token.lower_, token.text)
+
+    ent._.data = {"taxon": taxon_, "rank": rank}
+    ent._.new_label = "taxon"
 
 
 # ###################################################################################

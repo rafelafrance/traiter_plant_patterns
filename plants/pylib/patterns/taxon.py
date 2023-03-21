@@ -31,8 +31,6 @@ _HIGHER_RANK_NAMES = {r.removesuffix("_rank") for r in _HIGHER_RANK}
 
 _SPECIES_AND_LOWER = _LOWER_RANK + ["species_rank"]
 
-_ALL_RANKS = set(_SPECIES_AND_LOWER + _HIGHER_RANK)
-
 _MAYBE = """ PROPN NOUN """.split()
 
 _BAD_PREFIX = """ de el la le no se costa santa & """.split()
@@ -52,7 +50,6 @@ _DECODER = {
     "subvar": {"ENT_TYPE": "subvariety_rank"},
     "f.": {"ENT_TYPE": "form_rank"},
     "subf": {"ENT_TYPE": "subform_rank"},
-    "lower_rank": {"ENT_TYPE": {"IN": _LOWER_RANK}},
     "species_rank": {"ENT_TYPE": "species_rank"},
 }
 
@@ -65,7 +62,6 @@ MONOMIAL = Compiler(
     patterns=[
         "monomial",
         "higher_rank  monomial",
-        "lower_rank   monomial",
         "species_rank monomial",
     ],
 )
@@ -73,7 +69,6 @@ MONOMIAL = Compiler(
 
 @registry.misc(MONOMIAL.on_match)
 def on_single_taxon_match(ent):
-    # rank_from_csv = False
     rank = None
     taxon_ = None
 
@@ -96,8 +91,7 @@ def on_single_taxon_match(ent):
                     rank = rank_
 
         # A given rank overrides the one in the DB
-        elif label in _ALL_RANKS:
-            # rank_from_csv = False
+        elif label in _HIGHER_RANK:
             rank = terms.RANK_TERMS.replace.get(token.lower_, token.lower_)
 
         elif token.pos_ in _MAYBE:
@@ -105,9 +99,6 @@ def on_single_taxon_match(ent):
 
     if not rank:
         raise actions.RejectMatch()
-
-    # if rank_from_csv and rank in GENUS_AND_LOWER:
-    #     raise actions.RejectMatch()
 
     taxon_ = taxon_.title() if rank in _HIGHER_RANK_NAMES else taxon_.lower()
     if len(taxon_) < MIN_TAXON_LEN:

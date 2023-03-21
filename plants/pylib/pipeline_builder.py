@@ -30,14 +30,16 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
     def tokenizer(self):
         tokenizer.setup_tokenizer(self.nlp)
 
-    def taxon_terms(self, name="taxon_terms", **kwargs):
-        self.add_terms(terms.BINOMIAL_TERMS + terms.RANK_TERMS, name=name, **kwargs)
-        self.add_terms(
-            terms.MONOMIAL_TERMS, name=f"{name}_monomial", after=name, merge=True
+    def taxon_terms(self, **kwargs) -> str:
+        name = self.add_terms(
+            terms.BINOMIAL_TERMS + terms.RANK_TERMS, name="taxon_binomials", **kwargs
+        )
+        return self.add_terms(
+            terms.MONOMIAL_TERMS, name=f"taxon_monomials", after=name, merge=True
         )
 
-    def taxa(self, **kwargs):
-        self.add_traits(
+    def taxa(self, **kwargs) -> str:
+        return self.add_traits(
             [
                 taxon.MONOMIAL,
                 taxon.SPECIES_TAXON,
@@ -53,21 +55,28 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def taxa_plus(self, n=1, **kwargs):
-        self.add_traits(
+    def taxa_plus(self, n=1, **kwargs) -> str:
+        name = "taxon_plus1"
+        prev = self.add_traits(
             [taxon_plus1.TAXON_PLUS1, taxon_plus1.MULTI_TAXON],
-            name="taxon_plus1",
+            name=name,
             merge=True,
             **kwargs,
         )
 
         for i in range(2, n + 1):
-            self.add_traits(
-                [taxon_plus2.TAXON_PLUS2], name=f"taxon_plus{i}", merge=True, **kwargs
+            name = f"taxon_plus{i}"
+            prev = self.add_traits(
+                [taxon_plus2.TAXON_PLUS2], name=name, merge=True, after=prev
             )
 
-    def plant_terms(self, name="plant_terms", **kwargs):
-        self.add_terms(
+        name = "taxon_lower"
+        self.add_traits([taxon_plus1.LOWER_MONOMIAL], name=name, merge=True)
+
+        return name
+
+    def plant_terms(self, name="plant_terms", **kwargs) -> str:
+        return self.add_terms(
             terms.PLANT_TERMS,
             name=name,
             replace=terms.PLANT_TERMS.pattern_dict("replace"),
@@ -75,8 +84,8 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def parts(self, **kwargs):
-        self.add_traits(
+    def parts(self, **kwargs) -> str:
+        return self.add_traits(
             [
                 part.PART,
                 part.MULTIPLE_PARTS,
@@ -88,8 +97,8 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def numerics(self, **kwargs):
-        self.add_traits(
+    def numerics(self, **kwargs) -> str:
+        name = self.add_traits(
             [
                 range_.RANGE_LOW,
                 range_.RANGE_MIN_LOW,
@@ -105,7 +114,7 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             merge=True,
             **kwargs,
         )
-        self.add_traits(
+        return self.add_traits(
             [
                 size_.SIZE,
                 size_.SIZE_HIGH_ONLY,
@@ -118,23 +127,23 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
                 count_suffix.COUNT_SUFFIX_WORD,
             ],
             name="numerics",
-            **kwargs,
+            after=name,
         )
 
-    def taxa_like(self, **kwargs):
-        self.add_traits([taxon_like.TAXON_LIKE], name="taxon_like", **kwargs)
+    def taxa_like(self, **kwargs) -> str:
+        return self.add_traits([taxon_like.TAXON_LIKE], name="taxon_like", **kwargs)
 
-    def margins(self, **kwargs):
-        self.add_traits([margin.MARGIN], name="margins", **kwargs)
+    def margins(self, **kwargs) -> str:
+        return self.add_traits([margin.MARGIN], name="margins", **kwargs)
 
-    def shapes(self, **kwargs):
-        self.add_traits([shape.N_SHAPE, shape.SHAPE], name="shapes", **kwargs)
+    def shapes(self, **kwargs) -> str:
+        return self.add_traits([shape.N_SHAPE, shape.SHAPE], name="shapes", **kwargs)
 
-    def sex(self, **kwargs):
-        self.add_traits([sex.SEX], name="sex", **kwargs)
+    def sex(self, **kwargs) -> str:
+        return self.add_traits([sex.SEX], name="sex", **kwargs)
 
-    def part_locations(self, **kwargs):
-        self.add_traits(
+    def part_locations(self, **kwargs) -> str:
+        return self.add_traits(
             [
                 part_location.PART_AS_DISTANCE,
                 part_location.PART_AS_LOCATION,
@@ -144,11 +153,11 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def habits(self, **kwargs):
-        self.add_traits([habit.HABIT], name="habits", **kwargs)
+    def habits(self, **kwargs) -> str:
+        return self.add_traits([habit.HABIT], name="habits", **kwargs)
 
-    def link_parts(self, **kwargs):
-        self.add_links(
+    def link_parts(self, **kwargs) -> str:
+        return self.add_links(
             [part_linker.PART_LINKER],
             name="link_parts",
             parents=part_linker._PART_PARENTS,
@@ -158,8 +167,8 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def link_parts_once(self, **kwargs):
-        self.add_links(
+    def link_parts_once(self, **kwargs) -> str:
+        return self.add_links(
             patterns=[part_linker.LINK_PART_ONCE],
             name="link_parts_once",
             parents=part_linker._LINK_PART_ONCE_PARENTS,
@@ -170,8 +179,8 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def link_subparts(self, **kwargs):
-        self.add_links(
+    def link_subparts(self, **kwargs) -> str:
+        return self.add_links(
             [subpart_linker.SUBPART_LINKER],
             name="link_subparts",
             parents=subpart_linker._SUBPART_PARENTS,
@@ -180,8 +189,8 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def link_subparts_suffixes(self, **kwargs):
-        self.add_links(
+    def link_subparts_suffixes(self, **kwargs) -> str:
+        return self.add_links(
             [subpart_linker.SUBPART_SUFFIX_LINKER],
             name="link_subparts_suffixes",
             parents=subpart_linker._SUBPART_SUFFIX_PARENTS,
@@ -190,8 +199,8 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def link_sex(self, **kwargs):
-        self.add_links(
+    def link_sex(self, **kwargs) -> str:
+        return self.add_links(
             [sex_linker.SEX_LINKER],
             name="link_sex",
             parents=sex_linker._SEX_PARENTS,
@@ -200,8 +209,8 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def link_locations(self, **kwargs):
-        self.add_links(
+    def link_locations(self, **kwargs) -> str:
+        return self.add_links(
             [location_linker.LOCATION_LINKER],
             name="link_location",
             parents=location_linker._LOCATION_PARENTS,
@@ -210,8 +219,8 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def link_taxa_like(self, name="link_taxa_like", **kwargs):
-        self.add_links(
+    def link_taxa_like(self, name="link_taxa_like", **kwargs) -> str:
+        return self.add_links(
             [taxon_like_linker.TAXON_LIKE_LINKER],
             name=name,
             parents=taxon_like_linker._TAXON_LIKE_PARENTS,
@@ -220,21 +229,21 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def delete_unlinked(self, delete_unlinked=None, delete_when=None, **kwargs):
+    def delete_unlinked(self, delete_unlinked=None, delete_when=None, **kwargs) -> str:
         if delete_unlinked is None:
             delete_unlinked = delete.PARTIAL_TRAITS
 
         if delete_when is None:
             delete_when = delete.DELETE_WHEN
 
-        self.delete_traits(
+        return self.delete_traits(
             "delete_unlinked", delete=delete_unlinked, delete_when=delete_when, **kwargs
         )
 
     def delete_partial_traits(
         self, name="delete_partials", partial_traits=None, **kwargs
-    ):
+    ) -> str:
         if partial_traits is None:
             partial_traits = delete.PARTIAL_TRAITS
 
-        self.delete_traits(name=name, delete=partial_traits, **kwargs)
+        return self.delete_traits(name=name, delete=partial_traits, **kwargs)

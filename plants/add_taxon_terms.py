@@ -49,15 +49,6 @@ class Taxa:
     def add_taxon_and_rank(self, pattern, rank):
         words = pattern.split()
 
-        if any(w.lower() in ("temp", "uncertain", "unknown", "dummy") for w in words):
-            return
-
-        if not self.valid_pattern.match(pattern) or len(pattern) < const.MIN_TAXON_LEN:
-            return
-
-        if any(len(w) < const.MIN_TAXON_WORD_LEN for w in words):
-            return
-
         if rank not in self.ranks.rank_names:
             return
 
@@ -88,12 +79,37 @@ class Taxa:
     def remove_problem_taxa(self, traiter_vocab_dir):
         """Some taxa interfere with other parses."""
         new = {}
-        problems = {"side"} | get_treatments() | get_traiter_terms(traiter_vocab_dir)
+
+        problem_words = {"temp", "uncertain", "unknown", "dummy"}
+
+        problem_taxa = {"harms", "side"}
+        problem_taxa |= get_treatments() | get_traiter_terms(traiter_vocab_dir)
+
         for taxon, rank in self.taxon.items():
-            if taxon not in problems:
-                new[taxon] = rank
-            else:
-                logging.info(f"Removed {taxon} {rank}")
+            words = taxon.split()
+
+            if taxon.lower() in problem_taxa:
+                print(f"Removed {taxon} {rank}")
+                continue
+
+            if any(w.lower() in problem_words for w in words):
+                print(f"Removed {taxon} {rank}")
+                continue
+
+            if not self.valid_pattern.match(taxon):
+                # print(f"Removed {taxon} {rank}")
+                continue
+
+            if len(taxon) < const.MIN_TAXON_LEN:
+                print(f"Removed {taxon} {rank}")
+                continue
+
+            if any(len(w) < const.MIN_TAXON_WORD_LEN for w in words):
+                print(f"Removed {taxon} {rank}")
+                continue
+
+            new[taxon] = rank
+
         self.taxon = new
 
 
