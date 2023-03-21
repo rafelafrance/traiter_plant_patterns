@@ -8,11 +8,11 @@ Named entity recognition (NER) must be run first.
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from .. import trait_lists
+from . import terms
 
 
 _SEX_PARENTS = ["sex"]
-_SEX_CHILDREN = trait_lists.all_traits_except(["sex"] + trait_lists.NO_LINK)
+_SEX_CHILDREN = terms.all_traits_except(["sex"] + terms.NO_LINK)
 
 SEX_LINKER = Compiler(
     "sex_linker",

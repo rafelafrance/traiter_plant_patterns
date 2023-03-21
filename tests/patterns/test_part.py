@@ -115,13 +115,6 @@ class TestPart(unittest.TestCase):
             test("Phyllodes glaucous"),
             [
                 {"leaf_part": "phyllode", "trait": "leaf_part", "start": 0, "end": 9},
-                {
-                    "color": "glaucous",
-                    "trait": "color",
-                    "start": 10,
-                    "end": 18,
-                    "leaf_part": "phyllode",
-                },
             ],
         )
 

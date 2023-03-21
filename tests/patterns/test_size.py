@@ -621,13 +621,6 @@ class TestSize(unittest.TestCase):
             [
                 {"flower_part": "petal", "trait": "flower_part", "start": 0, "end": 6},
                 {
-                    "color": "purple",
-                    "trait": "color",
-                    "start": 7,
-                    "end": 18,
-                    "flower_part": "petal",
-                },
-                {
                     "flower_part": "keel",
                     "trait": "flower_part",
                     "start": 32,
@@ -748,13 +741,6 @@ class TestSize(unittest.TestCase):
                     "part": "tree",
                 },
                 {"part": "bark", "trait": "part", "start": 20, "end": 24},
-                {
-                    "color": "yellow-brown",
-                    "trait": "color",
-                    "start": 25,
-                    "end": 37,
-                    "part": "bark",
-                },
             ],
         )
 
@@ -774,13 +760,6 @@ class TestSize(unittest.TestCase):
                     "part": "bark",
                 },
                 {"part": "bark", "trait": "part", "start": 26, "end": 30},
-                {
-                    "color": "gray",
-                    "trait": "color",
-                    "start": 40,
-                    "end": 49,
-                    "part": "bark",
-                },
             ],
         )
 

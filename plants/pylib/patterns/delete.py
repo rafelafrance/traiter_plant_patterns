@@ -3,21 +3,7 @@ import re
 from spacy import registry
 from traiter.pylib import const as t_const
 
-from .. import trait_lists
-
-PARTIAL_TRAITS = """ about authority bad_taxon color_mod cross dim dimension
-    imperial_length imperial_mass joined length_units rank margin_leader metric_length
-    metric_mass month not_a_range number_word per_count plant_taxon quest range
-    shape_leader shape_suffix skip units surface_leader elev_label no_label
-    class_rank division_rank family_rank genus_rank infraclass_rank infradivision_rank
-    infrakingdom_rank kingdom_rank order_rank section_rank series_rank subclass_rank
-    subdivision_rank subfamily_rank subgenus_rank subkingdom_rank suborder_rank
-    subsection_rank subseries_rank subtribe_rank superclass_rank superdivision_rank
-    superorder_rank tribe_rank ordinal time_units roman
-    species_rank subspecies_rank variety_rank subvariety_rank form_rank subform_rank
-    monomial binomial
-    """.split()
-
+from . import terms
 
 # ####################################################################################
 DELETE_MISSING_PARTS = "plant_missing_parts_v1"
@@ -27,7 +13,7 @@ DELETE_MISSING_PARTS = "plant_missing_parts_v1"
 def delete_missing_parts(ent):
     """Remove trait if it is missing both the part and subpart."""
     data = ent._.data
-    has_part = set(data.keys()) & trait_lists.PARTS_SET
+    has_part = set(data.keys()) & terms.PARTS_SET
     return not has_part and not data.get("subpart")
 
 

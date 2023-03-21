@@ -1,15 +1,10 @@
-import plants.pylib.trait_lists
+from ..patterns import terms
 
 TITLE_SKIPS = ["start", "end"]
 FIELD_SKIPS = TITLE_SKIPS + ["trait", "dimensions"]
-FIELD_SKIPS += plants.pylib.trait_lists.PARTS + plants.pylib.trait_lists.SUBPARTS
+FIELD_SKIPS += terms.PARTS + terms.SUBPARTS
 COLUMN_SKIPS = FIELD_SKIPS + ["taxon"]
-TRAIT_SKIPS = (
-    plants.pylib.trait_lists.PARTS
-    + plants.pylib.trait_lists.SUBPARTS
-    + plants.pylib.trait_lists.LOCATIONS
-    + ["sex"]
-)
+TRAIT_SKIPS = terms.PARTS + terms.SUBPARTS + terms.LOCATIONS + ["sex"]
 
 
 def get_label(trait):
@@ -17,11 +12,11 @@ def get_label(trait):
 
     label = {}  # Dicts preserve order sets do not
 
-    part_key = list(keys & plants.pylib.trait_lists.PARTS_SET)
+    part_key = list(keys & terms.PARTS_SET)
     part = trait[part_key[0]] if part_key else ""
     label[" ".join(part) if isinstance(part, list) else part] = 1
 
-    subpart_key = list(keys & plants.pylib.trait_lists.SUBPART_SET)
+    subpart_key = list(keys & terms.SUBPART_SET)
     if subpart_key:
         label[trait[subpart_key[0]]] = 1
 

@@ -44,15 +44,23 @@ class TestPartLocation(unittest.TestCase):
                 {
                     "leaf_part": "leaf",
                     "trait": "leaf_part",
-                    "part_as_loc": "embracing stem",
                     "start": 0,
                     "end": 6,
+                    "part_as_loc": "embracing stem",
                 },
                 {
                     "part_as_loc": "embracing stem",
                     "trait": "part_as_loc",
                     "start": 18,
                     "end": 32,
+                },
+                {
+                    "joined": "connate",
+                    "trait": "joined",
+                    "start": 41,
+                    "end": 48,
+                    "leaf_part": "leaf",
+                    "part_as_loc": "embracing stem",
                 },
             ],
         )

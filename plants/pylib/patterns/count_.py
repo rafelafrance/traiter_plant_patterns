@@ -5,8 +5,7 @@ from traiter.pylib import util as t_util
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from .. import trait_lists
-from .terms import PLANT_TERMS
+from . import terms
 
 # ####################################################################################
 
@@ -33,7 +32,7 @@ _DECODER = common.PATTERNS | {
     "[.,]": {"LOWER": {"IN": t_const.COMMA + t_const.DOT}},
     "per_count": {"ENT_TYPE": "per_count"},
     "every": {"LOWER": {"IN": _EVERY}},
-    "part": {"ENT_TYPE": {"IN": trait_lists.PARTS}},
+    "part": {"ENT_TYPE": {"IN": terms.PARTS}},
     "x": {"LOWER": {"IN": ["x", "X"]}},
     "=": {"TEXT": {"IN": ["=", ":"]}},
     "°": {"TEXT": {"IN": ["°"]}},
@@ -73,11 +72,11 @@ def on_count_match(ent):
 
     if per_count := next((e for e in ent.ents if e.label_ == "per_count"), None):
         text = per_count.text.lower()
-        ent._.data["count_group"] = PLANT_TERMS.replace.get(text, text)
+        ent._.data["count_group"] = terms.PLANT_TERMS.replace.get(text, text)
 
-    if per_part := next((e for e in ent.ents if e.label_ in trait_lists.PARTS), None):
+    if per_part := next((e for e in ent.ents if e.label_ in terms.PARTS), None):
         text = per_part.text.lower()
-        ent._.data["per_part"] = PLANT_TERMS.replace.get(text, text)
+        ent._.data["per_part"] = terms.PLANT_TERMS.replace.get(text, text)
 
 
 # ####################################################################################
@@ -96,7 +95,7 @@ def on_count_word_match(ent):
     ent._.new_label = "count"
     word = next(e for e in ent.ents if e.label_ == "count_word")
     word._.data = {
-        "low": t_util.to_positive_int(PLANT_TERMS.replace[word.text.lower()])
+        "low": t_util.to_positive_int(terms.PLANT_TERMS.replace[word.text.lower()])
     }
 
 

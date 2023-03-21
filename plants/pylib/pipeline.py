@@ -1,3 +1,5 @@
+from .patterns import delete
+from .patterns import terms
 from .pipeline_builder import PipelineBuilder
 
 
@@ -7,9 +9,7 @@ def pipeline():
     pipes.tokenizer()
 
     pipes.taxon_terms()
-    pipes.taxa()
-    # pipes.debug_tokens()  # ####################################
-    pipes.taxa_plus(n=2)
+    pipes.taxa(n=2)
     pipes.taxa_like()
 
     pipes.plant_terms()
@@ -20,7 +20,8 @@ def pipeline():
     pipes.margins()
     pipes.colors()
     pipes.part_locations()
-    pipes.delete_partial_traits()
+
+    pipes.delete_traits("delete_partials", keep=terms.KEEP)
 
     pipes.link_parts()
     pipes.link_parts_once()
@@ -30,7 +31,8 @@ def pipeline():
     pipes.link_locations()
     pipes.link_taxa_like()
 
-    pipes.delete_unlinked()
-    pipes.delete_partial_traits(name="final_deletes")
+    pipes.delete_traits("final_delete", delete_when=delete.DELETE_WHEN)
+
+    # pipes.debug_tokens()  # ####################################
 
     return pipes

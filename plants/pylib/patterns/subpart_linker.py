@@ -8,16 +8,16 @@ Named entity recognition (NER) must be run first.
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from .. import trait_lists
+from . import terms
 
 # ####################################################################################
 _SUBPART_PARENTS = ["subpart"]
-_SUBPART_CHILDREN = trait_lists.all_traits_except(
+_SUBPART_CHILDREN = terms.all_traits_except(
     " subpart sex reproduction plant_habit habit ".split()
-    + trait_lists.LOCATIONS
-    + trait_lists.PARTS
-    + trait_lists.PLANT_TRAITS
-    + trait_lists.NO_LINK
+    + terms.LOCATIONS
+    + terms.PARTS
+    + terms.PLANT_TRAITS
+    + terms.NO_LINK
 )
 
 SUBPART_LINKER = Compiler(

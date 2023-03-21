@@ -1,11 +1,11 @@
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from .. import trait_lists
+from . import terms
 
-_LOCATION_PARENTS = trait_lists.LOCATIONS
-_LOCATION_CHILDREN = trait_lists.all_traits_except(
-    " shape sex taxon ".split() + trait_lists.LOCATIONS + trait_lists.NO_LINK
+_LOCATION_PARENTS = terms.LOCATIONS
+_LOCATION_CHILDREN = terms.all_traits_except(
+    " shape sex taxon ".split() + terms.LOCATIONS + terms.NO_LINK
 )
 
 LOCATION_LINKER = Compiler(

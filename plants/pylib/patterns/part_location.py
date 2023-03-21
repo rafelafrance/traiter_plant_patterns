@@ -4,7 +4,7 @@ from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
 from . import size_
-from .. import trait_lists
+from . import terms
 from .terms import PLANT_TERMS
 
 _DECODER = common.PATTERNS | {
@@ -12,9 +12,9 @@ _DECODER = common.PATTERNS | {
     "cm": {"ENT_TYPE": "metric_length"},
     "joined": {"ENT_TYPE": "joined"},
     "leader": {"LOWER": {"IN": """to at embracing immersed from""".split()}},
-    "location": {"ENT_TYPE": {"IN": trait_lists.LOCATIONS}},
+    "location": {"ENT_TYPE": {"IN": terms.LOCATIONS}},
     "of": {"LOWER": "of"},
-    "part": {"ENT_TYPE": {"IN": trait_lists.PARTS}},
+    "part": {"ENT_TYPE": {"IN": terms.PARTS}},
     "prep": {"POS": "ADP"},
     "sex": {"ENT_TYPE": "sex"},
     "subpart": {"ENT_TYPE": "subpart"},

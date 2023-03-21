@@ -38,8 +38,8 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             terms.MONOMIAL_TERMS, name=f"taxon_monomials", after=name, merge=True
         )
 
-    def taxa(self, **kwargs) -> str:
-        return self.add_traits(
+    def taxa(self, n=2, **kwargs) -> str:
+        prev = self.add_traits(
             [
                 taxon.MONOMIAL,
                 taxon.SPECIES_TAXON,
@@ -55,22 +55,22 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             **kwargs,
         )
 
-    def taxa_plus(self, n=1, **kwargs) -> str:
-        name = "taxon_plus1"
+        name = "taxa_plus1"
         prev = self.add_traits(
             [taxon_plus1.TAXON_PLUS1, taxon_plus1.MULTI_TAXON],
             name=name,
             merge=True,
+            after=prev,
             **kwargs,
         )
 
         for i in range(2, n + 1):
-            name = f"taxon_plus{i}"
+            name = f"taxa_plus{i}"
             prev = self.add_traits(
                 [taxon_plus2.TAXON_PLUS2], name=name, merge=True, after=prev
             )
 
-        name = "taxon_lower"
+        name = "taxa_lower"
         self.add_traits([taxon_plus1.LOWER_MONOMIAL], name=name, merge=True)
 
         return name
@@ -239,11 +239,3 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         return self.delete_traits(
             "delete_unlinked", delete=delete_unlinked, delete_when=delete_when, **kwargs
         )
-
-    def delete_partial_traits(
-        self, name="delete_partials", partial_traits=None, **kwargs
-    ) -> str:
-        if partial_traits is None:
-            partial_traits = delete.PARTIAL_TRAITS
-
-        return self.delete_traits(name=name, delete=partial_traits, **kwargs)

@@ -7,17 +7,17 @@ the "woody" trait.
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from .. import trait_lists
+from . import terms
 
 
 # ####################################################################################
-_PART_PARENTS = trait_lists.PARTS
-_PART_CHILDREN = trait_lists.all_traits_except(
+_PART_PARENTS = terms.PARTS
+_PART_CHILDREN = terms.all_traits_except(
     ["leaf_duration", "sex", "taxon", "size", "count", "habit"]
-    + trait_lists.PARTS
-    + trait_lists.LOCATIONS
-    + trait_lists.PLANT_TRAITS
-    + trait_lists.NO_LINK
+    + terms.PARTS
+    + terms.LOCATIONS
+    + terms.PLANT_TRAITS
+    + terms.NO_LINK
 )
 
 PART_LINKER = Compiler(

@@ -69,6 +69,13 @@ class TestCount(unittest.TestCase):
                     "start": 7,
                     "end": 8,
                 },
+                {
+                    "joined": "connate",
+                    "trait": "joined",
+                    "start": 10,
+                    "end": 17,
+                    "flower_part": "petal",
+                },
             ],
         )
 

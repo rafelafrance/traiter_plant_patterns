@@ -2,8 +2,8 @@ from collections import defaultdict
 
 import pandas as pd
 
-import plants.pylib.trait_lists
 from . import writer_utils as w_utils
+from ..patterns import terms
 
 
 class CsvWriter:
@@ -34,12 +34,12 @@ class CsvWriter:
     def row_builder(self, row, csv_row):
         by_header = defaultdict(list)
         for trait in row.traits:
-            if trait["trait"] in plants.pylib.trait_lists.PARTS_SET:
+            if trait["trait"] in terms.PARTS_SET:
                 continue
 
             key_set = set(trait.keys())
 
-            if not (plants.pylib.trait_lists.PARTS_SET & key_set):
+            if not (terms.PARTS_SET & key_set):
                 continue
 
             base_header = w_utils.get_label(trait)

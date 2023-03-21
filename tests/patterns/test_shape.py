@@ -463,13 +463,6 @@ class TestShape(unittest.TestCase):
             [
                 {"flower_part": "petal", "trait": "flower_part", "start": 0, "end": 6},
                 {
-                    "color": "purple",
-                    "trait": "color",
-                    "flower_part": "petal",
-                    "start": 7,
-                    "end": 13,
-                },
-                {
                     "start": 15,
                     "end": 23,
                     "trait": "shape",

@@ -2,10 +2,10 @@ from spacy import registry
 from traiter.pylib.pattern_compilers.matcher import Compiler
 from traiter.pylib.patterns import common
 
-from ..trait_lists import PARTS
-from ..trait_lists import PARTS_SET
-from ..trait_lists import SUBPARTS
+from .terms import PARTS
+from .terms import PARTS_SET
 from .terms import PLANT_TERMS
+from .terms import SUBPARTS
 
 _PART_LEADER = """ primary secondary """.split()
 
