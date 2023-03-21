@@ -10,7 +10,7 @@ from traiter.pylib.patterns import common
 
 from .terms import PLANT_TERMS
 
-_FACTORS = PLANT_TERMS.pattern_dict("factor", float)
+_FACTORS = PLANT_TERMS.pattern_dict("factor_cm", float)
 
 _FOLLOW = """ dim sex """.split()
 _NOT_A_SIZE = """ for below above """.split()

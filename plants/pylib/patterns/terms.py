@@ -6,6 +6,7 @@ from .. import const
 ADMIN_UNIT_TERMS = TermList().shared("us_locations")
 
 PLANT_TERMS = TermList().shared("colors labels numerics time units")
+PLANT_TERMS += TermList().shared("labels").pick("about")
 PLANT_TERMS += TermList().read(const.TREATMENT_CSV)
 PLANT_TERMS += TermList().read(const.VOCAB_DIR / "ranks.csv")
 
