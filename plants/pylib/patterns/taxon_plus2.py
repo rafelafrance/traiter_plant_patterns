@@ -34,10 +34,6 @@ TAXON_PLUS2 = Compiler(
         "taxon lower_rank lower ( auth+ maybe auth+           )",
         "taxon lower_rank lower ( auth+             and auth+ )",
         "taxon lower_rank lower ( auth+ maybe auth+ and auth+ )",
-        "taxon lower_rank lower ( auth+                       ) auth+",
-        "taxon lower_rank lower ( auth+ maybe auth+           ) auth+",
-        "taxon lower_rank lower ( auth+             and auth+ ) auth+",
-        "taxon lower_rank lower ( auth+ maybe auth+ and auth+ ) auth+",
         "taxon lower_rank lower   auth+                        ",
         "taxon lower_rank lower   auth+ maybe auth+            ",
         "taxon lower_rank lower   auth+             and auth+  ",
@@ -47,10 +43,6 @@ TAXON_PLUS2 = Compiler(
         "taxon lower_rank maybe ( auth+ maybe auth+           )",
         "taxon lower_rank maybe ( auth+             and auth+ )",
         "taxon lower_rank maybe ( auth+ maybe auth+ and auth+ )",
-        "taxon lower_rank maybe ( auth+                       ) auth+",
-        "taxon lower_rank maybe ( auth+ maybe auth+           ) auth+",
-        "taxon lower_rank maybe ( auth+             and auth+ ) auth+",
-        "taxon lower_rank maybe ( auth+ maybe auth+ and auth+ ) auth+",
         "taxon lower_rank maybe   auth+                        ",
         "taxon lower_rank maybe   auth+ maybe auth+            ",
         "taxon lower_rank maybe   auth+             and auth+  ",
@@ -65,9 +57,10 @@ def on_taxon_auth_match(ent):
 
     next_is_lower_taxon = False
 
-    taxon_ = [taxon_ent._.data["taxon"]]
-    auth = [taxon_ent._.data["authority"]]
-    rank = taxon_ent._.data["rank"]
+    ent_data = taxon_ent._.data
+    taxon_ = [ent_data["taxon"]]
+    auth = [ent_data["authority"]] if ent_data.get("authority") else []
+    rank = ent_data["rank"]
 
     for token in ent:
         if token.ent_type_ == "taxon":

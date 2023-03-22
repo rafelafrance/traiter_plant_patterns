@@ -13,8 +13,10 @@ from pathlib import Path
 
 import regex
 from pylib import const
+from pylib.patterns import terms
 from tqdm import tqdm
 from traiter.pylib import log
+from traiter.pylib.patterns import terms as t_terms
 from traiter.pylib.term_list import TermList
 
 ITIS_SPECIES_ID = 220
@@ -76,14 +78,15 @@ class Taxa:
         for rank in ranks:
             self.add_taxon_and_rank(pattern, rank)
 
-    def remove_problem_taxa(self, traiter_vocab_dir):
+    def remove_problem_taxa(self):
         """Some taxa interfere with other parses."""
         new = {}
 
         problem_words = {"temp", "uncertain", "unknown", "dummy"}
 
-        problem_taxa = {"harms", "side"}
-        problem_taxa |= get_treatments() | get_traiter_terms(traiter_vocab_dir)
+        problem_taxa = {"harms", "side", "may"}
+        problem_taxa |= {t["pattern"] for t in t_terms.ALL_TERMS.data}
+        problem_taxa |= {t["pattern"] for t in terms.PLANT_TERMS.data}
 
         for taxon, rank in self.taxon.items():
             words = taxon.split()
@@ -101,11 +104,11 @@ class Taxa:
                 continue
 
             if len(taxon) < const.MIN_TAXON_LEN:
-                print(f"Removed {taxon} {rank}")
+                # print(f"Removed {taxon} {rank}")
                 continue
 
             if any(len(w) < const.MIN_TAXON_WORD_LEN for w in words):
-                print(f"Removed {taxon} {rank}")
+                # print(f"Removed {taxon} {rank}")
                 continue
 
             new[taxon] = rank
@@ -123,7 +126,7 @@ def main():
 
     read_taxa(args, taxa)
 
-    taxa.remove_problem_taxa(args.traiter_vocab_dir)
+    taxa.remove_problem_taxa()
 
     records = build_records(taxa)
     counts = count_ranks(records)
@@ -225,28 +228,6 @@ def read_taxa(args, taxa):
 
     if args.other_taxa_csv:
         read_other_taxa(args.other_taxa_csv, taxa)
-
-
-def get_treatments():
-    with open(const.VOCAB_DIR / "treatment.csv") as in_file:
-        reader = csv.DictReader(in_file)
-        patterns = {t["pattern"] for t in reader}
-    return patterns
-
-
-def get_traiter_terms(traiter_vocab_dir):
-    patterns = set()
-
-    if not traiter_vocab_dir:
-        return patterns
-
-    for path in traiter_vocab_dir.glob("*.csv"):
-        with open(path) as in_file:
-            reader = csv.DictReader(in_file)
-            terms = {t["pattern"] for t in reader}
-        patterns |= terms
-
-    return patterns
 
 
 def read_other_taxa(other_taxa_csv, taxa):

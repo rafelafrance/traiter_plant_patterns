@@ -32,7 +32,7 @@ _MAYBE = """ PROPN NOUN """.split()
 _BAD_PREFIX = """ de el la le no se costa santa & """.split()
 _BAD_SUFFIX = """ river mountain road """.split()
 
-_ABBREV_RE = r"^[A-Z][.,;_]*$"
+_ABBREV_RE = r"^[A-Z][.,_]$"
 
 _DECODER = {
     "A.": {"TEXT": {"REGEX": _ABBREV_RE}},
@@ -75,16 +75,14 @@ def on_single_taxon_match(ent):
         # Taxon and its rank
         if label == "monomial":
             taxon_ = terms.TAXON_TERMS.replace.get(token.lower_, token.text)
+            taxon_ = taxon_.replace("- ", "-")
 
             # A given rank will override the one in the DB
-            if not rank:
-                rank_ = terms.TAXON_RANKS.get(token.lower_, "")
+            if not rank and (rank_ := terms.TAXON_RANKS.get(taxon_.lower(), "")):
                 rank_ = rank_.split()[0]
                 if rank_ in _HIGHER_RANK_NAMES and token.shape_ in NAME_SHAPES:
-                    # rank_from_csv = True
                     rank = rank_
                 elif rank_ in _SPECIES_AND_LOWER and token.shape_ not in TITLE_SHAPES:
-                    # rank_from_csv = True
                     rank = rank_
 
         # A given rank overrides the one in the DB

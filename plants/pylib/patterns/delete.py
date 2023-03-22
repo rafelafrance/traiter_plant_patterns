@@ -82,8 +82,9 @@ _OF = """ of """.split()
 @registry.misc(DELETE_OTHERS)
 def delete_others(ent):
     """Remove "plants of ohio" etc."""
-    if ent.text.lower() in ["plants"] and len(ent.doc) > ent.start:
+    if ent.text.lower() in ["plants"] and len(ent.doc) > ent.start + 1:
         return ent.doc[ent.start + 1].lower_ in _OF
+    return False
 
 
 # ####################################################################################
