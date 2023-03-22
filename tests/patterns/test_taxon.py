@@ -145,12 +145,12 @@ class TestTaxon(unittest.TestCase):
             test("""Mimosa sensitiva (Bentham) Fox, Trans."""),
             [
                 {
-                    "authority": "Bentham Fox",
+                    "authority": "Bentham",
                     "rank": "species",
                     "taxon": "Mimosa sensitiva",
                     "trait": "taxon",
                     "start": 0,
-                    "end": 30,
+                    "end": 26,
                 }
             ],
         )
@@ -306,6 +306,25 @@ class TestTaxon(unittest.TestCase):
                     "trait": "taxon",
                     "start": 0,
                     "end": 30,
+                }
+            ],
+        )
+
+    def test_taxon_19(self):
+        """Do not maximize the authority."""
+        self.assertEqual(
+            test(
+                """Cornus obliqua Willd.
+                In Fraijanes Recreation Park"""
+            ),
+            [
+                {
+                    "taxon": "Cornus obliqua",
+                    "rank": "species",
+                    "authority": "Willd",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 20,
                 }
             ],
         )

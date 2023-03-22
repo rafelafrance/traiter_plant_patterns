@@ -4,7 +4,6 @@ from traiter.pylib import pipeline_builder
 from . import tokenizer
 from .patterns import count_
 from .patterns import count_suffix
-from .patterns import delete
 from .patterns import habit
 from .patterns import location_linker
 from .patterns import margin
@@ -31,11 +30,11 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
         tokenizer.setup_tokenizer(self.nlp)
 
     def taxon_terms(self, **kwargs) -> str:
-        name = self.add_terms(
+        prev = self.add_terms(
             terms.BINOMIAL_TERMS + terms.RANK_TERMS, name="taxon_binomials", **kwargs
         )
         return self.add_terms(
-            terms.MONOMIAL_TERMS, name=f"taxon_monomials", after=name, merge=True
+            terms.MONOMIAL_TERMS, name=f"taxon_monomials", after=prev, merge=True
         )
 
     def taxa(self, n=2, **kwargs) -> str:
@@ -57,11 +56,10 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
 
         name = "taxa_plus1"
         prev = self.add_traits(
-            [taxon_plus1.TAXON_PLUS1, taxon_plus1.MULTI_TAXON],
+            [taxon_plus1.TAXON_AUTH1, taxon_plus1.MULTI_TAXON],
             name=name,
             merge=True,
             after=prev,
-            **kwargs,
         )
 
         for i in range(2, n + 1):
@@ -71,14 +69,14 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             )
 
         name = "taxa_lower"
-        self.add_traits([taxon_plus1.LOWER_MONOMIAL], name=name, merge=True)
+        self.add_traits([taxon_plus1.LOWER_MONOMIAL], name=name, after=prev, merge=True)
 
         return name
 
-    def plant_terms(self, name="plant_terms", **kwargs) -> str:
+    def plant_terms(self, **kwargs) -> str:
         return self.add_terms(
             terms.PLANT_TERMS,
-            name=name,
+            name="plant_terms",
             replace=terms.PLANT_TERMS.pattern_dict("replace"),
             merge=True,
             **kwargs,
@@ -227,15 +225,4 @@ class PipelineBuilder(pipeline_builder.PipelineBuilder):
             children=taxon_like_linker._TAXON_LIKE_CHILDREN,
             weights=t_const.TOKEN_WEIGHTS,
             **kwargs,
-        )
-
-    def delete_unlinked(self, delete_unlinked=None, delete_when=None, **kwargs) -> str:
-        if delete_unlinked is None:
-            delete_unlinked = delete.PARTIAL_TRAITS
-
-        if delete_when is None:
-            delete_when = delete.DELETE_WHEN
-
-        return self.delete_traits(
-            "delete_unlinked", delete=delete_unlinked, delete_when=delete_when, **kwargs
         )

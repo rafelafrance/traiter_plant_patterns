@@ -1,5 +1,3 @@
-import re
-
 import regex
 from spacy import registry
 from traiter.pylib import actions
@@ -10,8 +8,6 @@ from traiter.pylib.pattern_compilers.matcher import Compiler
 from . import terms
 
 MIN_TAXON_LEN = 3
-
-_ABBREV_RE = r"^[A-Z]$"
 
 _RANKS = terms.TAXON_TERMS.pattern_dict("ranks")
 
@@ -36,9 +32,10 @@ _MAYBE = """ PROPN NOUN """.split()
 _BAD_PREFIX = """ de el la le no se costa santa & """.split()
 _BAD_SUFFIX = """ river mountain road """.split()
 
+_ABBREV_RE = r"^[A-Z][.,;_]*$"
+
 _DECODER = {
-    ".": {"TEXT": {"REGEX": r"^[.,;_]+$"}},
-    "A": {"TEXT": {"REGEX": _ABBREV_RE}},
+    "A.": {"TEXT": {"REGEX": _ABBREV_RE}},
     "bad_prefix": {"LOWER": {"IN": _BAD_PREFIX}},
     "bad_suffix": {"LOWER": {"IN": _BAD_SUFFIX}},
     "maybe": {"POS": {"IN": _MAYBE}},
@@ -115,7 +112,7 @@ SPECIES_TAXON = Compiler(
     "taxon.species",
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
-    patterns=["binomial", "monomial monomial", "A . monomial"],
+    patterns=["binomial", "monomial monomial", "A. monomial"],
 )
 
 SUBSPECIES_TAXON = Compiler(
@@ -123,12 +120,12 @@ SUBSPECIES_TAXON = Compiler(
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
     patterns=[
-        "    binomial subsp? .? monomial",
-        "    binomial subsp  .? maybe",
-        "A . monomial subsp? .? monomial",
-        "A . monomial subsp  .? maybe",
-        "A . maybe    subsp? .? monomial",
-        "A . maybe    subsp  .? maybe",
+        "   binomial subsp? monomial",
+        "   binomial subsp  maybe",
+        "A. monomial subsp? monomial",
+        "A. monomial subsp  maybe",
+        "A. maybe    subsp? monomial",
+        "A. maybe    subsp  maybe",
     ],
 )
 
@@ -137,26 +134,26 @@ VARIETY_TAXON = Compiler(
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
     patterns=[
-        "    binomial                   var .? monomial",
-        "    binomial subsp .? monomial var .? monomial",
-        "    binomial                   var .? maybe",
-        "    binomial subsp .? monomial var .? maybe",
-        "A . monomial                   var .? monomial",
-        "A . monomial subsp .? monomial var .? monomial",
-        "A . monomial                   var .? maybe",
-        "A . monomial subsp .? monomial var .? maybe",
-        "A . monomial                   var .? monomial",
-        "A . monomial subsp .? monomial var .? monomial",
-        "A . monomial                   var .? maybe",
-        "A . monomial subsp .? monomial var .? maybe",
-        "A . maybe                      var .? monomial",
-        "A . maybe    subsp .? monomial var .? monomial",
-        "A . maybe                      var .? maybe",
-        "A . maybe    subsp .? monomial var .? maybe",
-        "A . maybe                      var .? monomial",
-        "A . maybe    subsp .? monomial var .? monomial",
-        "A . maybe                      var .? maybe",
-        "A . maybe    subsp .? monomial var .? maybe",
+        "   binomial                var monomial",
+        "   binomial subsp monomial var monomial",
+        "   binomial                var maybe",
+        "   binomial subsp monomial var maybe",
+        "A. monomial                var monomial",
+        "A. monomial subsp monomial var monomial",
+        "A. monomial                var maybe",
+        "A. monomial subsp monomial var maybe",
+        "A. monomial                var monomial",
+        "A. monomial subsp monomial var monomial",
+        "A. monomial                var maybe",
+        "A. monomial subsp monomial var maybe",
+        "A. maybe                   var monomial",
+        "A. maybe    subsp monomial var monomial",
+        "A. maybe                   var maybe",
+        "A. maybe    subsp monomial var maybe",
+        "A. maybe                   var monomial",
+        "A. maybe    subsp monomial var monomial",
+        "A. maybe                   var maybe",
+        "A. maybe    subsp monomial var maybe",
     ],
 )
 
@@ -165,36 +162,36 @@ SUBVARIETY_TAXON = Compiler(
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
     patterns=[
-        "    binomial                   subvar .? monomial",
-        "    binomial var   .? monomial subvar .? monomial",
-        "    binomial subsp .? monomial subvar .? monomial",
-        "    binomial                   subvar .? maybe",
-        "    binomial var   .? monomial subvar .? maybe",
-        "    binomial subsp .? monomial subvar .? maybe",
-        "    binomial var   .? maybe    subvar .? maybe",
-        "    binomial subsp .? maybe    subvar .? maybe",
-        "    binomial var   .? maybe    subvar .? monomial",
-        "    binomial subsp .? maybe    subvar .? monomial",
-        "A . monomial                   subvar .? monomial",
-        "A . monomial var   .? monomial subvar .? monomial",
-        "A . monomial subsp .? monomial subvar .? monomial",
-        "A . monomial                   subvar .? maybe",
-        "A . monomial var   .? monomial subvar .? maybe",
-        "A . monomial subsp .? monomial subvar .? maybe",
-        "A . monomial var   .? maybe    subvar .? maybe",
-        "A . monomial subsp .? maybe    subvar .? maybe",
-        "A . monomial var   .? maybe    subvar .? monomial",
-        "A . monomial subsp .? maybe    subvar .? monomial",
-        "A . maybe                      subvar .? monomial",
-        "A . maybe    var   .? monomial subvar .? monomial",
-        "A . maybe    subsp .? monomial subvar .? monomial",
-        "A . maybe                      subvar .? maybe",
-        "A . maybe    var   .? monomial subvar .? maybe",
-        "A . maybe    subsp .? monomial subvar .? maybe",
-        "A . maybe    var   .? maybe    subvar .? maybe",
-        "A . maybe    subsp .? maybe    subvar .? maybe",
-        "A . maybe    var   .? maybe    subvar .? monomial",
-        "A . maybe    subsp .? maybe    subvar .? monomial",
+        "   binomial                subvar monomial",
+        "   binomial var   monomial subvar monomial",
+        "   binomial subsp monomial subvar monomial",
+        "   binomial                subvar maybe",
+        "   binomial var   monomial subvar maybe",
+        "   binomial subsp monomial subvar maybe",
+        "   binomial var   maybe    subvar maybe",
+        "   binomial subsp maybe    subvar maybe",
+        "   binomial var   maybe    subvar monomial",
+        "   binomial subsp maybe    subvar monomial",
+        "A. monomial                subvar monomial",
+        "A. monomial var   monomial subvar monomial",
+        "A. monomial subsp monomial subvar monomial",
+        "A. monomial                subvar maybe",
+        "A. monomial var   monomial subvar maybe",
+        "A. monomial subsp monomial subvar maybe",
+        "A. monomial var   maybe    subvar maybe",
+        "A. monomial subsp maybe    subvar maybe",
+        "A. monomial var   maybe    subvar monomial",
+        "A. monomial subsp maybe    subvar monomial",
+        "A. maybe                   subvar monomial",
+        "A. maybe    var   monomial subvar monomial",
+        "A. maybe    subsp monomial subvar monomial",
+        "A. maybe                   subvar maybe",
+        "A. maybe    var   monomial subvar maybe",
+        "A. maybe    subsp monomial subvar maybe",
+        "A. maybe    var   maybe    subvar maybe",
+        "A. maybe    subsp maybe    subvar maybe",
+        "A. maybe    var   maybe    subvar monomial",
+        "A. maybe    subsp maybe    subvar monomial",
     ],
 )
 
@@ -203,36 +200,36 @@ FORM_TAXON = Compiler(
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
     patterns=[
-        "    binomial                   f. monomial",
-        "    binomial var   .? monomial f. monomial",
-        "    binomial subsp .? monomial f. monomial",
-        "    binomial                   f. maybe",
-        "    binomial var   .? monomial f. maybe",
-        "    binomial subsp .? monomial f. maybe",
-        "    binomial var   .? maybe    f. maybe",
-        "    binomial subsp .? maybe    f. maybe",
-        "    binomial var   .? maybe    f. monomial",
-        "    binomial subsp .? maybe    f. monomial",
-        "A . monomial                   f. monomial",
-        "A . monomial var   .? monomial f. monomial",
-        "A . monomial subsp .? monomial f. monomial",
-        "A . monomial                   f. maybe",
-        "A . monomial var   .? monomial f. maybe",
-        "A . monomial subsp .? monomial f. maybe",
-        "A . monomial var   .? maybe    f. maybe",
-        "A . monomial subsp .? maybe    f. maybe",
-        "A . monomial var   .? maybe    f. monomial",
-        "A . monomial subsp .? maybe    f. monomial",
-        "A . maybe                      f. monomial",
-        "A . maybe    var   .? monomial f. monomial",
-        "A . maybe    subsp .? monomial f. monomial",
-        "A . maybe                      f. maybe",
-        "A . maybe    var   .? monomial f. maybe",
-        "A . maybe    subsp .? monomial f. maybe",
-        "A . maybe    var   .? maybe    f. maybe",
-        "A . maybe    subsp .? maybe    f. maybe",
-        "A . maybe    var   .? maybe    f. monomial",
-        "A . maybe    subsp .? maybe    f. monomial",
+        "   binomial                f. monomial",
+        "   binomial var   monomial f. monomial",
+        "   binomial subsp monomial f. monomial",
+        "   binomial                f. maybe",
+        "   binomial var   monomial f. maybe",
+        "   binomial subsp monomial f. maybe",
+        "   binomial var   maybe    f. maybe",
+        "   binomial subsp maybe    f. maybe",
+        "   binomial var   maybe    f. monomial",
+        "   binomial subsp maybe    f. monomial",
+        "A. monomial                f. monomial",
+        "A. monomial var   monomial f. monomial",
+        "A. monomial subsp monomial f. monomial",
+        "A. monomial                f. maybe",
+        "A. monomial var   monomial f. maybe",
+        "A. monomial subsp monomial f. maybe",
+        "A. monomial var   maybe    f. maybe",
+        "A. monomial subsp maybe    f. maybe",
+        "A. monomial var   maybe    f. monomial",
+        "A. monomial subsp maybe    f. monomial",
+        "A. maybe                   f. monomial",
+        "A. maybe    var   monomial f. monomial",
+        "A. maybe    subsp monomial f. monomial",
+        "A. maybe                   f. maybe",
+        "A. maybe    var   monomial f. maybe",
+        "A. maybe    subsp monomial f. maybe",
+        "A. maybe    var   maybe    f. maybe",
+        "A. maybe    subsp maybe    f. maybe",
+        "A. maybe    var   maybe    f. monomial",
+        "A. maybe    subsp maybe    f. monomial",
     ],
 )
 
@@ -241,36 +238,36 @@ SUBFORM_TAXON = Compiler(
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
     patterns=[
-        "    binomial                   subf .? monomial",
-        "    binomial var   .? monomial subf .? monomial",
-        "    binomial subsp .? monomial subf .? monomial",
-        "    binomial                   subf .? maybe",
-        "    binomial var   .? monomial subf .? maybe",
-        "    binomial subsp .? monomial subf .? maybe",
-        "    binomial var   .? maybe    subf .? maybe",
-        "    binomial subsp .? maybe    subf .? maybe",
-        "    binomial var   .? maybe    subf .? monomial",
-        "    binomial subsp .? maybe    subf .? monomial",
-        "A . monomial                   subf .? monomial",
-        "A . monomial var   .? monomial subf .? monomial",
-        "A . monomial subsp .? monomial subf .? monomial",
-        "A . monomial                   subf .? maybe",
-        "A . monomial var   .? monomial subf .? maybe",
-        "A . monomial subsp .? monomial subf .? maybe",
-        "A . monomial var   .? maybe    subf .? maybe",
-        "A . monomial subsp .? maybe    subf .? maybe",
-        "A . monomial var   .? maybe    subf .? monomial",
-        "A . monomial subsp .? maybe    subf .? monomial",
-        "A . maybe                      subf .? monomial",
-        "A . maybe    var   .? monomial subf .? monomial",
-        "A . maybe    subsp .? monomial subf .? monomial",
-        "A . maybe                      subf .? maybe",
-        "A . maybe    var   .? monomial subf .? maybe",
-        "A . maybe    subsp .? monomial subf .? maybe",
-        "A . maybe    var   .? maybe    subf .? maybe",
-        "A . maybe    subsp .? maybe    subf .? maybe",
-        "A . maybe    var   .? maybe    subf .? monomial",
-        "A . maybe    subsp .? maybe    subf .? monomial",
+        "   binomial                subf monomial",
+        "   binomial var   monomial subf monomial",
+        "   binomial subsp monomial subf monomial",
+        "   binomial                subf maybe",
+        "   binomial var   monomial subf maybe",
+        "   binomial subsp monomial subf maybe",
+        "   binomial var   maybe    subf maybe",
+        "   binomial subsp maybe    subf maybe",
+        "   binomial var   maybe    subf monomial",
+        "   binomial subsp maybe    subf monomial",
+        "A. monomial                subf monomial",
+        "A. monomial var   monomial subf monomial",
+        "A. monomial subsp monomial subf monomial",
+        "A. monomial                subf maybe",
+        "A. monomial var   monomial subf maybe",
+        "A. monomial subsp monomial subf maybe",
+        "A. monomial var   maybe    subf maybe",
+        "A. monomial subsp maybe    subf maybe",
+        "A. monomial var   maybe    subf monomial",
+        "A. monomial subsp maybe    subf monomial",
+        "A. maybe                   subf monomial",
+        "A. maybe    var   monomial subf monomial",
+        "A. maybe    subsp monomial subf monomial",
+        "A. maybe                   subf maybe",
+        "A. maybe    var   monomial subf maybe",
+        "A. maybe    subsp monomial subf maybe",
+        "A. maybe    var   maybe    subf maybe",
+        "A. maybe    subsp maybe    subf maybe",
+        "A. maybe    var   maybe    subf monomial",
+        "A. maybe    subsp maybe    subf monomial",
     ],
 )
 
@@ -301,15 +298,11 @@ def on_taxon_match(ent):
         elif token.pos_ in _MAYBE:
             taxon_.append(token.text)
 
-        elif re.match(_ABBREV_RE, token.text) or token.text == ".":
-            taxon_.append(token.text)
-
         else:
             actions.RejectMatch(f"Bad taxon: {ent.text}")
 
     if regex.match(_ABBREV_RE, taxon_[0]) and len(taxon_) > 1:
-        taxon_[0] = taxon_[0] + "."
-        del taxon_[1]
+        taxon_[0] = taxon_[0] if taxon_[0][-1] == "." else taxon_[0] + "."
         abbrev = " ".join(taxon_[:2])
         if abbrev in terms.BINOMIAL_ABBREVS:
             taxon_[0] = terms.BINOMIAL_ABBREVS[abbrev]
@@ -327,10 +320,10 @@ BAD_TAXON = Compiler(
     decoder=_DECODER,
     patterns=[
         "bad_prefix monomial",
-        "           monomial bad_suffix",
+        "          monomial bad_suffix",
         "bad_prefix monomial bad_suffix",
         "bad_prefix binomial",
-        "           binomial bad_suffix",
+        "          binomial bad_suffix",
         "bad_prefix binomial bad_suffix",
     ],
 )

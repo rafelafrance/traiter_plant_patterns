@@ -32,12 +32,13 @@ NO_LINK = """ duration habit habitat leaf_duration """.split()
 
 
 # ####################################################################################
-ADMIN_UNIT_TERMS = TermList().shared("us_locations")
+ADMIN_UNIT_TERMS = TermList().shared("us_locations").drop("county_label")
 
 PLANT_TERMS = TermList().shared("labels numerics time units")
 PLANT_TERMS += TermList().shared("labels").pick("about")
 PLANT_TERMS += TermList().read(const.TREATMENT_CSV)
 PLANT_TERMS += TermList().read(const.VOCAB_DIR / "ranks.csv")
+PLANT_TERMS += TermList().read(const.VOCAB_DIR / "job_labels.csv")
 
 TAXON_TERMS = TermList().read(const.TAXON_FILE)
 MONOMIAL_TERMS = TAXON_TERMS.split("monomial")

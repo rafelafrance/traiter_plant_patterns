@@ -87,25 +87,21 @@ def on_lower_monomial_match(ent):
 
 
 # ###################################################################################
-TAXON_PLUS1 = Compiler(
+TAXON_AUTH1 = Compiler(
     "taxon_auth",
     on_match="plant_taxon_plus1_v1",
     decoder=_DECODER,
     patterns=[
-        "taxon ( auth? .? auth? .? auth+           _? )",
-        "taxon ( auth? .? auth? .? auth+ and auth+ _? )",
-        "taxon   auth? .? auth? .? auth+               ",
-        "taxon   auth? .? auth? .? auth+ and auth? .?   auth? .? auth+     ",
-        "taxon ( auth? .? auth? .? auth+           _? ) auth? .? auth? .? auth+",
-        (
-            "taxon ( auth? .? auth? .? auth+ and auth? .? auth? .? auth+ _? )"
-            " auth? .? auth? .? auth+"
-        ),
+        "taxon ( auth+             _? )",
+        "taxon ( auth+ and   auth+ _? )",
+        "taxon   auth                  ",
+        "taxon   auth  auth            ",
+        "taxon   auth+ and   auth      ",
     ],
 )
 
 
-@registry.misc(TAXON_PLUS1.on_match)
+@registry.misc(TAXON_AUTH1.on_match)
 def on_taxon_auth_match(ent):
     auth = []
 

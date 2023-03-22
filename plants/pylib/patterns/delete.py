@@ -74,9 +74,24 @@ def delete_missing_count(ent):
 
 
 # ####################################################################################
+DELETE_OTHERS = "plant_delete_others_v1"
+
+_OF = """ of """.split()
+
+
+@registry.misc(DELETE_OTHERS)
+def delete_others(ent):
+    """Remove "plants of ohio" etc."""
+    if ent.text.lower() in ["plants"] and len(ent.doc) > ent.start:
+        return ent.doc[ent.start + 1].lower_ in _OF
+
+
+# ####################################################################################
 DELETE_WHEN = {
     "count": [DELETE_MISSING_PARTS, DELETE_PAGE_NO],
     "count_group": DELETE_MISSING_PARTS,
+    "color": DELETE_MISSING_PARTS,
     "count_suffix": DELETE_MISSING_COUNT,
+    "part": DELETE_OTHERS,
     "size": [DELETE_MISSING_PARTS, DELETE_KM],
 }
