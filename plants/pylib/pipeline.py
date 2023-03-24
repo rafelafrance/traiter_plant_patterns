@@ -7,7 +7,7 @@ def pipeline():
     pipes = PipeBuilder(exclude="ner")
 
     # Traits without a matcher
-    pipes.extra_keeps = const.EXTRA_KEEPS
+    pipes.traits_without_matcher = const.TRAITS_WITHOUT_MATCHER
 
     pipes.tokenizer()
 

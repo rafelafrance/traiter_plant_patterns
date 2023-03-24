@@ -88,12 +88,13 @@ RANK_TERMS = TermList().read(VOCAB_DIR / "ranks.csv")
 RANK_ABBREV = RANK_TERMS.pattern_dict("abbrev")
 RANK_LEVELS = RANK_TERMS.column_dict("label", "level")
 
-
-def all_traits_except(removes: list[str]) -> list:
-    return [t for t in ALL_PLANT_ENTS if t not in removes]
-
-
-EXTRA_KEEPS = """
+# #########################################################################
+TRAITS_WITHOUT_MATCHER = """
     duration flower_location joined leaf_duration location plant_habit
     plant_duration reproduction surface venation woodiness
     """.split()
+
+
+# #########################################################################
+def all_traits_except(removes: list[str]) -> list:
+    return [t for t in ALL_PLANT_ENTS if t not in removes]
