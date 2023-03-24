@@ -1,10 +1,10 @@
-from .patterns import delete
-from .patterns import terms
-from .pipeline_builder import PipelineBuilder
+from . import const
+from .patterns import deletes
+from .pipe_builder import PipeBuilder
 
 
 def pipeline():
-    pipes = PipelineBuilder(exclude="ner")
+    pipes = PipeBuilder(exclude="ner")
 
     pipes.tokenizer()
 
@@ -19,9 +19,9 @@ def pipeline():
     pipes.shapes()
     pipes.margins()
     pipes.colors()
-    pipes.part_locations()
+    pipes.part_location()
 
-    pipes.delete_traits("delete_partials", keep=terms.KEEP)
+    pipes.delete_traits("delete_partials", keep=const.KEEP)
 
     pipes.link_parts()
     pipes.link_parts_once()
@@ -31,7 +31,7 @@ def pipeline():
     pipes.link_locations()
     pipes.link_taxa_like()
 
-    pipes.delete_traits("final_delete", delete_when=delete.DELETE_WHEN)
+    pipes.delete_traits("final_delete", delete_when=deletes.DELETE_WHEN)
 
     # pipes.debug_tokens()  # ####################################
 

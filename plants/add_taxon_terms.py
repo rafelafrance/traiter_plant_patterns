@@ -19,6 +19,8 @@ from traiter.pylib import log
 from traiter.pylib.patterns import terms as t_terms
 from traiter.pylib.term_list import TermList
 
+from .. import consts
+
 ITIS_SPECIES_ID = 220
 
 
@@ -84,11 +86,13 @@ class Taxa:
 
         problem_words = {"temp", "uncertain", "unknown", "dummy"}
 
-        problem_taxa = {"harms", "side", "may"}
-        problem_taxa |= {t["pattern"] for t in t_terms.ALL_TERMS.data}
-        problem_taxa |= {t["pattern"] for t in terms.PLANT_TERMS.data}
+        problem_taxa = {"harms", "side", "may", "lake"}
+        problem_taxa |= {t["pattern"].lower() for t in t_terms.ALL_TERMS.data}
+        problem_taxa |= {t["pattern"].lower() for t in const.PLANT_TERMS.data}
 
-        for taxon, rank in self.taxon.items():
+        taxa = sorted(self.taxon.items())
+
+        for taxon, rank in taxa:
             words = taxon.split()
 
             if taxon.lower() in problem_taxa:
