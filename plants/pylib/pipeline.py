@@ -1,10 +1,15 @@
-from . import const
 from .patterns import deletes
 from .pipe_builder import PipeBuilder
 
 
 def pipeline():
     pipes = PipeBuilder(exclude="ner")
+
+    # Traits without a matcher
+    pipes.extra_keeps = """
+        duration flower_location joined leaf_duration location plant_habit
+        plant_duration reproduction surface venation woodiness
+        """.split()
 
     pipes.tokenizer()
 
@@ -21,7 +26,7 @@ def pipeline():
     pipes.colors()
     pipes.part_location()
 
-    pipes.delete_traits("delete_partials", keep=const.KEEP)
+    pipes.delete_traits("delete_partials", keep_all=True)
 
     pipes.link_parts()
     pipes.link_parts_once()
@@ -35,4 +40,4 @@ def pipeline():
 
     # pipes.debug_tokens()  # ####################################
 
-    return pipes
+    return pipes.build()

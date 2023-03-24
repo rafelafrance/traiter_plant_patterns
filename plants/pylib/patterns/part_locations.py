@@ -21,8 +21,7 @@ _DECODER = common.PATTERNS | {
     "subpart": {"ENT_TYPE": "subpart"},
 }
 
-_TERMS = TermList().shared("units")
-_TERMS += TermList().read(const.TREATMENT_CSV)
+_TERMS = const.PLANT_TERMS + TermList().shared("units")
 
 
 def get_joined(ent):

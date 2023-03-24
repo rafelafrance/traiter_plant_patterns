@@ -88,9 +88,6 @@ RANK_TERMS = TermList().read(VOCAB_DIR / "ranks.csv")
 RANK_ABBREV = RANK_TERMS.pattern_dict("abbrev")
 RANK_LEVELS = RANK_TERMS.column_dict("label", "level")
 
-KEEP = """ taxon_like missing_part """.split()
-KEEP += ALL_PLANT_ENTS + TAXON_ENTS
-
 
 def all_traits_except(removes: list[str]) -> list:
     return [t for t in ALL_PLANT_ENTS if t not in removes]

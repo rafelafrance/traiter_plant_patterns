@@ -32,8 +32,7 @@ _DECODER = common.PATTERNS | {
     "x": {"LOWER": {"IN": t_const.CROSS}},
 }
 
-_TERMS = const.PLANT_TERMS
-_TERMS += TermList().shared("units")
+_TERMS = const.PLANT_TERMS.shared("units")
 
 SIZE = MatcherPatterns(
     "size",

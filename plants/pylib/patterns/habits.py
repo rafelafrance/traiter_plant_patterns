@@ -1,13 +1,10 @@
 from spacy import registry
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
-from traiter.pylib.term_list import TermList
 
 from .. import const
 
 _TREE = """ tree trees bush bushes """.split()
-
-TERMS = TermList().read(const.TREATMENT_CSV)
 
 HABIT = MatcherPatterns(
     "habit",
@@ -22,7 +19,7 @@ HABIT = MatcherPatterns(
         "habit",
         "shape -? tree",
     ],
-    terms=TERMS,
+    terms=const.PLANT_TERMS,
     keep=["habit"],
 )
 
