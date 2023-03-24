@@ -1,3 +1,4 @@
+from . import const
 from .patterns import deletes
 from .pipe_builder import PipeBuilder
 
@@ -6,10 +7,7 @@ def pipeline():
     pipes = PipeBuilder(exclude="ner")
 
     # Traits without a matcher
-    pipes.extra_keeps = """
-        duration flower_location joined leaf_duration location plant_habit
-        plant_duration reproduction surface venation woodiness
-        """.split()
+    pipes.extra_keeps = const.EXTRA_KEEPS
 
     pipes.tokenizer()
 
