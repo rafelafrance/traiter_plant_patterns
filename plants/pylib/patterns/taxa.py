@@ -55,7 +55,7 @@ MONOMIAL = MatcherPatterns(
         "species_rank monomial",
     ],
     terms=const.MONOMIAL_TERMS + const.RANK_TERMS,
-    keep=["taxon"],
+    output=["taxon"],
 )
 
 
@@ -114,7 +114,7 @@ SPECIES_TAXON = MatcherPatterns(
         "A. monomial",
     ],
     terms=_TERMS,
-    keep=["taxon"],
+    output=["taxon"],
 )
 
 SUBSPECIES_TAXON = MatcherPatterns(
@@ -130,7 +130,7 @@ SUBSPECIES_TAXON = MatcherPatterns(
         "A. maybe    subsp  maybe",
     ],
     terms=_TERMS,
-    keep=["taxon"],
+    output=["taxon"],
 )
 
 VARIETY_TAXON = MatcherPatterns(
@@ -160,7 +160,7 @@ VARIETY_TAXON = MatcherPatterns(
         "A. maybe    subsp monomial var maybe",
     ],
     terms=_TERMS,
-    keep=["taxon"],
+    output=["taxon"],
 )
 
 SUBVARIETY_TAXON = MatcherPatterns(
@@ -200,7 +200,7 @@ SUBVARIETY_TAXON = MatcherPatterns(
         "A. maybe    subsp maybe    subvar monomial",
     ],
     terms=_TERMS,
-    keep=["taxon"],
+    output=["taxon"],
 )
 
 FORM_TAXON = MatcherPatterns(
@@ -240,7 +240,7 @@ FORM_TAXON = MatcherPatterns(
         "A. maybe    subsp maybe    f. monomial",
     ],
     terms=_TERMS,
-    keep=["taxon"],
+    output=["taxon"],
 )
 
 SUBFORM_TAXON = MatcherPatterns(
@@ -280,7 +280,7 @@ SUBFORM_TAXON = MatcherPatterns(
         "A. maybe    subsp maybe    subf monomial",
     ],
     terms=_TERMS,
-    keep=["taxon"],
+    output=["taxon"],
 )
 
 
@@ -340,5 +340,5 @@ BAD_TAXON = MatcherPatterns(
         "bad_prefix binomial bad_suffix",
     ],
     terms=_TERMS,
-    keep=None,
+    output=None,
 )

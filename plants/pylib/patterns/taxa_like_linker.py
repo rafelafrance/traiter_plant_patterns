@@ -17,5 +17,5 @@ TAXON_LIKE_LINKER = MatcherPatterns(
         "taxon_like any* taxon",
     ],
     terms=None,
-    keep=None,
+    output=None,
 )

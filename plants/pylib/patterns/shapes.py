@@ -34,7 +34,7 @@ SHAPE = MatcherPatterns(
         "shape_word+ -* shape+",
     ],
     terms=const.PLANT_TERMS,
-    keep=["shape"],
+    output=["shape"],
 )
 
 
@@ -68,7 +68,7 @@ N_SHAPE = MatcherPatterns(
         "shape_loc* 9 - angular",
     ],
     terms=const.PLANT_TERMS,
-    keep=["shape"],
+    output=["shape"],
 )
 
 

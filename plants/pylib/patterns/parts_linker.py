@@ -32,7 +32,7 @@ PART_LINKER = MatcherPatterns(
         "part  any* trait",
     ],
     terms=const.PLANT_TERMS,
-    keep=None,
+    output=None,
 )
 
 # ####################################################################################
@@ -52,5 +52,5 @@ LINK_PART_ONCE = MatcherPatterns(
         "part  any* trait",
     ],
     terms=const.PLANT_TERMS,
-    keep=None,
+    output=None,
 )

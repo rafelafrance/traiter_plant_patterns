@@ -47,7 +47,7 @@ MULTI_TAXON = MatcherPatterns(
         "taxon and taxon",
     ],
     terms=None,
-    keep=["multi_taxon"],
+    output=["multi_taxon"],
 )
 
 
@@ -71,7 +71,7 @@ LOWER_MONOMIAL = MatcherPatterns(
         "lower_rank monomial",
     ],
     terms=const.MONOMIAL_TERMS + const.RANK_TERMS,
-    keep=["taxon"],
+    output=["taxon"],
 )
 
 
@@ -100,7 +100,7 @@ TAXON_AUTH1 = MatcherPatterns(
         "taxon   auth+ and   auth      ",
     ],
     terms=None,
-    keep=["taxon"],
+    output=["taxon"],
 )
 
 

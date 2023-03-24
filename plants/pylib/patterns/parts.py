@@ -24,7 +24,7 @@ PART = MatcherPatterns(
         "leader? part    subpart+",
     ],
     terms=const.PLANT_TERMS,
-    keep=const.PART_ENTS + const.SUBPART_ENTS,
+    output=const.PART_ENTS + const.SUBPART_ENTS,
 )
 
 
@@ -54,7 +54,7 @@ MULTIPLE_PARTS = MatcherPatterns(
         "leader? part and part",
     ],
     terms=const.PLANT_TERMS,
-    keep=["multiple_parts"],
+    output=["multiple_parts"],
 )
 
 
@@ -81,7 +81,7 @@ MISSING_PART = MatcherPatterns(
         "missing part     subpart",
     ],
     terms=const.PLANT_TERMS,
-    keep=["missing_part"],
+    output=["missing_part"],
 )
 
 

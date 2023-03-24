@@ -23,7 +23,7 @@ TAXON_LIKE = MatcherPatterns(
         "similar+ any? prep taxon+",
     ],
     terms=None,
-    keep=["taxon_like"],
+    output=["taxon_like"],
 )
 
 

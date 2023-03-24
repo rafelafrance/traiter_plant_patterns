@@ -31,7 +31,7 @@ MARGIN = MatcherPatterns(
         "shape+ -* follower+",
     ],
     terms=TermList().read(const.TREATMENT_CSV),
-    keep=["margin"],
+    output=["margin"],
 )
 
 

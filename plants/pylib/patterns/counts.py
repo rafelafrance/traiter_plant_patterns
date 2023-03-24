@@ -49,7 +49,7 @@ COUNT = MatcherPatterns(
         "per_count+ adp? 99-99",
     ],
     terms=const.PLANT_TERMS,
-    keep=["count"],
+    output=["count"],
 )
 
 
@@ -87,7 +87,7 @@ COUNT_WORD = MatcherPatterns(
         "count_word",
     ],
     terms=const.PLANT_TERMS,
-    keep=["count"],
+    output=["count"],
 )
 
 
@@ -117,5 +117,5 @@ NOT_A_COUNT = MatcherPatterns(
         "99-99 °",
     ],
     terms=const.PLANT_TERMS,
-    keep=None,
+    output=None,
 )

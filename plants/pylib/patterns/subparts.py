@@ -20,7 +20,7 @@ SUBPART = MatcherPatterns(
         "subpart - part",
     ],
     terms=const.PLANT_TERMS,
-    keep=["subpart"],
+    output=["subpart"],
 )
 
 # ####################################################################################
@@ -32,7 +32,7 @@ SUBPART_SUFFIX = MatcherPatterns(
         "- subpart",
     ],
     terms=const.PLANT_TERMS,
-    keep=["subpart_suffix"],
+    output=["subpart_suffix"],
 )
 
 

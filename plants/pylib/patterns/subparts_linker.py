@@ -33,7 +33,7 @@ SUBPART_LINKER = MatcherPatterns(
         "subpart clause* trait",
     ],
     terms=const.PLANT_TERMS,
-    keep=None,
+    output=None,
 )
 
 # ####################################################################################
@@ -53,5 +53,5 @@ SUBPART_SUFFIX_LINKER = MatcherPatterns(
         "trait - subpart_suffix",
     ],
     terms=const.PLANT_TERMS,
-    keep=None,
+    output=None,
 )

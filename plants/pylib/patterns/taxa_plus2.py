@@ -47,7 +47,7 @@ TAXON_PLUS2 = MatcherPatterns(
         "taxon lower_rank maybe   auth+ maybe auth+ and auth+  ",
     ],
     terms=const.RANK_TERMS,
-    keep=["taxon"],
+    output=["taxon"],
 )
 
 

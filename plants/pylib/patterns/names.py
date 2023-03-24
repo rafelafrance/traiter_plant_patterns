@@ -32,7 +32,7 @@ NAME = MatcherPatterns(
         "dr? A A? maybe _? jr",
     ],
     terms=TermList().shared("names us_locations").drop("county_label"),
-    keep=None,
+    output=None,
 )
 
 
@@ -59,5 +59,5 @@ NOT_NAME = MatcherPatterns(
         " maybe+  nope  maybe+",
     ],
     terms=None,
-    keep=None,
+    output=None,
 )

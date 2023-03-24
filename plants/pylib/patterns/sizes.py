@@ -49,7 +49,7 @@ SIZE = MatcherPatterns(
         ),
     ],
     terms=_TERMS,
-    keep=["size"],
+    output=["size"],
 )
 
 SIZE_HIGH_ONLY = MatcherPatterns(
@@ -60,7 +60,7 @@ SIZE_HIGH_ONLY = MatcherPatterns(
         "to about? 99.9 [?]? cm follow*",
     ],
     terms=_TERMS,
-    keep=["size"],
+    output=["size"],
 )
 
 SIZE_DOUBLE_DIM = MatcherPatterns(
@@ -72,7 +72,7 @@ SIZE_DOUBLE_DIM = MatcherPatterns(
         "about? 99.9-99.9 cm? sex? ,? 99.9-99.9 cm dim and? ,? dim",
     ],
     terms=_TERMS,
-    keep=["size"],
+    output=["size"],
 )
 
 _NOT_A_SIZE = MatcherPatterns(
@@ -84,7 +84,7 @@ _NOT_A_SIZE = MatcherPatterns(
         "not_size about? 99.9-99.9 cm? x about? 99.9-99.9 cm",
     ],
     terms=_TERMS,
-    keep=None,
+    output=None,
 )
 
 

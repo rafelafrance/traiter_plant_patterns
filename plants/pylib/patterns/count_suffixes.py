@@ -25,7 +25,7 @@ COUNT_SUFFIX = MatcherPatterns(
         "99-99 count_suffix",
     ],
     terms=const.PLANT_TERMS,
-    keep=["count"],
+    output=["count"],
 )
 
 
@@ -58,7 +58,7 @@ COUNT_SUFFIX_WORD = MatcherPatterns(
         "count_word count_suffix",
     ],
     terms=const.PLANT_TERMS,
-    keep=["count"],
+    output=["count"],
 )
 
 

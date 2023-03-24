@@ -27,5 +27,5 @@ SEX_LINKER = MatcherPatterns(
         "sex   phrase* trait",
     ],
     terms=const.PLANT_TERMS,
-    keep=None,
+    output=None,
 )

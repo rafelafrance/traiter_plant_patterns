@@ -9,7 +9,7 @@ SEX = MatcherPatterns(
     decoder={"sex": {"ENT_TYPE": "sex"}},
     patterns=["sex"],
     terms=const.PLANT_TERMS,
-    keep=["sex"],
+    output=["sex"],
 )
 
 

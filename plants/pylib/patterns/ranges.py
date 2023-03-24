@@ -32,7 +32,7 @@ RANGE_LOW = MatcherPatterns(
         "9.9 ( -/to [?] )",
     ],
     terms=None,
-    keep=None,
+    output=None,
 )
 
 RANGE_MIN_LOW = MatcherPatterns(
@@ -44,7 +44,7 @@ RANGE_MIN_LOW = MatcherPatterns(
         "( 9.9 -/to ) 9.9",
     ],
     terms=None,
-    keep=None,
+    output=None,
 )
 
 RANGE_LOW_HIGH = MatcherPatterns(
@@ -57,7 +57,7 @@ RANGE_LOW_HIGH = MatcherPatterns(
         "9 -* conj 9",
     ],
     terms=None,
-    keep=None,
+    output=None,
 )
 
 RANGE_LOW_MAX = MatcherPatterns(
@@ -69,7 +69,7 @@ RANGE_LOW_MAX = MatcherPatterns(
         "9.9 ( -/to   9.9 )",
     ],
     terms=None,
-    keep=None,
+    output=None,
 )
 
 RANGE_MIN_LOW_HIGH = MatcherPatterns(
@@ -83,7 +83,7 @@ RANGE_MIN_LOW_HIGH = MatcherPatterns(
         "  9.9 ( and/or   9.9    -/to  9.9 )",
     ],
     terms=None,
-    keep=None,
+    output=None,
 )
 
 RANGE_MIN_LOW_MAX = MatcherPatterns(
@@ -96,7 +96,7 @@ RANGE_MIN_LOW_MAX = MatcherPatterns(
         "  9.9 - and/or 9.9 -/to 9.9",
     ],
     terms=None,
-    keep=None,
+    output=None,
 )
 
 RANGE_LOW_HIGH_MAX = MatcherPatterns(
@@ -113,7 +113,7 @@ RANGE_LOW_HIGH_MAX = MatcherPatterns(
         "9.9 and/or 9.9 ( and/or 9.9 [+]? )",
     ],
     terms=None,
-    keep=None,
+    output=None,
 )
 
 RANGE_MIN_LOW_HIGH_MAX = MatcherPatterns(
@@ -131,7 +131,7 @@ RANGE_MIN_LOW_HIGH_MAX = MatcherPatterns(
         "9.9 and/or 9.9 - 9.9 ( -/or 9.9 [+]? )",
     ],
     terms=None,
-    keep=None,
+    output=None,
 )
 
 NOT_A_RANGE = MatcherPatterns(
@@ -153,7 +153,7 @@ NOT_A_RANGE = MatcherPatterns(
         "9 bad-follower",
     ],
     terms=None,
-    keep=None,
+    output=None,
 )
 
 

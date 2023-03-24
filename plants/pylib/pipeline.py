@@ -1,10 +1,10 @@
 from . import const
 from .patterns import deletes
-from .pipe_builder import PipeBuilder
+from .pipeline_builder import PipelineBuilder
 
 
 def pipeline():
-    pipes = PipeBuilder(exclude="ner")
+    pipes = PipelineBuilder(exclude="ner")
 
     # Traits without a matcher
     pipes.traits_without_matcher = const.TRAITS_WITHOUT_MATCHER
@@ -24,7 +24,7 @@ def pipeline():
     pipes.colors()
     pipes.part_location()
 
-    pipes.delete_traits("delete_partials", keep_all=True)
+    pipes.delete_traits("delete_partials", keep_outputs=True)
 
     pipes.link_parts()
     pipes.link_parts_once()

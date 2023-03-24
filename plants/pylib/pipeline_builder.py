@@ -25,7 +25,7 @@ from .patterns import taxa_plus1
 from .patterns import taxa_plus2
 
 
-class PipeBuilder(pipeline_builder.PipelineBuilder):
+class PipelineBuilder(pipeline_builder.PipelineBuilder):
     def tokenizer(self):
         tokenizer.setup_tokenizer(self.nlp)
 

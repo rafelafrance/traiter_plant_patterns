@@ -44,7 +44,7 @@ PART_AS_LOCATION = MatcherPatterns(
         "leader prep part",
     ],
     terms=_TERMS,
-    keep=["part_as_loc"],
+    output=["part_as_loc"],
 )
 
 SUBPART_AS_LOCATION = MatcherPatterns(
@@ -58,7 +58,7 @@ SUBPART_AS_LOCATION = MatcherPatterns(
         "location leader subpart of adj? subpart",
     ],
     terms=_TERMS,
-    keep=["subpart_as_loc"],
+    output=["subpart_as_loc"],
 )
 
 
@@ -79,7 +79,7 @@ PART_AS_DISTANCE = MatcherPatterns(
         "location leader part prep? 99-99 cm",
     ],
     terms=_TERMS,
-    keep=["part_as_loc"],
+    output=["part_as_loc"],
 )
 
 

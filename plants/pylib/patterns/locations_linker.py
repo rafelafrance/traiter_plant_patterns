@@ -21,5 +21,5 @@ LOCATION_LINKER = MatcherPatterns(
         "location clause* trait",
     ],
     terms=const.PLANT_TERMS,
-    keep=None,
+    output=None,
 )

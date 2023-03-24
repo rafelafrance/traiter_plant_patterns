@@ -20,7 +20,7 @@ HABIT = MatcherPatterns(
         "shape -? tree",
     ],
     terms=const.PLANT_TERMS,
-    keep=["habit"],
+    output=["habit"],
 )
 
 
