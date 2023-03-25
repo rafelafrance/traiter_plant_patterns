@@ -14,7 +14,7 @@ from setuptools import find_packages
 SETTINGS = {
     "project": {
         "name": "traiter_plants",
-        "version": "0.2.2",
+        "version": "0.3.0",
         "description": "",
         "dependencies": [
             "pandas",
