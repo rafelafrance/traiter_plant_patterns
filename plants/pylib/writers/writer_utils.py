@@ -1,5 +1,4 @@
 from .. import const
-from ..patterns import terms
 
 TITLE_SKIPS = ["start", "end"]
 FIELD_SKIPS = TITLE_SKIPS + ["trait", "dimensions"]

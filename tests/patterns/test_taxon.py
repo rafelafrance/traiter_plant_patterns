@@ -328,3 +328,18 @@ class TestTaxon(unittest.TestCase):
                 }
             ],
         )
+
+    def test_taxon_20(self):
+        """It gets an all caps monomial."""
+        self.assertEqual(
+            test("""PLANTS OF PENNSYLVANIA ASTERACEAE"""),
+            [
+                {
+                    "taxon": "Asteraceae",
+                    "rank": "family",
+                    "trait": "taxon",
+                    "start": 23,
+                    "end": 33,
+                }
+            ],
+        )

@@ -6,7 +6,6 @@ from .pipeline_builder import PipelineBuilder
 def pipeline():
     pipes = PipelineBuilder(exclude="ner")
 
-    # Traits without a matcher
     pipes.traits_without_matcher = const.TRAITS_WITHOUT_MATCHER
 
     pipes.tokenizer()

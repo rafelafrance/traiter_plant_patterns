@@ -27,7 +27,7 @@ _SUFFIX = BREAKING + [DASHES]
 
 _INFIX = [
     rf"(?<=[{ALPHA}0-9])[:<>=/+](?=[{ALPHA}])",  # word=word etc.
-    r"""[\\\[\]()/:;’'“”'+±_]""",  # Break on these characters
+    r"""[\\\[\]()/:;’'"“”'+±_]""",  # Break on these characters
     DASHES,
     rf"(?<=\d)[{ALPHA}]+",
 ]

@@ -13,13 +13,9 @@ from pathlib import Path
 
 import regex
 from pylib import const
-from pylib.patterns import terms
 from tqdm import tqdm
 from traiter.pylib import log
-from traiter.pylib.patterns import terms as t_terms
 from traiter.pylib.term_list import TermList
-
-from .. import consts
 
 ITIS_SPECIES_ID = 220
 
@@ -80,15 +76,16 @@ class Taxa:
         for rank in ranks:
             self.add_taxon_and_rank(pattern, rank)
 
-    def remove_problem_taxa(self):
+    def remove_problem_taxa(self, show_rejected):
         """Some taxa interfere with other parses."""
         new = {}
 
         problem_words = {"temp", "uncertain", "unknown", "dummy"}
 
         problem_taxa = {"harms", "side", "may", "lake"}
-        problem_taxa |= {t["pattern"].lower() for t in t_terms.ALL_TERMS.data}
-        problem_taxa |= {t["pattern"].lower() for t in const.PLANT_TERMS.data}
+        problem_taxa |= {t["pattern"].lower() for t in const.PLANT_TERMS}
+        shared = "colors habitats us_locations"
+        problem_taxa |= {t["pattern"].lower() for t in TermList().shared(shared)}
 
         taxa = sorted(self.taxon.items())
 
@@ -104,15 +101,18 @@ class Taxa:
                 continue
 
             if not self.valid_pattern.match(taxon):
-                # print(f"Removed {taxon} {rank}")
+                if show_rejected:
+                    print(f"Removed {taxon} {rank}")
                 continue
 
             if len(taxon) < const.MIN_TAXON_LEN:
-                # print(f"Removed {taxon} {rank}")
+                if show_rejected:
+                    print(f"Removed {taxon} {rank}")
                 continue
 
             if any(len(w) < const.MIN_TAXON_WORD_LEN for w in words):
-                # print(f"Removed {taxon} {rank}")
+                if show_rejected:
+                    print(f"Removed {taxon} {rank}")
                 continue
 
             new[taxon] = rank
@@ -130,7 +130,7 @@ def main():
 
     read_taxa(args, taxa)
 
-    taxa.remove_problem_taxa()
+    taxa.remove_problem_taxa(args.show_rejected)
 
     records = build_records(taxa)
     counts = count_ranks(records)
@@ -334,6 +334,12 @@ def parse_args():
             and it will scan thru this for all CSVs and remove taxa that are a direct
             match.
             """,
+    )
+
+    arg_parser.add_argument(
+        "--show-rejected",
+        action="store_true",
+        help="""Print everything that is rejected from the CSV.""",
     )
 
     args = arg_parser.parse_args()

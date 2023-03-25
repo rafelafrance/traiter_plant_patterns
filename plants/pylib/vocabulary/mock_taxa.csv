@@ -22,6 +22,7 @@ binomial,pterostegia drymarioides,species
 binomial,schismus arabicus,species
 binomial,sphaeralcea ambigua,species
 binomial,vicia villosa,species
+monomial,asteraceae,family
 monomial,brevipinnula,subspecies species
 monomial,brevivexillus,variety subspecies
 monomial,cornaceae,family
@@ -35,7 +36,7 @@ monomial,palma,genus species
 monomial,polycarpa,genus variety subspecies form subvariety species
 monomial,rhombifolia,variety subspecies form species
 monomial,sensitiva,genus variety subspecies species
-monomial,spegazzinii,variety subspecies form species
+monomial,spegazzinii,variety subspecies species
 monomial,splendens,variety subspecies form subvariety species
 monomial,ticanto,genus
 monomial,varia,variety subspecies form subform species

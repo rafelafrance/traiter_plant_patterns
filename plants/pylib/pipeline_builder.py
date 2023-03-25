@@ -1,5 +1,5 @@
 from traiter.pylib import const as t_const
-from traiter.pylib import pipeline_builder
+from traiter.pylib.pipeline_builders import builder
 
 from . import const
 from . import tokenizer
@@ -25,7 +25,7 @@ from .patterns import taxa_plus1
 from .patterns import taxa_plus2
 
 
-class PipelineBuilder(pipeline_builder.PipelineBuilder):
+class PipelineBuilder(builder.PipelineBuilder):
     def tokenizer(self):
         tokenizer.setup_tokenizer(self.nlp)
 
