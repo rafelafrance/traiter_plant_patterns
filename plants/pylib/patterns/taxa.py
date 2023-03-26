@@ -4,16 +4,16 @@ from traiter.pylib import actions
 from traiter.pylib import const as t_const
 from traiter.pylib.matcher_patterns import MatcherPatterns
 
-from .. import const
+from ..vocabulary import terms
 
 MIN_TAXON_LEN = 3
 
-_RANKS = const.TAXON_TERMS.pattern_dict("ranks")
+_RANKS = terms.TAXON_TERMS.pattern_dict("ranks")
 
-_LOWER_RANK = [k for k, v in const.RANK_LEVELS.items() if v == "lower"]
+_LOWER_RANK = [k for k, v in terms.RANK_LEVELS.items() if v == "lower"]
 _LOWER_RANKS = set(_LOWER_RANK)
 
-_HIGHER_RANK = [k for k, v in const.RANK_LEVELS.items() if v == "higher"]
+_HIGHER_RANK = [k for k, v in terms.RANK_LEVELS.items() if v == "higher"]
 _HIGHER_RANK_NAMES = {r.removesuffix("_rank") for r in _HIGHER_RANK}
 
 _SPECIES_AND_LOWER = _LOWER_RANK + ["species_rank"]
@@ -42,7 +42,6 @@ _DECODER = {
     "species_rank": {"ENT_TYPE": "species_rank"},
 }
 
-_TERMS = const.TAXON_TERMS + const.RANK_TERMS
 
 # ###################################################################################
 MONOMIAL = MatcherPatterns(
@@ -54,7 +53,6 @@ MONOMIAL = MatcherPatterns(
         "higher_rank  monomial",
         "species_rank monomial",
     ],
-    terms=const.MONOMIAL_TERMS + const.RANK_TERMS,
     output=["taxon"],
 )
 
@@ -69,11 +67,11 @@ def on_single_taxon_match(ent):
 
         # Taxon and its rank
         if label == "monomial":
-            taxon_ = const.TAXON_TERMS.replace.get(token.lower_, token.text)
+            taxon_ = terms.TAXON_TERMS.replace.get(token.lower_, token.text)
             taxon_ = taxon_.replace("- ", "-")
 
             # A given rank will override the one in the DB
-            if not rank and (rank_ := const.TAXON_RANKS.get(taxon_.lower(), "")):
+            if not rank and (rank_ := terms.TAXON_RANKS.get(taxon_.lower(), "")):
                 rank_ = rank_.split()[0]
                 if rank_ in _HIGHER_RANK_NAMES and token.shape_ in t_const.NAME_SHAPES:
                     rank = rank_
@@ -85,10 +83,10 @@ def on_single_taxon_match(ent):
 
         # A given rank overrides the one in the DB
         elif label in _HIGHER_RANK:
-            rank = const.RANK_TERMS.replace.get(token.lower_, token.lower_)
+            rank = terms.RANK_TERMS.replace.get(token.lower_, token.lower_)
 
         elif token.pos_ in _MAYBE:
-            taxon_ = const.TAXON_TERMS.replace.get(token.lower_, token.text)
+            taxon_ = terms.TAXON_TERMS.replace.get(token.lower_, token.text)
 
     if not rank:
         raise actions.RejectMatch()
@@ -113,7 +111,6 @@ SPECIES_TAXON = MatcherPatterns(
         "monomial monomial",
         "A. monomial",
     ],
-    terms=_TERMS,
     output=["taxon"],
 )
 
@@ -129,7 +126,6 @@ SUBSPECIES_TAXON = MatcherPatterns(
         "A. maybe    subsp? monomial",
         "A. maybe    subsp  maybe",
     ],
-    terms=_TERMS,
     output=["taxon"],
 )
 
@@ -159,7 +155,6 @@ VARIETY_TAXON = MatcherPatterns(
         "A. maybe                   var maybe",
         "A. maybe    subsp monomial var maybe",
     ],
-    terms=_TERMS,
     output=["taxon"],
 )
 
@@ -199,7 +194,6 @@ SUBVARIETY_TAXON = MatcherPatterns(
         "A. maybe    var   maybe    subvar monomial",
         "A. maybe    subsp maybe    subvar monomial",
     ],
-    terms=_TERMS,
     output=["taxon"],
 )
 
@@ -239,7 +233,6 @@ FORM_TAXON = MatcherPatterns(
         "A. maybe    var   maybe    f. monomial",
         "A. maybe    subsp maybe    f. monomial",
     ],
-    terms=_TERMS,
     output=["taxon"],
 )
 
@@ -279,7 +272,6 @@ SUBFORM_TAXON = MatcherPatterns(
         "A. maybe    var   maybe    subf monomial",
         "A. maybe    subsp maybe    subf monomial",
     ],
-    terms=_TERMS,
     output=["taxon"],
 )
 
@@ -293,19 +285,19 @@ def on_taxon_match(ent):
         label = token.ent_type_
 
         if label in _LOWER_RANKS:
-            taxon_.append(const.RANK_ABBREV.get(token.lower_, token.lower_))
+            taxon_.append(terms.RANK_ABBREV.get(token.lower_, token.lower_))
             rank_seen = True
 
         elif label == "binomial":
-            taxon_.append(const.TAXON_TERMS.replace.get(token.lower_, token.text))
+            taxon_.append(terms.TAXON_TERMS.replace.get(token.lower_, token.text))
 
         elif label == "monomial" and i != 3:
-            taxon_.append(const.TAXON_TERMS.replace.get(token.lower_, token.text))
+            taxon_.append(terms.TAXON_TERMS.replace.get(token.lower_, token.text))
 
         elif label == "monomial" and i == 3:
             if not rank_seen:
-                taxon_.append(const.RANK_ABBREV["subspecies"])
-            taxon_.append(const.RANK_TERMS.replace.get(token.lower_, token.text))
+                taxon_.append(terms.RANK_ABBREV["subspecies"])
+            taxon_.append(terms.RANK_TERMS.replace.get(token.lower_, token.text))
 
         elif token.pos_ in _MAYBE:
             taxon_.append(token.text)
@@ -316,8 +308,8 @@ def on_taxon_match(ent):
     if regex.match(_ABBREV_RE, taxon_[0]) and len(taxon_) > 1:
         taxon_[0] = taxon_[0] if taxon_[0][-1] == "." else taxon_[0] + "."
         abbrev = " ".join(taxon_[:2])
-        if abbrev in const.BINOMIAL_ABBREVS:
-            taxon_[0] = const.BINOMIAL_ABBREVS[abbrev]
+        if abbrev in terms.BINOMIAL_ABBREVS:
+            taxon_[0] = terms.BINOMIAL_ABBREVS[abbrev]
 
     taxon_ = " ".join(taxon_)
     taxon_ = taxon_[0].upper() + taxon_[1:]
@@ -339,6 +331,5 @@ BAD_TAXON = MatcherPatterns(
         "           binomial bad_suffix",
         "bad_prefix binomial bad_suffix",
     ],
-    terms=_TERMS,
     output=None,
 )

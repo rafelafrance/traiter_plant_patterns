@@ -1,11 +1,11 @@
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
 
-from .. import const
+from ..vocabulary import terms
 
-_LOCATION_PARENTS = const.LOCATION_ENTS
-_LOCATION_CHILDREN = const.all_traits_except(
-    " shape sex taxon ".split() + const.LOCATION_ENTS + const.NO_LINK_ENTS
+_LOCATION_PARENTS = terms.LOCATION_ENTS
+_LOCATION_CHILDREN = terms.all_traits_except(
+    " shape sex taxon ".split() + terms.LOCATION_ENTS + terms.NO_LINK_ENTS
 )
 
 LOCATION_LINKER = MatcherPatterns(
@@ -20,6 +20,5 @@ LOCATION_LINKER = MatcherPatterns(
         "trait    clause* location",
         "location clause* trait",
     ],
-    terms=const.PLANT_TERMS,
     output=None,
 )

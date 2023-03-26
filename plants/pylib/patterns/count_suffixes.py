@@ -4,11 +4,11 @@ from traiter.pylib import util as t_util
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
 
-from .. import const
+from ..vocabulary import terms
 
 
 _COUNT_WORDS = ["count_word", "number_word"]
-_SUFFIX_TERMS = const.PLANT_TERMS.pattern_dict("suffix_term")
+_SUFFIX_TERMS = terms.PLANT_TERMS.pattern_dict("suffix_term")
 
 
 _DECODER = common.PATTERNS | {
@@ -24,7 +24,6 @@ COUNT_SUFFIX = MatcherPatterns(
     patterns=[
         "99-99 count_suffix",
     ],
-    terms=const.PLANT_TERMS,
     output=["count"],
 )
 
@@ -45,7 +44,7 @@ def on_count_suffix_match(ent):
         del ent._.data["range"]
 
     label = _SUFFIX_TERMS.get(suffix.lower_, "subpart")
-    suffix = const.PLANT_TERMS.replace.get(suffix.lower_, suffix.lower_)
+    suffix = terms.PLANT_TERMS.replace.get(suffix.lower_, suffix.lower_)
     ent._.data[label] = suffix
 
 
@@ -57,7 +56,6 @@ COUNT_SUFFIX_WORD = MatcherPatterns(
     patterns=[
         "count_word count_suffix",
     ],
-    terms=const.PLANT_TERMS,
     output=["count"],
 )
 
@@ -68,11 +66,11 @@ def on_count_suffix_word_match(ent):
 
     word = next(e for e in ent.ents if e.label_ in _COUNT_WORDS)
     ent._.data["low"] = t_util.to_positive_int(
-        const.PLANT_TERMS.replace[word.text.lower()]
+        terms.PLANT_TERMS.replace[word.text.lower()]
     )
 
     if not (suffix := next((t for t in ent if t.ent_type_ == "count_suffix"), None)):
         raise actions.RejectMatch()
     lower = suffix.text.lower()
     label = _SUFFIX_TERMS.get(lower, "subpart")
-    ent._.data[label] = const.PLANT_TERMS.replace.get(lower, lower)
+    ent._.data[label] = terms.PLANT_TERMS.replace.get(lower, lower)

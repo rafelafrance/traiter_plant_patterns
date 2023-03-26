@@ -895,3 +895,19 @@ class TestSize(unittest.TestCase):
                 },
             ],
         )
+
+    def test_size_42(self):
+        self.assertEqual(
+            test(""" flowers: 7 ft tall; """),
+            [
+                {"flower_part": "flower", "trait": "flower_part", "start": 0, "end": 7},
+                {
+                    "height_low": 213.36,
+                    "dimensions": "height",
+                    "trait": "size",
+                    "start": 9,
+                    "end": 18,
+                    "flower_part": "flower",
+                },
+            ],
+        )

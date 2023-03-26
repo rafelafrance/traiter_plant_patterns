@@ -5,7 +5,7 @@ from traiter.pylib import const as t_const
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
 
-from .. import const
+from ..vocabulary import terms
 
 _SHAPE_LOC = ["shape", "shape_leader", "location"]
 _SHAPE_WORD = ["shape", "shape_leader"]
@@ -33,7 +33,6 @@ SHAPE = MatcherPatterns(
         "shape_leader -/to shape_word+ -* shape+",
         "shape_word+ -* shape+",
     ],
-    terms=const.PLANT_TERMS,
     output=["shape"],
 )
 
@@ -46,14 +45,14 @@ def on_shape_match(ent):
     parts = {
         r: 1
         for t in ent
-        if (r := const.PLANT_TERMS.replace.get(t.lower_, t.lower_))
+        if (r := terms.PLANT_TERMS.replace.get(t.lower_, t.lower_))
         and t._.cached_label in cached_labels
     }
 
     value = "-".join(parts.keys())
     value = re.sub(rf"\s*{_MULTIPLE_DASHES}\s*", r"-", value)
     ent._.new_label = "shape"
-    ent._.data["shape"] = const.PLANT_TERMS.replace.get(value, value)
+    ent._.data["shape"] = terms.PLANT_TERMS.replace.get(value, value)
     loc = [t.lower_ for t in ent if t._.cached_label == "location"]
     if loc:
         ent._.data["location"] = loc[0]
@@ -67,7 +66,6 @@ N_SHAPE = MatcherPatterns(
     patterns=[
         "shape_loc* 9 - angular",
     ],
-    terms=const.PLANT_TERMS,
     output=["shape"],
 )
 

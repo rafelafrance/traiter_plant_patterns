@@ -1,12 +1,12 @@
-from . import const
 from .patterns import deletes
 from .pipeline_builder import PipelineBuilder
+from .vocabulary import terms
 
 
 def pipeline():
     pipes = PipelineBuilder(exclude="ner")
 
-    pipes.traits_without_matcher = const.TRAITS_WITHOUT_MATCHER
+    pipes.traits_without_matcher = terms.TRAITS_WITHOUT_MATCHER
 
     pipes.tokenizer()
 

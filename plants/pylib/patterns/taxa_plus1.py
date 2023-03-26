@@ -25,9 +25,9 @@ from traiter.pylib import const as t_const
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
 
-from .. import const
+from ..vocabulary import terms
 
-_LOWER_RANK = [k for k, v in const.RANK_LEVELS.items() if v == "lower"]
+_LOWER_RANK = [k for k, v in terms.RANK_LEVELS.items() if v == "lower"]
 _LOWER_RANKS = set(_LOWER_RANK)
 
 _DECODER = common.PATTERNS | {
@@ -46,7 +46,6 @@ MULTI_TAXON = MatcherPatterns(
     patterns=[
         "taxon and taxon",
     ],
-    terms=None,
     output=["multi_taxon"],
 )
 
@@ -70,7 +69,6 @@ LOWER_MONOMIAL = MatcherPatterns(
     patterns=[
         "lower_rank monomial",
     ],
-    terms=const.MONOMIAL_TERMS + const.RANK_TERMS,
     output=["taxon"],
 )
 
@@ -78,10 +76,10 @@ LOWER_MONOMIAL = MatcherPatterns(
 @registry.misc(LOWER_MONOMIAL.on_match)
 def on_lower_monomial_match(ent):
     token = next(t for t in ent if t.ent_type_ in _LOWER_RANKS)
-    rank = const.RANK_TERMS.replace.get(token.lower_, token.lower_)
+    rank = terms.RANK_TERMS.replace.get(token.lower_, token.lower_)
 
     token = next(t for t in ent if t.ent_type_ == "monomial")
-    taxon_ = const.TAXON_TERMS.replace.get(token.lower_, token.text)
+    taxon_ = terms.TAXON_TERMS.replace.get(token.lower_, token.text)
 
     ent._.data = {"taxon": taxon_, "rank": rank}
     ent._.new_label = "taxon"
@@ -99,7 +97,6 @@ TAXON_AUTH1 = MatcherPatterns(
         "taxon   auth  auth            ",
         "taxon   auth+ and   auth      ",
     ],
-    terms=None,
     output=["taxon"],
 )
 

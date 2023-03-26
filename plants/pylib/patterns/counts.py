@@ -5,7 +5,7 @@ from traiter.pylib import util as t_util
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
 
-from .. import const
+from ..vocabulary import terms
 
 # ####################################################################################
 _NOT_COUNT_WORDS = (
@@ -28,7 +28,7 @@ _DECODER = common.PATTERNS | {
     "[.,]": {"LOWER": {"IN": t_const.COMMA + t_const.DOT}},
     "per_count": {"ENT_TYPE": "per_count"},
     "every": {"LOWER": {"IN": _EVERY}},
-    "part": {"ENT_TYPE": {"IN": const.PART_ENTS}},
+    "part": {"ENT_TYPE": {"IN": terms.PART_ENTS}},
     "x": {"LOWER": {"IN": ["x", "X"]}},
     "=": {"TEXT": {"IN": ["=", ":"]}},
     "°": {"TEXT": {"IN": ["°"]}},
@@ -48,7 +48,6 @@ COUNT = MatcherPatterns(
         "( 99-99 ) every part",
         "per_count+ adp? 99-99",
     ],
-    terms=const.PLANT_TERMS,
     output=["count"],
 )
 
@@ -71,11 +70,11 @@ def on_count_match(ent):
 
     if per_count := next((e for e in ent.ents if e.label_ == "per_count"), None):
         text = per_count.text.lower()
-        ent._.data["count_group"] = const.PLANT_TERMS.replace.get(text, text)
+        ent._.data["count_group"] = terms.PLANT_TERMS.replace.get(text, text)
 
-    if per_part := next((e for e in ent.ents if e.label_ in const.PART_ENTS), None):
+    if per_part := next((e for e in ent.ents if e.label_ in terms.PART_ENTS), None):
         text = per_part.text.lower()
-        ent._.data["per_part"] = const.PLANT_TERMS.replace.get(text, text)
+        ent._.data["per_part"] = terms.PLANT_TERMS.replace.get(text, text)
 
 
 # ####################################################################################
@@ -86,7 +85,6 @@ COUNT_WORD = MatcherPatterns(
     patterns=[
         "count_word",
     ],
-    terms=const.PLANT_TERMS,
     output=["count"],
 )
 
@@ -96,7 +94,7 @@ def on_count_word_match(ent):
     ent._.new_label = "count"
     word = next(e for e in ent.ents if e.label_ == "count_word")
     word._.data = {
-        "low": t_util.to_positive_int(const.PLANT_TERMS.replace[word.text.lower()])
+        "low": t_util.to_positive_int(terms.PLANT_TERMS.replace[word.text.lower()])
     }
 
 
@@ -116,6 +114,5 @@ NOT_A_COUNT = MatcherPatterns(
         "99-99 any? any? any? as dim",
         "99-99 °",
     ],
-    terms=const.PLANT_TERMS,
     output=None,
 )

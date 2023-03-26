@@ -3,7 +3,7 @@ import re
 from spacy import registry
 from traiter.pylib import const as t_const
 
-from .. import const
+from ..vocabulary import terms
 
 # ####################################################################################
 DELETE_MISSING_PARTS = "plant_missing_parts_v1"
@@ -13,7 +13,7 @@ DELETE_MISSING_PARTS = "plant_missing_parts_v1"
 def delete_missing_parts(ent):
     """Remove trait if it is missing both the part and subpart."""
     data = ent._.data
-    has_part = set(data.keys()) & const.PARTS_SET
+    has_part = set(data.keys()) & terms.PARTS_SET
     return not has_part and not data.get("subpart")
 
 

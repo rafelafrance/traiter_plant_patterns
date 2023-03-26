@@ -7,16 +7,16 @@ the "woody" trait.
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
 
-from .. import const
+from ..vocabulary import terms
 
 # ####################################################################################
-_PART_PARENTS = const.PART_ENTS
-_PART_CHILDREN = const.all_traits_except(
+_PART_PARENTS = terms.PART_ENTS
+_PART_CHILDREN = terms.all_traits_except(
     ["leaf_duration", "sex", "taxon", "size", "count", "habit"]
-    + const.PART_ENTS
-    + const.LOCATION_ENTS
-    + const.PLANT_ENTS
-    + const.NO_LINK_ENTS
+    + terms.PART_ENTS
+    + terms.LOCATION_ENTS
+    + terms.PLANT_ENTS
+    + terms.NO_LINK_ENTS
 )
 
 PART_LINKER = MatcherPatterns(
@@ -31,7 +31,6 @@ PART_LINKER = MatcherPatterns(
         "trait any* part",
         "part  any* trait",
     ],
-    terms=const.PLANT_TERMS,
     output=None,
 )
 
@@ -51,6 +50,5 @@ LINK_PART_ONCE = MatcherPatterns(
         "trait any* part",
         "part  any* trait",
     ],
-    terms=const.PLANT_TERMS,
     output=None,
 )

@@ -4,12 +4,10 @@ from pathlib import Path
 from traiter.pylib import taxon_abbrev
 from traiter.pylib.term_list import TermList
 
-from . import vocabulary as vocab
-
 # #########################################################################
 # Useful locations
 
-VOCAB_DIR = Path(vocab.__file__).parent
+VOCAB_DIR = Path(__file__).parent
 TREATMENT_CSV = VOCAB_DIR / "treatments.csv"
 
 CURR_DIR = Path(os.getcwd())

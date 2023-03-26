@@ -3,7 +3,7 @@ from traiter.pylib import const as t_const
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
 
-from .. import const
+from ..vocabulary import terms
 
 _LOWER_RANK = """
     subspecies_rank variety_rank subvariety_rank form_rank subform_rank
@@ -46,7 +46,6 @@ TAXON_PLUS2 = MatcherPatterns(
         "taxon lower_rank maybe   auth+             and auth+  ",
         "taxon lower_rank maybe   auth+ maybe auth+ and auth+  ",
     ],
-    terms=const.RANK_TERMS,
     output=["taxon"],
 )
 
@@ -70,12 +69,12 @@ def on_taxon_auth_match(ent):
             auth.append("and")
 
         elif token.ent_type_ in _LOWER_RANK:
-            taxon_.append(const.RANK_ABBREV.get(token.lower_, token.lower_))
-            rank = const.RANK_TERMS.replace.get(token.lower_, token.text)
+            taxon_.append(terms.RANK_ABBREV.get(token.lower_, token.lower_))
+            rank = terms.RANK_TERMS.replace.get(token.lower_, token.text)
             next_is_lower_taxon = True
 
         elif next_is_lower_taxon:
-            taxon_.append(const.TAXON_TERMS.replace.get(token.lower_, token.text))
+            taxon_.append(terms.TAXON_TERMS.replace.get(token.lower_, token.text))
             next_is_lower_taxon = False
 
         elif token.shape_ in t_const.NAME_SHAPES or token.pos_ in _MAYBE:

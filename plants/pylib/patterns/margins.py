@@ -4,9 +4,8 @@ from spacy import registry
 from traiter.pylib import const as t_const
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
-from traiter.pylib.term_list import TermList
 
-from .. import const
+from ..vocabulary import terms
 
 _TEMP = ["\\" + c for c in t_const.DASH[:2]]
 
@@ -30,7 +29,6 @@ MARGIN = MatcherPatterns(
         "leader* -* margin -* shape? follower+ shape?",
         "shape+ -* follower+",
     ],
-    terms=TermList().read(const.TREATMENT_CSV),
     output=["margin"],
 )
 
@@ -41,9 +39,9 @@ def on_margin_match(ent):
     value = {
         r: 1
         for t in ent
-        if (r := const.PLANT_TERMS.replace.get(t.text, t.text))
+        if (r := terms.PLANT_TERMS.replace.get(t.text, t.text))
         and t._.cached_label in ["margin", "shape"]
     }
     value = "-".join(value.keys())
     value = re.sub(rf"\s*{multi_dashes}\s*", r"-", value)
-    ent._.data["margin"] = const.PLANT_TERMS.replace.get(value, value)
+    ent._.data["margin"] = terms.PLANT_TERMS.replace.get(value, value)

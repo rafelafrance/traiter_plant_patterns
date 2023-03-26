@@ -7,11 +7,10 @@ from traiter.pylib import const as t_const
 from traiter.pylib import util as t_util
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
-from traiter.pylib.term_list import TermList
 
-from .. import const
+from ..vocabulary import terms
 
-_FACTORS = const.PLANT_TERMS.pattern_dict("factor_cm", float)
+_FACTORS = terms.PLANT_TERMS.pattern_dict("factor_cm", float)
 
 _FOLLOW = """ dim sex """.split()
 _NOT_A_SIZE = """ for below above """.split()
@@ -19,20 +18,20 @@ _SIZE_FIELDS = """ min low high max """.split()
 
 _SWITCH_DIM = t_const.CROSS + t_const.COMMA
 
+_LENGTHS = ["metric_length", "imperial_length"]
+
 _DECODER = common.PATTERNS | {
     "99.9": {"TEXT": {"REGEX": t_const.FLOAT_TOKEN_RE}},
     "[?]": {"ENT_TYPE": "quest"},
     "about": {"ENT_TYPE": "about"},
     "and": {"LOWER": "and"},
-    "cm": {"ENT_TYPE": "metric_length"},
+    "cm": {"ENT_TYPE": {"IN": _LENGTHS}},
     "dim": {"ENT_TYPE": "dim"},
     "follow": {"ENT_TYPE": {"IN": _FOLLOW}},
     "not_size": {"LOWER": {"IN": _NOT_A_SIZE}},
     "sex": {"ENT_TYPE": "sex"},
     "x": {"LOWER": {"IN": t_const.CROSS}},
 }
-
-_TERMS = const.PLANT_TERMS.shared("units")
 
 SIZE = MatcherPatterns(
     "size",
@@ -48,7 +47,6 @@ SIZE = MatcherPatterns(
             "x to? about? 99.9-99.9 cm  follow*"
         ),
     ],
-    terms=_TERMS,
     output=["size"],
 )
 
@@ -59,7 +57,6 @@ SIZE_HIGH_ONLY = MatcherPatterns(
     patterns=[
         "to about? 99.9 [?]? cm follow*",
     ],
-    terms=_TERMS,
     output=["size"],
 )
 
@@ -71,7 +68,6 @@ SIZE_DOUBLE_DIM = MatcherPatterns(
         "about? 99.9-99.9 cm  sex? ,? dim and dim",
         "about? 99.9-99.9 cm? sex? ,? 99.9-99.9 cm dim and? ,? dim",
     ],
-    terms=_TERMS,
     output=["size"],
 )
 
@@ -83,7 +79,6 @@ _NOT_A_SIZE = MatcherPatterns(
         "not_size about? 99.9-99.9 cm",
         "not_size about? 99.9-99.9 cm? x about? 99.9-99.9 cm",
     ],
-    terms=_TERMS,
     output=None,
 )
 
@@ -105,14 +100,14 @@ def on_size_double_dim_match(ent):
     Like: Legumes 2.8-4.5 mm high and wide
     """
     dims = [
-        const.PLANT_TERMS.replace.get(t.lower_, t.lower_)
+        terms.PLANT_TERMS.replace.get(t.lower_, t.lower_)
         for t in ent
         if t.ent_type_ == "dim"
     ]
 
     ranges = [e for e in ent.ents if e.label_ == "range"]
 
-    all_units = [e.text.lower() for e in ent.ents if e.label_ == "metric_length"]
+    all_units = [e.text.lower() for e in ent.ents if e.label_ in _LENGTHS]
     all_units = all_units + [all_units[-1]] * (len(ranges) - len(all_units))
 
     for dim, range_, units in zip(dims, ranges, all_units):
@@ -158,11 +153,11 @@ def scan_tokens(ent, high_only):
                 dims[-1]["high"] = dims[-1]["low"]
                 del dims[-1]["low"]
 
-        elif label == "metric_length":
-            dims[-1]["units"] = const.PLANT_TERMS.replace[token.lower_]
+        elif label in _LENGTHS:
+            dims[-1]["units"] = terms.PLANT_TERMS.replace[token.lower_]
 
         elif label == "dim":
-            dims[-1]["dimension"] = const.PLANT_TERMS.replace[token.lower_]
+            dims[-1]["dimension"] = terms.PLANT_TERMS.replace[token.lower_]
 
         elif label == "sex":
             dims[-1]["sex"] = re.sub(r"\W+", "", token.lower_)

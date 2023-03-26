@@ -15,7 +15,7 @@ _DECODER = common.PATTERNS | {
     "ambiguous": {"LOWER": {"IN": ["few", "many"]}},
     "conj": {"POS": {"IN": ["CCONJ"]}},
     "month": {"ENT_TYPE": "month"},
-    "nope": {"TEXT": {"REGEX": r"^[&/:°'\"]+$"}},
+    "nope": {"TEXT": {"REGEX": r"^[&/°'\"]+$"}},
     "skip": {"LOWER": {"IN": _SKIP}},
     "a.": {"LOWER": {"REGEX": r"^[a-ln-wyz]\.?$"}},  # Keep meters and a cross
     "bad-leader": {"LOWER": {"REGEX": r"^[.=]$"}},
@@ -31,7 +31,6 @@ RANGE_LOW = MatcherPatterns(
         "( 9.9 -/or ) ambiguous ( -/to ambiguous )",
         "9.9 ( -/to [?] )",
     ],
-    terms=None,
     output=None,
 )
 
@@ -43,7 +42,6 @@ RANGE_MIN_LOW = MatcherPatterns(
         "( 9.9 -/or ) 9.9",
         "( 9.9 -/to ) 9.9",
     ],
-    terms=None,
     output=None,
 )
 
@@ -56,7 +54,6 @@ RANGE_LOW_HIGH = MatcherPatterns(
         "9.9 -/to   9.9",
         "9 -* conj 9",
     ],
-    terms=None,
     output=None,
 )
 
@@ -68,7 +65,6 @@ RANGE_LOW_MAX = MatcherPatterns(
         "9.9 ( and/or 9.9 )",
         "9.9 ( -/to   9.9 )",
     ],
-    terms=None,
     output=None,
 )
 
@@ -82,7 +78,6 @@ RANGE_MIN_LOW_HIGH = MatcherPatterns(
         "( 9.9   and/or ) 9.9   and/or 9.9",
         "  9.9 ( and/or   9.9    -/to  9.9 )",
     ],
-    terms=None,
     output=None,
 )
 
@@ -95,7 +90,6 @@ RANGE_MIN_LOW_MAX = MatcherPatterns(
         "  9.9 -   9.9 - ( -/to 9.9 )",
         "  9.9 - and/or 9.9 -/to 9.9",
     ],
-    terms=None,
     output=None,
 )
 
@@ -112,7 +106,6 @@ RANGE_LOW_HIGH_MAX = MatcherPatterns(
         "9.9 - and/or 9.9 ( -/or 9.9 [+]? )",
         "9.9 and/or 9.9 ( and/or 9.9 [+]? )",
     ],
-    terms=None,
     output=None,
 )
 
@@ -130,7 +123,6 @@ RANGE_MIN_LOW_HIGH_MAX = MatcherPatterns(
         "9.9 9.9 -/to and/or 9.9 ( -/or 9.9 [+]? )",
         "9.9 and/or 9.9 - 9.9 ( -/or 9.9 [+]? )",
     ],
-    terms=None,
     output=None,
 )
 
@@ -152,7 +144,6 @@ NOT_A_RANGE = MatcherPatterns(
         "bad-leader 9",
         "9 bad-follower",
     ],
-    terms=None,
     output=None,
 )
 

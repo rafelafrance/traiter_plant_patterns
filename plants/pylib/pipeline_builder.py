@@ -1,7 +1,6 @@
 from traiter.pylib import const as t_const
 from traiter.pylib.pipeline_builders import builder
 
-from . import const
 from . import tokenizer
 from .patterns import count_suffixes
 from .patterns import counts
@@ -23,6 +22,7 @@ from .patterns import taxa_like
 from .patterns import taxa_like_linker
 from .patterns import taxa_plus1
 from .patterns import taxa_plus2
+from .vocabulary import terms
 
 
 class PipelineBuilder(builder.PipelineBuilder):
@@ -31,10 +31,10 @@ class PipelineBuilder(builder.PipelineBuilder):
 
     def taxon_terms(self, **kwargs) -> str:
         prev = self.add_terms(
-            const.BINOMIAL_TERMS + const.RANK_TERMS, name="taxon_binomials", **kwargs
+            terms.BINOMIAL_TERMS + terms.RANK_TERMS, name="taxon_binomials", **kwargs
         )
         return self.add_terms(
-            const.MONOMIAL_TERMS, name=f"taxon_monomials", after=prev, merge=True
+            terms.MONOMIAL_TERMS, name=f"taxon_monomials", after=prev, merge=True
         )
 
     def taxa(self, n=2, **kwargs) -> str:
@@ -75,9 +75,9 @@ class PipelineBuilder(builder.PipelineBuilder):
 
     def plant_terms(self, **kwargs) -> str:
         return self.add_terms(
-            const.PLANT_TERMS,
+            terms.PLANT_TERMS,
             name="plant_terms",
-            replace=const.PLANT_TERMS.pattern_dict("replace"),
+            replace=terms.PLANT_TERMS.pattern_dict("replace"),
             merge=True,
             **kwargs,
         )
@@ -96,7 +96,7 @@ class PipelineBuilder(builder.PipelineBuilder):
         )
 
     def numerics(self, **kwargs) -> str:
-        name = self.add_traits(
+        prev = self.add_traits(
             [
                 ranges.RANGE_LOW,
                 ranges.RANGE_MIN_LOW,
@@ -125,7 +125,7 @@ class PipelineBuilder(builder.PipelineBuilder):
                 count_suffixes.COUNT_SUFFIX_WORD,
             ],
             name="numerics",
-            after=name,
+            after=prev,
         )
 
     def taxa_like(self, **kwargs) -> str:

@@ -2,7 +2,7 @@ from spacy import registry
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
 
-from .. import const
+from ..vocabulary import terms
 
 _TREE = """ tree trees bush bushes """.split()
 
@@ -19,7 +19,6 @@ HABIT = MatcherPatterns(
         "habit",
         "shape -? tree",
     ],
-    terms=const.PLANT_TERMS,
     output=["habit"],
 )
 
@@ -33,4 +32,4 @@ def on_habit_match(ent):
         del ent._.data["plant_habit"]
     else:
         habit = ent.text.lower()
-    ent._.data["habit"] = HABIT.replace.get(habit, habit)
+    ent._.data["habit"] = terms.PLANT_TERMS.replace.get(habit, habit)

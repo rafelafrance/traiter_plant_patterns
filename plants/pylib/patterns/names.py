@@ -2,7 +2,6 @@ from spacy.util import registry
 from traiter.pylib import actions
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
-from traiter.pylib.term_list import TermList
 
 _NOPE = """ of gps ° elev """.split()
 
@@ -31,7 +30,6 @@ NAME = MatcherPatterns(
         "dr? A A? maybe",
         "dr? A A? maybe _? jr",
     ],
-    terms=TermList().shared("names us_locations").drop("county_label"),
     output=None,
 )
 
@@ -58,6 +56,5 @@ NOT_NAME = MatcherPatterns(
         " person+ nope  maybe+",
         " maybe+  nope  maybe+",
     ],
-    terms=None,
     output=None,
 )

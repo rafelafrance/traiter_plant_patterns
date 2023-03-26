@@ -8,16 +8,16 @@ Named entity recognition (NER) must be run first.
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
 
-from .. import const
+from ..vocabulary import terms
 
 # ####################################################################################
 _SUBPART_PARENTS = ["subpart"]
-_SUBPART_CHILDREN = const.all_traits_except(
+_SUBPART_CHILDREN = terms.all_traits_except(
     " subpart sex reproduction plant_habit habit ".split()
-    + const.LOCATION_ENTS
-    + const.PART_ENTS
-    + const.PLANT_ENTS
-    + const.NO_LINK_ENTS
+    + terms.LOCATION_ENTS
+    + terms.PART_ENTS
+    + terms.PLANT_ENTS
+    + terms.NO_LINK_ENTS
 )
 
 SUBPART_LINKER = MatcherPatterns(
@@ -32,7 +32,6 @@ SUBPART_LINKER = MatcherPatterns(
         "trait   clause* subpart",
         "subpart clause* trait",
     ],
-    terms=const.PLANT_TERMS,
     output=None,
 )
 
@@ -52,6 +51,5 @@ SUBPART_SUFFIX_LINKER = MatcherPatterns(
         "trait   subpart_suffix",
         "trait - subpart_suffix",
     ],
-    terms=const.PLANT_TERMS,
     output=None,
 )

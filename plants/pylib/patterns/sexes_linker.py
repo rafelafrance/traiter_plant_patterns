@@ -8,11 +8,11 @@ Named entity recognition (NER) must be run first.
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
 
-from .. import const
+from ..vocabulary import terms
 
 
 _SEX_PARENTS = ["sex"]
-_SEX_CHILDREN = const.all_traits_except(["sex"] + const.NO_LINK_ENTS)
+_SEX_CHILDREN = terms.all_traits_except(["sex"] + terms.NO_LINK_ENTS)
 
 SEX_LINKER = MatcherPatterns(
     "sex_linker",
@@ -26,6 +26,5 @@ SEX_LINKER = MatcherPatterns(
         "trait phrase* sex",
         "sex   phrase* trait",
     ],
-    terms=const.PLANT_TERMS,
     output=None,
 )

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import regex
-from pylib import const
+from pylib.vocabulary import terms
 from tqdm import tqdm
 from traiter.pylib import log
 from traiter.pylib.term_list import TermList
@@ -29,7 +29,7 @@ class Record:
 
 class Ranks:
     def __init__(self):
-        self.ranks = TermList().read(const.VOCAB_DIR / "ranks.csv")
+        self.ranks = TermList().read(terms.VOCAB_DIR / "ranks.csv")
         self.id2rank = {int(r["rank_id"]): r["replace"] for r in self.ranks}
         self.rank_names = {r["pattern"]: r["replace"] for r in self.ranks}
         self.lower = {r for i, r in self.id2rank.items() if i > ITIS_SPECIES_ID}
@@ -83,7 +83,7 @@ class Taxa:
         problem_words = {"temp", "uncertain", "unknown", "dummy"}
 
         problem_taxa = {"harms", "side", "may", "lake"}
-        problem_taxa |= {t["pattern"].lower() for t in const.PLANT_TERMS}
+        problem_taxa |= {t["pattern"].lower() for t in terms.PLANT_TERMS}
         shared = "colors habitats us_locations"
         problem_taxa |= {t["pattern"].lower() for t in TermList().shared(shared)}
 
@@ -105,12 +105,12 @@ class Taxa:
                     print(f"Removed {taxon} {rank}")
                 continue
 
-            if len(taxon) < const.MIN_TAXON_LEN:
+            if len(taxon) < terms.MIN_TAXON_LEN:
                 if show_rejected:
                     print(f"Removed {taxon} {rank}")
                 continue
 
-            if any(len(w) < const.MIN_TAXON_WORD_LEN for w in words):
+            if any(len(w) < terms.MIN_TAXON_WORD_LEN for w in words):
                 if show_rejected:
                     print(f"Removed {taxon} {rank}")
                 continue
@@ -136,13 +136,13 @@ def main():
     counts = count_ranks(records)
     sort_ranks(counts, records, taxa)
 
-    csv_path = const.DATA_DIR / "taxa.csv"
-    const.TAXA_VOCAB.unlink(missing_ok=True)
+    csv_path = terms.DATA_DIR / "taxa.csv"
+    terms.TAXA_VOCAB.unlink(missing_ok=True)
     write_csv(records, csv_path)
 
     write_mock_csv(records)
 
-    with zipfile.ZipFile(const.TAXA_VOCAB, "w", zipfile.ZIP_DEFLATED) as zippy:
+    with zipfile.ZipFile(terms.TAXA_VOCAB, "w", zipfile.ZIP_DEFLATED) as zippy:
         zippy.write(csv_path, arcname=csv_path.name)
 
     log.finished()
@@ -205,7 +205,7 @@ def write_csv(rows, path):
 
 
 def write_mock_csv(records):
-    mock_path = const.VOCAB_DIR / "mock_taxa.csv"
+    mock_path = terms.VOCAB_DIR / "mock_taxa.csv"
 
     with open(mock_path) as in_csv:
         reader = csv.DictReader(in_csv)

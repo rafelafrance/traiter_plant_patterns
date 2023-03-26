@@ -8,7 +8,7 @@ from spacy.lang.char_classes import LIST_QUOTES
 from traiter.pylib import const as t_const
 from traiter.pylib import tokenizer_util
 
-from . import const
+from .vocabulary import terms
 
 BREAKING = LIST_QUOTES + LIST_PUNCT + [r"[:\\/˂˃×.+’()\[\]±_]"]
 
@@ -69,7 +69,7 @@ ABBREVS = """
     """.split()
 ABBREVS += [f"{c}." for c in string.ascii_uppercase]
 
-STATES = [t["pattern"] for t in const.ADMIN_UNIT_TERMS.pick("us_state")]
+STATES = [t["pattern"] for t in terms.ADMIN_UNIT_TERMS.pick("us_state")]
 
 
 def setup_tokenizer(nlp):

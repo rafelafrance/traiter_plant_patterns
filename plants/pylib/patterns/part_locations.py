@@ -2,32 +2,28 @@ from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
-from traiter.pylib.term_list import TermList
 
 from . import sizes
-from .. import const
-from ..const import PLANT_TERMS
+from ..vocabulary import terms
 
 _DECODER = common.PATTERNS | {
     "adj": {"POS": "ADJ"},
     "cm": {"ENT_TYPE": "metric_length"},
     "joined": {"ENT_TYPE": "joined"},
     "leader": {"LOWER": {"IN": """to at embracing immersed from""".split()}},
-    "location": {"ENT_TYPE": {"IN": const.LOCATION_ENTS}},
+    "location": {"ENT_TYPE": {"IN": terms.LOCATION_ENTS}},
     "of": {"LOWER": "of"},
-    "part": {"ENT_TYPE": {"IN": const.PART_ENTS}},
+    "part": {"ENT_TYPE": {"IN": terms.PART_ENTS}},
     "prep": {"POS": "ADP"},
     "sex": {"ENT_TYPE": "sex"},
     "subpart": {"ENT_TYPE": "subpart"},
 }
 
-_TERMS = const.PLANT_TERMS + TermList().shared("units")
-
 
 def get_joined(ent):
     if joined := [e for e in ent.ents if e.label_ == "joined"]:
         text = joined[0].text.lower()
-        return PLANT_TERMS.replace.get(text, text)
+        return terms.PLANT_TERMS.replace.get(text, text)
     return ""
 
 
@@ -43,7 +39,6 @@ PART_AS_LOCATION = MatcherPatterns(
         "location leader part",
         "leader prep part",
     ],
-    terms=_TERMS,
     output=["part_as_loc"],
 )
 
@@ -57,7 +52,6 @@ SUBPART_AS_LOCATION = MatcherPatterns(
         "location leader subpart",
         "location leader subpart of adj? subpart",
     ],
-    terms=_TERMS,
     output=["subpart_as_loc"],
 )
 
@@ -78,7 +72,6 @@ PART_AS_DISTANCE = MatcherPatterns(
         "joined?  leader part prep? 99-99 cm",
         "location leader part prep? 99-99 cm",
     ],
-    terms=_TERMS,
     output=["part_as_loc"],
 )
 

@@ -2,8 +2,6 @@ from spacy import registry
 from traiter.pylib.matcher_patterns import MatcherPatterns
 from traiter.pylib.patterns import common
 
-from .. import const
-
 _DECODER = common.PATTERNS | {
     "part": {"ENT_TYPE": "part"},
     "subpart": {"ENT_TYPE": "subpart"},
@@ -19,7 +17,6 @@ SUBPART = MatcherPatterns(
         "part - subpart",
         "subpart - part",
     ],
-    terms=const.PLANT_TERMS,
     output=["subpart"],
 )
 
@@ -31,7 +28,6 @@ SUBPART_SUFFIX = MatcherPatterns(
     patterns=[
         "- subpart",
     ],
-    terms=const.PLANT_TERMS,
     output=["subpart_suffix"],
 )
 
