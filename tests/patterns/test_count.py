@@ -834,3 +834,15 @@ class TestCount(unittest.TestCase):
             test("in 1885, nos, 323 in flower"),
             [{"end": 27, "flower_part": "flower", "start": 21, "trait": "flower_part"}],
         )
+
+    def test_count_50(self):
+        self.assertEqual(
+            test("plant, !-17 Neto "),
+            [{"end": 5, "part": "plant", "start": 0, "trait": "part"}],
+        )
+
+    def test_count_51(self):
+        self.assertEqual(
+            test("plant RO-173"),
+            [{"end": 5, "part": "plant", "start": 0, "trait": "part"}],
+        )

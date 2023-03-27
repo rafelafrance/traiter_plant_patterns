@@ -3,6 +3,7 @@ from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
 from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
 
@@ -20,13 +21,13 @@ _SPECIES_AND_LOWER = _LOWER_RANK + ["species_rank"]
 
 _MAYBE = """ PROPN NOUN """.split()
 
-_BAD_PREFIX = """ de el la le no se costa santa & """.split()
+_BAD_PREFIX = """ de el la le no se costa santa & collector coll col """.split()
 _BAD_SUFFIX = """ river mountain road """.split()
 
 _ABBREV_RE = r"^[A-Z][.,_]$"
 
 # ###################################################################################
-_DECODER = {
+_DECODER = common.PATTERNS | {
     "A.": {"TEXT": {"REGEX": _ABBREV_RE}},
     "bad_prefix": {"LOWER": {"IN": _BAD_PREFIX}},
     "bad_suffix": {"LOWER": {"IN": _BAD_SUFFIX}},
@@ -324,12 +325,15 @@ BAD_TAXON = MatcherPatterns(
     on_match=actions.REJECT_MATCH,
     decoder=_DECODER,
     patterns=[
-        "bad_prefix monomial",
-        "           monomial bad_suffix",
-        "bad_prefix monomial bad_suffix",
-        "bad_prefix binomial",
-        "           binomial bad_suffix",
-        "bad_prefix binomial bad_suffix",
+        "bad_prefix :?    monomial",
+        "bad_prefix :? A. monomial",
+        "                 monomial bad_suffix",
+        "              A. monomial bad_suffix",
+        "bad_prefix :?    monomial bad_suffix",
+        "bad_prefix :? A. monomial bad_suffix",
+        "bad_prefix :?    binomial",
+        "                 binomial bad_suffix",
+        "bad_prefix :?    binomial bad_suffix",
     ],
     output=None,
 )

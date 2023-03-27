@@ -14,7 +14,7 @@ _NOT_COUNT_WORDS = (
     + """ average side times days weeks by table """.split()
 )
 _NOT_COUNT_ENTS = """ imperial_length metric_mass imperial_mass """.split()
-_NOT_COUNT_PREFIX = """ chapter figure fig nos no # """.split()
+_NOT_COUNT_PREFIX = """ chapter figure fig nos no # sec sec. """.split()
 _EVERY = """ every per each or more """.split()
 
 _DECODER = common.PATTERNS | {
@@ -31,7 +31,9 @@ _DECODER = common.PATTERNS | {
     "part": {"ENT_TYPE": {"IN": terms.PART_ENTS}},
     "x": {"LOWER": {"IN": ["x", "X"]}},
     "=": {"TEXT": {"IN": ["=", ":"]}},
-    "°": {"TEXT": {"IN": ["°"]}},
+    "°": {"TEXT": {"REGEX": r"^[°]+$"}},
+    "!": {"TEXT": {"REGEX": r"^[!]+$"}},
+    "no_ws": {"SPACY": False},
 }
 
 
@@ -113,6 +115,8 @@ NOT_A_COUNT = MatcherPatterns(
         "99-99 :",
         "99-99 any? any? any? as dim",
         "99-99 °",
+        "! -? 9",
+        "no_ws - 9",
     ],
     output=None,
 )

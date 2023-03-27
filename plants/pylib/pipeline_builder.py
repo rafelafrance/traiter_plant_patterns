@@ -1,7 +1,6 @@
 from traiter.pylib import const as t_const
 from traiter.pylib.pipeline_builders import builder
 
-from . import tokenizer
 from .patterns import count_suffixes
 from .patterns import counts
 from .patterns import habits
@@ -26,9 +25,6 @@ from .vocabulary import terms
 
 
 class PipelineBuilder(builder.PipelineBuilder):
-    def tokenizer(self):
-        tokenizer.setup_tokenizer(self.nlp)
-
     def taxon_terms(self, **kwargs) -> str:
         prev = self.add_terms(
             terms.BINOMIAL_TERMS + terms.RANK_TERMS, name="taxon_binomials", **kwargs

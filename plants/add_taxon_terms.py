@@ -80,7 +80,7 @@ class Taxa:
         """Some taxa interfere with other parses."""
         new = {}
 
-        problem_words = {"temp", "uncertain", "unknown", "dummy"}
+        problem_words = {"temp", "uncertain", "unknown", "dummy", "name"}
 
         problem_taxa = {"harms", "side", "may", "lake"}
         problem_taxa |= {t["pattern"].lower() for t in terms.PLANT_TERMS}
