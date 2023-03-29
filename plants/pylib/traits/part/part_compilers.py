@@ -1,0 +1,75 @@
+from pathlib import Path
+
+from traiter.pylib import const as t_const
+from traiter.pylib import trait_util
+from traiter.pylib.matcher_compiler import Compiler
+
+
+HERE = Path(__file__).parent
+TRAIT = HERE.stem
+
+CSV = HERE / f"{TRAIT}.csv"
+
+NOT_PART = ["part_and", "part_leader", "part_missing", "subpart"]
+PART_LABELS = [lb for lb in trait_util.get_labels(CSV) if lb not in NOT_PART]
+
+DECODER = {
+    "-": {"TEXT": {"IN": t_const.DASH}, "OP": "+"},
+    "and": {"ENT_TYPE": "part_and"},
+    "leader": {"ENT_TYPE": "part_leader"},
+    "missing": {"ENT_TYPE": "part_missing"},
+    "part": {"ENT_TYPE": {"IN": PART_LABELS}},
+    "subpart": {"ENT_TYPE": "subpart"},
+}
+
+PART = Compiler(
+    "part",
+    decoder=DECODER,
+    patterns=[
+        "leader? part",
+        "leader? part -?  part",
+    ],
+)
+
+MISSING_PART = Compiler(
+    "missing_part",
+    decoder=DECODER,
+    patterns=[
+        "missing part and part",
+        "missing part",
+        "missing part -?  part",
+    ],
+)
+
+MULTIPLE_PARTS = Compiler(
+    "multiple_parts",
+    decoder=DECODER,
+    patterns=[
+        "leader? part and part",
+        "missing part and part",
+    ],
+)
+
+SUBPART = Compiler(
+    "subpart",
+    decoder=DECODER,
+    patterns=[
+        "leader? subpart",
+        "leader? subpart - subpart",
+        "leader? part -?   subpart",
+        "leader? part      subpart",
+        "- subpart",
+    ],
+)
+
+MISSING_SUBPART = Compiler(
+    "missing_subpart",
+    decoder=DECODER,
+    patterns=[
+        "missing part -?   subpart",
+        "missing part      subpart",
+        "missing subpart",
+    ],
+)
+
+COMPILERS = [PART, MISSING_PART, MULTIPLE_PARTS, SUBPART, MISSING_SUBPART]

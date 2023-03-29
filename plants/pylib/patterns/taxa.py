@@ -2,7 +2,7 @@ import regex
 from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -45,7 +45,7 @@ _DECODER = common.PATTERNS | {
 
 
 # ###################################################################################
-MONOMIAL = MatcherPatterns(
+MONOMIAL = Compiler(
     "taxon.singleton",
     on_match="single_taxon_v1",
     decoder=_DECODER,
@@ -103,7 +103,7 @@ def on_single_taxon_match(ent):
 # ###################################################################################
 ON_TAXON_MATCH = "plant_taxon_pattern_v1"
 
-SPECIES_TAXON = MatcherPatterns(
+SPECIES_TAXON = Compiler(
     "taxon.species",
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
@@ -115,7 +115,7 @@ SPECIES_TAXON = MatcherPatterns(
     output=["taxon"],
 )
 
-SUBSPECIES_TAXON = MatcherPatterns(
+SUBSPECIES_TAXON = Compiler(
     "taxon.subspecies",
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
@@ -130,7 +130,7 @@ SUBSPECIES_TAXON = MatcherPatterns(
     output=["taxon"],
 )
 
-VARIETY_TAXON = MatcherPatterns(
+VARIETY_TAXON = Compiler(
     "taxon.variety",
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
@@ -159,7 +159,7 @@ VARIETY_TAXON = MatcherPatterns(
     output=["taxon"],
 )
 
-SUBVARIETY_TAXON = MatcherPatterns(
+SUBVARIETY_TAXON = Compiler(
     "taxon.subvariety",
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
@@ -198,7 +198,7 @@ SUBVARIETY_TAXON = MatcherPatterns(
     output=["taxon"],
 )
 
-FORM_TAXON = MatcherPatterns(
+FORM_TAXON = Compiler(
     "taxon.form",
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
@@ -237,7 +237,7 @@ FORM_TAXON = MatcherPatterns(
     output=["taxon"],
 )
 
-SUBFORM_TAXON = MatcherPatterns(
+SUBFORM_TAXON = Compiler(
     "taxon.subform",
     on_match=ON_TAXON_MATCH,
     decoder=_DECODER,
@@ -320,7 +320,7 @@ def on_taxon_match(ent):
 
 
 # ###################################################################################
-BAD_TAXON = MatcherPatterns(
+BAD_TAXON = Compiler(
     "bad_taxon",
     on_match=actions.REJECT_MATCH,
     decoder=_DECODER,

@@ -5,7 +5,7 @@ For example: "petals (1–)3–10(–12) mm (pistillate) or 5–8(–10) mm (sta
 Should note that pistillate petals are 3-10 mm and staminate petals are 5-8 mm.
 Named entity recognition (NER) must be run first.
 """
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -14,7 +14,7 @@ from ..vocabulary import terms
 _SEX_PARENTS = ["sex"]
 _SEX_CHILDREN = terms.all_traits_except(["sex"] + terms.NO_LINK_ENTS)
 
-SEX_LINKER = MatcherPatterns(
+SEX_LINKER = Compiler(
     "sex_linker",
     on_match=None,
     decoder=common.PATTERNS

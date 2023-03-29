@@ -1,9 +1,9 @@
 from spacy import registry
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 
 from ..vocabulary import terms
 
-SEX = MatcherPatterns(
+SEX = Compiler(
     "sex",
     on_match="plant_sex_v1",
     decoder={"sex": {"ENT_TYPE": "sex"}},

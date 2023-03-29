@@ -1,14 +1,13 @@
 from spacy import registry
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
 
 _TREE = """ tree trees bush bushes """.split()
 
-HABIT = MatcherPatterns(
+HABIT = Compiler(
     "habit",
-    on_match="plant_habit_v1",
     decoder=common.PATTERNS
     | {
         "habit": {"ENT_TYPE": "plant_habit"},
@@ -19,7 +18,6 @@ HABIT = MatcherPatterns(
         "habit",
         "shape -? tree",
     ],
-    output=["habit"],
 )
 
 

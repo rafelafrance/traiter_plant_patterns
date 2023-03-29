@@ -2,7 +2,7 @@ import re
 
 from spacy import registry
 from traiter.pylib import const as t_const
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -13,7 +13,7 @@ _LEADERS = """ shape shape_leader margin_leader """.split()
 _FOLLOWERS = """ margin margin_follower """.split()
 _SHAPES = """ margin shape """.split()
 
-MARGIN = MatcherPatterns(
+MARGIN = Compiler(
     "margin",
     on_match="plant_margin_v1",
     decoder=common.PATTERNS

@@ -1,0 +1,2 @@
+{"label":"link_part","pattern":[{"ENT_TYPE":{"IN":["color","joined","shape","margin","surface","venation","subpart"]}},{"OP":"*"},{"ENT_TYPE":{"IN":["female_flower_part","flower_part","fruit_part","inflorescence","leaf_part","male_flower_part","part","subpart"]}}]}
+{"label":"link_part","pattern":[{"ENT_TYPE":{"IN":["female_flower_part","flower_part","fruit_part","inflorescence","leaf_part","male_flower_part","part","subpart"]}},{"OP":"*"},{"ENT_TYPE":{"IN":["color","joined","shape","margin","surface","venation","subpart"]}}]}

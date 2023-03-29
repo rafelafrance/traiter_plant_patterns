@@ -1,5 +1,5 @@
 from spacy import registry
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -8,7 +8,7 @@ SIMILAR = """ like similar exactly sympatric affini resembling resembles related
     vicinis vicariant distinguished """.split()
 
 
-TAXON_LIKE = MatcherPatterns(
+TAXON_LIKE = Compiler(
     "taxon_like",
     on_match="plant_taxon_like_v1",
     decoder=common.PATTERNS

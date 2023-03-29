@@ -5,7 +5,7 @@ For example: "leaves are covered with white hairs 1-(1.5) mm long."
 Should link "hairs" with the color "white" and to the length "1 to 1.5 mm".
 Named entity recognition (NER) must be run first.
 """
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -20,7 +20,7 @@ _SUBPART_CHILDREN = terms.all_traits_except(
     + terms.NO_LINK_ENTS
 )
 
-SUBPART_LINKER = MatcherPatterns(
+SUBPART_LINKER = Compiler(
     "subpart_linker",
     on_match=None,
     decoder=common.PATTERNS
@@ -39,7 +39,7 @@ SUBPART_LINKER = MatcherPatterns(
 _SUBPART_SUFFIX_PARENTS = ["subpart_suffix"]
 _SUBPART_SUFFIX_CHILDREN = _SUBPART_CHILDREN
 
-SUBPART_SUFFIX_LINKER = MatcherPatterns(
+SUBPART_SUFFIX_LINKER = Compiler(
     "subpart_suffix_linker",
     on_match=None,
     decoder=common.PATTERNS

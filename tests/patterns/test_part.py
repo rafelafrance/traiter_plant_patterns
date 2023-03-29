@@ -145,7 +145,6 @@ class TestPart(unittest.TestCase):
                 {
                     "end": 16,
                     "missing_part": "no paraphyllidia",
-                    "part": "paraphyllidia",
                     "start": 0,
                     "trait": "missing_part",
                 },

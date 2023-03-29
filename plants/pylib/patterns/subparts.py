@@ -1,5 +1,5 @@
 from spacy import registry
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 _DECODER = common.PATTERNS | {
@@ -8,7 +8,7 @@ _DECODER = common.PATTERNS | {
 }
 
 # ####################################################################################
-SUBPART = MatcherPatterns(
+SUBPART = Compiler(
     "subpart",
     on_match=None,
     decoder=_DECODER,
@@ -21,7 +21,7 @@ SUBPART = MatcherPatterns(
 )
 
 # ####################################################################################
-SUBPART_SUFFIX = MatcherPatterns(
+SUBPART_SUFFIX = Compiler(
     "subpart_suffix",
     on_match="plant_subpart_suffix_v1",
     decoder=_DECODER,

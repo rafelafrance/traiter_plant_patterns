@@ -1,6 +1,6 @@
 from spacy.util import registry
 from traiter.pylib import actions
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 _NOPE = """ of gps ° elev """.split()
@@ -16,7 +16,7 @@ _DECODER = common.PATTERNS | {
     "_": {"TEXT": {"REGEX": r"^[._,]+$"}},
 }
 
-NAME = MatcherPatterns(
+NAME = Compiler(
     "name",
     on_match="digi_leap.name.v1",
     decoder=_DECODER,
@@ -41,7 +41,7 @@ def on_name_match(ent):
 
 
 # ####################################################################################
-NOT_NAME = MatcherPatterns(
+NOT_NAME = Compiler(
     "not_name",
     on_match=actions.REJECT_MATCH,
     decoder=_DECODER,

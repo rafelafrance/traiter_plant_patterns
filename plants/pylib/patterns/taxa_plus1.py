@@ -22,7 +22,7 @@ Use the n parameter to build up taxa with authorities at multiple ranks.
 from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -39,7 +39,7 @@ _DECODER = common.PATTERNS | {
 }
 
 # ###################################################################################
-MULTI_TAXON = MatcherPatterns(
+MULTI_TAXON = Compiler(
     "multi_taxon",
     on_match="plant_multi_taxon_v1",
     decoder=_DECODER,
@@ -62,7 +62,7 @@ def on_multi_taxon_match(ent):
 
 
 # ###################################################################################
-LOWER_MONOMIAL = MatcherPatterns(
+LOWER_MONOMIAL = Compiler(
     "taxon.lower.monomial",
     on_match="lower_monomial_v1",
     decoder=_DECODER,
@@ -86,7 +86,7 @@ def on_lower_monomial_match(ent):
 
 
 # ###################################################################################
-TAXON_AUTH1 = MatcherPatterns(
+TAXON_AUTH1 = Compiler(
     "taxon_auth",
     on_match="plant_taxon_plus1_v1",
     decoder=_DECODER,

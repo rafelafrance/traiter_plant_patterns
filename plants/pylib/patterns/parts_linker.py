@@ -4,7 +4,7 @@ We are linking parts like "petal" or "leaf" to traits like color or size.
 For example: "with thick, woody rootstock" should link the "rootstock" part with
 the "woody" trait.
 """
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -19,7 +19,7 @@ _PART_CHILDREN = terms.all_traits_except(
     + terms.NO_LINK_ENTS
 )
 
-PART_LINKER = MatcherPatterns(
+PART_LINKER = Compiler(
     "part_linker",
     on_match=None,
     decoder=common.PATTERNS
@@ -38,7 +38,7 @@ PART_LINKER = MatcherPatterns(
 _LINK_PART_ONCE_PARENTS = _PART_PARENTS
 _LINK_PART_ONCE_CHILDREN = ["size", "count"]
 
-LINK_PART_ONCE = MatcherPatterns(
+LINK_PART_ONCE = Compiler(
     "link_part_once",
     on_match=None,
     decoder=common.PATTERNS

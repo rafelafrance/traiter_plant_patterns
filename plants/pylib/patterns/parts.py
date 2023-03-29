@@ -1,5 +1,5 @@
 from spacy import registry
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -13,9 +13,8 @@ _DECODER = common.PATTERNS | {
 }
 
 # ####################################################################################
-PART = MatcherPatterns(
+PART = Compiler(
     "part",
-    on_match="plant_part_v1",
     decoder=_DECODER,
     patterns=[
         "leader? part",
@@ -23,7 +22,6 @@ PART = MatcherPatterns(
         "leader? part -? subpart",
         "leader? part    subpart+",
     ],
-    output=terms.PART_ENTS + terms.SUBPART_ENTS,
 )
 
 
@@ -45,14 +43,12 @@ def on_part_match(ent):
 
 
 # ####################################################################################
-MULTIPLE_PARTS = MatcherPatterns(
+MULTIPLE_PARTS = Compiler(
     "multiple_parts",
-    on_match="plant_multiple_parts_v1",
     decoder=_DECODER,
     patterns=[
         "leader? part and part",
     ],
-    output=["multiple_parts"],
 )
 
 
@@ -67,9 +63,8 @@ def on_multiple_parts_match(ent):
 
 
 # ####################################################################################
-MISSING_PART = MatcherPatterns(
+MISSING_PART = Compiler(
     "missing_part",
-    on_match="plant_missing_part_v1",
     decoder=_DECODER,
     patterns=[
         "missing part",
@@ -78,7 +73,6 @@ MISSING_PART = MatcherPatterns(
         "missing part -?  subpart",
         "missing part     subpart",
     ],
-    output=["missing_part"],
 )
 
 

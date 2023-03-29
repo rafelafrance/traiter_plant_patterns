@@ -1,40 +1,48 @@
-from .patterns import deletes
-from .pipeline_builder import PipelineBuilder
-from .vocabulary import terms
+import spacy
+from traiter.pylib import tokenizer
+from traiter.pylib.pipes import extensions
+from traiter.pylib.pipes.finish import FINSH
+
+from .traits.basic import basic_pipe
+from .traits.habit import habit_pipe
+from .traits.link_part import link_part_pipe
+from .traits.part import part_pipe
+
+# from traiter.pylib.pipes import debug
 
 
 def pipeline():
-    pipes = PipelineBuilder(exclude="ner")
+    extensions.add_extensions()
 
-    pipes.traits_without_matcher = terms.TRAITS_WITHOUT_MATCHER
+    nlp = spacy.load("en_core_web_sm", exclude=["ner", "parser"])
 
-    pipes.tokenizer()
+    tokenizer.setup_tokenizer(nlp)
 
-    pipes.taxon_terms()
-    pipes.taxa(n=2)
-    pipes.taxa_like()
+    basic_pipe.pipe(nlp)
+    habit_pipe.pipe(nlp)
 
-    pipes.plant_terms()
-    pipes.parts()
-    pipes.sex()
-    pipes.numerics()
-    pipes.shapes()
-    pipes.margins()
-    pipes.colors()
-    pipes.part_location()
+    # pipes.taxon_terms()
+    # pipes.taxa(n=2)
+    # pipes.taxa_like()
 
-    pipes.delete_traits("delete_partials", keep_outputs=True)
+    part_pipe.pipe(nlp)
+    # pipes.sex()
+    # pipes.numerics()
+    # pipes.shapes()
+    # pipes.margins()
+    # pipes.colors()
+    # pipes.part_location()
 
-    pipes.link_parts()
-    pipes.link_parts_once()
-    pipes.link_subparts()
-    pipes.link_subparts_suffixes()
-    pipes.link_sex()
-    pipes.link_locations()
-    pipes.link_taxa_like()
+    link_part_pipe.pipe(nlp)
+    # pipes.link_sex()
+    # pipes.link_locations()
+    # pipes.link_taxa_like()
 
-    pipes.delete_traits("final_delete", delete_when=deletes.DELETE_WHEN)
+    nlp.add_pipe(FINSH)
 
-    # pipes.debug_tokens()  # ####################################
+    # debug.tokens(nlp)  # ####################################
 
-    return pipes.build()
+    # for name in nlp.pipe_names:
+    #     print(name)
+
+    return nlp

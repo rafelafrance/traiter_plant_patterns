@@ -1,4 +1,4 @@
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -8,7 +8,7 @@ _LOCATION_CHILDREN = terms.all_traits_except(
     " shape sex taxon ".split() + terms.LOCATION_ENTS + terms.NO_LINK_ENTS
 )
 
-LOCATION_LINKER = MatcherPatterns(
+LOCATION_LINKER = Compiler(
     "location_linker",
     on_match=None,
     decoder=common.PATTERNS

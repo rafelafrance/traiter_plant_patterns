@@ -2,7 +2,7 @@ import re
 
 from spacy import registry
 from traiter.pylib import const as t_const
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -23,9 +23,8 @@ _DECODER = common.PATTERNS | {
 
 
 # #####################################################################################
-SHAPE = MatcherPatterns(
+SHAPE = Compiler(
     "shape",
-    on_match="plant_shape_v1",
     decoder=_DECODER,
     patterns=[
         "shape_loc* -* shape+",
@@ -33,7 +32,6 @@ SHAPE = MatcherPatterns(
         "shape_leader -/to shape_word+ -* shape+",
         "shape_word+ -* shape+",
     ],
-    output=["shape"],
 )
 
 
@@ -59,7 +57,7 @@ def on_shape_match(ent):
 
 
 # #####################################################################################
-N_SHAPE = MatcherPatterns(
+N_SHAPE = Compiler(
     "n_shape",
     on_match="plant_n_shape_v1",
     decoder=_DECODER,

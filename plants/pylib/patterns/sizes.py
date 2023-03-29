@@ -5,7 +5,7 @@ from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import const as t_const
 from traiter.pylib import util as t_util
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -33,7 +33,7 @@ _DECODER = common.PATTERNS | {
     "x": {"LOWER": {"IN": t_const.CROSS}},
 }
 
-SIZE = MatcherPatterns(
+SIZE = Compiler(
     "size",
     on_match="plant_size_v1",
     decoder=_DECODER,
@@ -50,7 +50,7 @@ SIZE = MatcherPatterns(
     output=["size"],
 )
 
-SIZE_HIGH_ONLY = MatcherPatterns(
+SIZE_HIGH_ONLY = Compiler(
     "size.high_only",
     on_match="plant_size_high_only_v1",
     decoder=_DECODER,
@@ -60,7 +60,7 @@ SIZE_HIGH_ONLY = MatcherPatterns(
     output=["size"],
 )
 
-SIZE_DOUBLE_DIM = MatcherPatterns(
+SIZE_DOUBLE_DIM = Compiler(
     "size.double_dim",
     on_match="plant_size_double_dim_v1",
     decoder=_DECODER,
@@ -71,7 +71,7 @@ SIZE_DOUBLE_DIM = MatcherPatterns(
     output=["size"],
 )
 
-_NOT_A_SIZE = MatcherPatterns(
+_NOT_A_SIZE = Compiler(
     "not_a_size",
     on_match=actions.REJECT_MATCH,
     decoder=_DECODER,

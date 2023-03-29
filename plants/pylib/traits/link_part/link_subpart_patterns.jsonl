@@ -1,0 +1,2 @@
+{"label":"link_subpart","pattern":[{"ENT_TYPE":{"IN":["color","joined","shape","margin","surface","venation","size","count"]}},{"LOWER":{"REGEX":"^([^.;:,]+)$"},"OP":"*"},{"ENT_TYPE":{"IN":["subpart"]}}]}
+{"label":"link_subpart","pattern":[{"ENT_TYPE":{"IN":["subpart"]}},{"LOWER":{"REGEX":"^([^.;:,]+)$"},"OP":"*"},{"ENT_TYPE":{"IN":["color","joined","shape","margin","surface","venation","size","count"]}}]}

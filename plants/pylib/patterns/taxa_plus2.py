@@ -1,6 +1,6 @@
 from spacy import registry
 from traiter.pylib import const as t_const
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -22,7 +22,7 @@ _DECODER = common.PATTERNS | {
 
 
 # ###################################################################################
-TAXON_PLUS2 = MatcherPatterns(
+TAXON_PLUS2 = Compiler(
     "taxon_auth",
     on_match="plant_taxon_plus2_v1",
     decoder=_DECODER,

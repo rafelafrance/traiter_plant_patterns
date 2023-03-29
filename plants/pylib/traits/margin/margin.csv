@@ -1,0 +1,43 @@
+label,pattern,replace
+margin,biseriate,uniseriate
+margin,ciliata,ciliate
+margin,corrugated,corrugated
+margin,crenata,crenate
+margin,crenate,crenate
+margin,crenulate,crenulate
+margin,dentata,dentate
+margin,dentate,dentate
+margin,denticulata,denticulate
+margin,denticulate,denticulate
+margin,doubly serrate,doubly serrate
+margin,duplicato dentata,doubly serrate
+margin,duplicato-dentata,doubly serrate
+margin,entire,entire
+margin,forma integra,entire
+margin,lobata,lobate
+margin,lobate,lobate
+margin,lobulate,lobulate
+margin,palmately lobed,palmately lobed
+margin,pinnately lobed,pinnately lobed
+margin,pluriseriate,pluriseriate
+margin,pungent,pungent
+margin,scalloped,scalloped
+margin,serrata,serrate
+margin,serrate,serrate
+margin,serrulata,serrulate
+margin,serrulate,serrulate
+margin,sinuate,sinuate
+margin,sinuosa,sinuate
+margin,spiculata,spiny
+margin,spiny,spiny
+margin,tooth,tooth
+margin,toothed,toothed
+margin,undulata,undulate
+margin,undulate,undulate
+margin,uniseriate,uniseriate
+margin_follower,constricted,constricted
+margin_follower,crisped,crisped
+margin_follower,margined,margined
+margin_leader,coarsely,coarsely
+margin_leader,remotely,remotely
+margin_leader,thickened,thickened

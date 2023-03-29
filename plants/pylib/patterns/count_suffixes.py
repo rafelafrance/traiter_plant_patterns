@@ -1,7 +1,7 @@
 from spacy import registry
 from traiter.pylib import actions
 from traiter.pylib import util as t_util
-from traiter.pylib.matcher_patterns import MatcherPatterns
+from traiter.pylib.matcher_compiler import Compiler
 from traiter.pylib.patterns import common
 
 from ..vocabulary import terms
@@ -17,7 +17,7 @@ _DECODER = common.PATTERNS | {
 }
 
 # ####################################################################################
-COUNT_SUFFIX = MatcherPatterns(
+COUNT_SUFFIX = Compiler(
     "count_suffix",
     on_match="plant_count_suffix_v1",
     decoder=_DECODER,
@@ -49,7 +49,7 @@ def on_count_suffix_match(ent):
 
 
 # ####################################################################################
-COUNT_SUFFIX_WORD = MatcherPatterns(
+COUNT_SUFFIX_WORD = Compiler(
     "count_suffix_word",
     on_match="plant_count_suffix_word_v1",
     decoder=_DECODER,
