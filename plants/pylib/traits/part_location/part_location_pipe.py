@@ -1,84 +1,61 @@
-from spacy import registry
-from traiter.pylib import actions
-from traiter.pylib.matcher_compiler import Compiler
-from traiter.pylib.patterns import common
+from pathlib import Path
 
-from . import sizes
-from ..vocabulary import terms
+from spacy import Language
+from traiter.pylib import add_pipe as add
+from traiter.pylib import trait_util
 
-_DECODER = common.PATTERNS | {
-    "adj": {"POS": "ADJ"},
-    "cm": {"ENT_TYPE": "metric_length"},
-    "joined": {"ENT_TYPE": "joined"},
-    "leader": {"LOWER": {"IN": """to at embracing immersed from""".split()}},
-    "location": {"ENT_TYPE": {"IN": terms.LOCATION_ENTS}},
-    "of": {"LOWER": "of"},
-    "part": {"ENT_TYPE": {"IN": terms.PART_ENTS}},
-    "prep": {"POS": "ADP"},
-    "sex": {"ENT_TYPE": "sex"},
-    "subpart": {"ENT_TYPE": "subpart"},
-}
+HERE = Path(__file__).parent
+TRAIT = HERE.stem
+
+FUNC = f"{TRAIT}_func"
+CSV = HERE / f"{TRAIT}.csv"
+
+LABELS = trait_util.get_labels(CSV)
 
 
-def get_joined(ent):
-    if joined := [e for e in ent.ents if e.label_ == "joined"]:
-        text = joined[0].text.lower()
-        return terms.PLANT_TERMS.replace.get(text, text)
-    return ""
+def pipe(nlp: Language, **kwargs):
+    with nlp.select_pipes(enable="tokenizer"):
+        prev = add.term_pipe(
+            nlp,
+            name=f"{TRAIT}_lower",
+            attr="lower",
+            path=HERE / f"{TRAIT}_terms_lower.jsonl",
+            **kwargs,
+        )
+
+    prev = add.ruler_pipe(
+        nlp,
+        name=f"{TRAIT}_patterns",
+        path=HERE / f"{TRAIT}_patterns.jsonl",
+        after=prev,
+        overwrite_ents=True,
+    )
+
+    prev = add.data_pipe(nlp, FUNC, after=prev)
+
+    prev = add.cleanup_pipe(
+        nlp,
+        name=f"{TRAIT}_cleanup",
+        remove=trait_util.labels_to_remove(CSV, LABELS),
+        after=prev,
+    )
+
+    return prev
 
 
-# ####################################################################################
-_ON_AS_LOCATION_MATCH = "plant_as_location_v1"
-
-PART_AS_LOCATION = Compiler(
-    "part_as_loc",
-    on_match=_ON_AS_LOCATION_MATCH,
-    decoder=_DECODER,
-    patterns=[
-        "joined?  leader part",
-        "location leader part",
-        "leader prep part",
-    ],
-    output=["part_as_loc"],
-)
-
-SUBPART_AS_LOCATION = Compiler(
-    "subpart_as_loc",
-    on_match=_ON_AS_LOCATION_MATCH,
-    decoder=_DECODER,
-    patterns=[
-        "joined?  leader subpart",
-        "joined?  leader subpart of adj? subpart",
-        "location leader subpart",
-        "location leader subpart of adj? subpart",
-    ],
-    output=["subpart_as_loc"],
-)
+# ###############################################################################
+REPLACE = trait_util.term_data(CSV, "replace")
 
 
-@registry.misc(_ON_AS_LOCATION_MATCH)
-def on_as_location_match(ent):
-    if joined := get_joined(ent):
-        ent._.data["joined"] = joined
-    actions.text_action(ent)
-
-
-# ####################################################################################
-PART_AS_DISTANCE = Compiler(
-    "part_as_distance",
-    on_match="plant_part_as_distance_v1",
-    decoder=_DECODER,
-    patterns=[
-        "joined?  leader part prep? 99-99 cm",
-        "location leader part prep? 99-99 cm",
-    ],
-    output=["part_as_loc"],
-)
-
-
-@registry.misc(PART_AS_DISTANCE.on_match)
-def on_part_as_distance_match(ent):
-    if joined := get_joined(ent):
-        ent._.data["joined"] = joined
-    sizes.on_size_match(ent)
-    ent._.new_label = "part_as_loc"
+@Language.component(FUNC)
+def data_func(doc):
+    for ent in [e for e in doc.ents if e.label_ in LABELS]:
+        frags = []
+        for token in ent:
+            frag = REPLACE.get(token.lower_, token.lower_)
+            if token._.term == "joined":
+                ent._.data["joined"] = frag
+            else:
+                frags.append(frag)
+        ent._.data[ent.label_] = " ".join(frags)
+    return doc

@@ -5,15 +5,11 @@ from spacy import Language
 from traiter.pylib import add_pipe as add
 from traiter.pylib import trait_util
 
-from .part_compilers import PART_LABELS
-
 HERE = Path(__file__).parent
 TRAIT = HERE.stem
 
 FUNC = f"{TRAIT}_func"
 CSV = HERE / f"{TRAIT}.csv"
-
-LABELS = PART_LABELS + "missing_part missing_subpart multiple_parts subpart".split()
 
 
 def pipe(nlp: Language, **kwargs):
@@ -42,7 +38,7 @@ def pipe(nlp: Language, **kwargs):
     prev = add.cleanup_pipe(
         nlp,
         name=f"{TRAIT}_cleanup",
-        remove=trait_util.labels_to_remove(CSV, LABELS),
+        remove=trait_util.labels_to_remove(CSV, TRAIT),
         after=prev,
     )
 
@@ -55,26 +51,21 @@ REPLACE = trait_util.term_data(CSV, "replace")
 
 @Language.component(FUNC)
 def data_func(doc):
-    for ent in [e for e in doc.ents if e.label_ in LABELS]:
-        frags = [[]]
-        label = ent.label_
+    for ent in [e for e in doc.ents if e.label_ == TRAIT]:
 
-        for token in ent:
+        # Handle 3-angular etc.
+        if re.match(r"^\d", ent.text):
+            ent._.data[TRAIT] = "polygonal"
 
-            if token._.term in LABELS:
-                frags[-1].append(REPLACE.get(token.lower_, token.lower_))
-                if label not in ("missing_part", "multiple_parts", "subpart"):
-                    label = token._.term
+        # All other shapes
+        else:
+            shape = {}  # Dicts preserve order sets do not
+            for token in ent:
+                if token._.term == "shape_term" and token.text != "-":
+                    word = REPLACE.get(token.lower_, token.lower_)
+                    shape[word] = 1
+            shape = "-".join(shape)
+            shape = REPLACE.get(shape, shape)
+            ent._.data[TRAIT] = shape
 
-            elif token._.term == "part_missing":
-                frags[-1].append(REPLACE.get(token.lower_, token.lower_))
-
-            elif token._.term == "part_and":
-                frags.append([])
-
-        all_parts = [" ".join(f) for f in frags]
-        all_parts = [re.sub(r" - ", "-", p) for p in all_parts]
-        all_parts = [REPLACE.get(p, p) for p in all_parts]
-        ent._.data["trait"] = label
-        ent._.data[label] = all_parts[0] if len(all_parts) == 1 else all_parts
     return doc

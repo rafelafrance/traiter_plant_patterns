@@ -1,0 +1,104 @@
+{"label":"count_suffix","pattern":"- androus"}
+{"label":"count_suffix","pattern":"- bracteolate"}
+{"label":"count_suffix","pattern":"- callose"}
+{"label":"count_suffix","pattern":"- carpellate"}
+{"label":"count_suffix","pattern":"- columned"}
+{"label":"count_suffix","pattern":"- flowered"}
+{"label":"count_suffix","pattern":"- foliolate"}
+{"label":"count_suffix","pattern":"- horned"}
+{"label":"count_suffix","pattern":"- incised"}
+{"label":"count_suffix","pattern":"- jointed"}
+{"label":"count_suffix","pattern":"- jug"}
+{"label":"count_suffix","pattern":"- jug."}
+{"label":"count_suffix","pattern":"- lobed"}
+{"label":"count_suffix","pattern":"- locular"}
+{"label":"count_suffix","pattern":"- merous"}
+{"label":"count_suffix","pattern":"- nate"}
+{"label":"count_suffix","pattern":"- nerved"}
+{"label":"count_suffix","pattern":"- paired"}
+{"label":"count_suffix","pattern":"- pairs"}
+{"label":"count_suffix","pattern":"- ranked"}
+{"label":"count_suffix","pattern":"- rayed"}
+{"label":"count_suffix","pattern":"- ribbed"}
+{"label":"count_suffix","pattern":"- seeded"}
+{"label":"count_suffix","pattern":"- toothed"}
+{"label":"count_suffix","pattern":"- veined"}
+{"label":"count_suffix","pattern":"-androus"}
+{"label":"count_suffix","pattern":"-bracteolate"}
+{"label":"count_suffix","pattern":"-callose"}
+{"label":"count_suffix","pattern":"-carpellate"}
+{"label":"count_suffix","pattern":"-columned"}
+{"label":"count_suffix","pattern":"-flowered"}
+{"label":"count_suffix","pattern":"-foliolate"}
+{"label":"count_suffix","pattern":"-horned"}
+{"label":"count_suffix","pattern":"-incised"}
+{"label":"count_suffix","pattern":"-jointed"}
+{"label":"count_suffix","pattern":"-jug"}
+{"label":"count_suffix","pattern":"-jug."}
+{"label":"count_suffix","pattern":"-lobed"}
+{"label":"count_suffix","pattern":"-locular"}
+{"label":"count_suffix","pattern":"-merous"}
+{"label":"count_suffix","pattern":"-nate"}
+{"label":"count_suffix","pattern":"-nerved"}
+{"label":"count_suffix","pattern":"-paired"}
+{"label":"count_suffix","pattern":"-pairs"}
+{"label":"count_suffix","pattern":"-ranked"}
+{"label":"count_suffix","pattern":"-rayed"}
+{"label":"count_suffix","pattern":"-ribbed"}
+{"label":"count_suffix","pattern":"-seeded"}
+{"label":"count_suffix","pattern":"-toothed"}
+{"label":"count_suffix","pattern":"-veined"}
+{"label":"count_word","pattern":"absent"}
+{"label":"count_word","pattern":"decamerous"}
+{"label":"count_word","pattern":"decamery"}
+{"label":"count_word","pattern":"dimerous"}
+{"label":"count_word","pattern":"dimery"}
+{"label":"count_word","pattern":"double"}
+{"label":"count_word","pattern":"heptamerous"}
+{"label":"count_word","pattern":"heptamery"}
+{"label":"count_word","pattern":"hexamerous"}
+{"label":"count_word","pattern":"hexamery"}
+{"label":"count_word","pattern":"monomerous"}
+{"label":"count_word","pattern":"monomery"}
+{"label":"count_word","pattern":"nonamerous"}
+{"label":"count_word","pattern":"nonamery"}
+{"label":"count_word","pattern":"octamerous"}
+{"label":"count_word","pattern":"octamery"}
+{"label":"count_word","pattern":"pentamerous"}
+{"label":"count_word","pattern":"pentamery"}
+{"label":"count_word","pattern":"simple"}
+{"label":"count_word","pattern":"single"}
+{"label":"count_word","pattern":"tetrad"}
+{"label":"count_word","pattern":"tetramerous"}
+{"label":"count_word","pattern":"tetramery"}
+{"label":"count_word","pattern":"triad"}
+{"label":"count_word","pattern":"trimerous"}
+{"label":"count_word","pattern":"trimery"}
+{"label":"count_word","pattern":"triple"}
+{"label":"dim","pattern":"broad"}
+{"label":"dim","pattern":"broader"}
+{"label":"dim","pattern":"d.b.h."}
+{"label":"dim","pattern":"dbh"}
+{"label":"dim","pattern":"dia"}
+{"label":"dim","pattern":"dia."}
+{"label":"dim","pattern":"diam"}
+{"label":"dim","pattern":"diam."}
+{"label":"dim","pattern":"diameter"}
+{"label":"dim","pattern":"diameter at breast height"}
+{"label":"dim","pattern":"diameter breast height"}
+{"label":"dim","pattern":"diameters"}
+{"label":"dim","pattern":"height"}
+{"label":"dim","pattern":"high"}
+{"label":"dim","pattern":"in dia"}
+{"label":"dim","pattern":"in diam"}
+{"label":"dim","pattern":"in diameter"}
+{"label":"dim","pattern":"in height"}
+{"label":"dim","pattern":"length"}
+{"label":"dim","pattern":"long"}
+{"label":"dim","pattern":"longo"}
+{"label":"dim","pattern":"radius"}
+{"label":"dim","pattern":"tall"}
+{"label":"dim","pattern":"thick"}
+{"label":"dim","pattern":"thickness"}
+{"label":"dim","pattern":"wide"}
+{"label":"dim","pattern":"width"}

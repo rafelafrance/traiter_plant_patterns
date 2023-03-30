@@ -22,54 +22,50 @@ DECODER = {
     "subpart": {"ENT_TYPE": "subpart"},
 }
 
-PART = Compiler(
-    "part",
-    decoder=DECODER,
-    patterns=[
-        "leader? part",
-        "leader? part -?  part",
-    ],
-)
-
-MISSING_PART = Compiler(
-    "missing_part",
-    decoder=DECODER,
-    patterns=[
-        "missing part and part",
-        "missing part",
-        "missing part -?  part",
-    ],
-)
-
-MULTIPLE_PARTS = Compiler(
-    "multiple_parts",
-    decoder=DECODER,
-    patterns=[
-        "leader? part and part",
-        "missing part and part",
-    ],
-)
-
-SUBPART = Compiler(
-    "subpart",
-    decoder=DECODER,
-    patterns=[
-        "leader? subpart",
-        "leader? subpart - subpart",
-        "leader? part -?   subpart",
-        "leader? part      subpart",
-        "- subpart",
-    ],
-)
-
-MISSING_SUBPART = Compiler(
-    "missing_subpart",
-    decoder=DECODER,
-    patterns=[
-        "missing part -?   subpart",
-        "missing part      subpart",
-        "missing subpart",
-    ],
-)
-
-COMPILERS = [PART, MISSING_PART, MULTIPLE_PARTS, SUBPART, MISSING_SUBPART]
+COMPILERS = [
+    Compiler(
+        label="part",
+        decoder=DECODER,
+        patterns=[
+            "leader? part",
+            "leader? part - part",
+        ],
+    ),
+    Compiler(
+        label="missing_part",
+        decoder=DECODER,
+        patterns=[
+            "missing part and part",
+            "missing part",
+            "missing part -   part",
+        ],
+    ),
+    Compiler(
+        label="multiple_parts",
+        decoder=DECODER,
+        patterns=[
+            "leader? part+ and part+",
+            "missing part+ and part+",
+        ],
+    ),
+    Compiler(
+        label="subpart",
+        decoder=DECODER,
+        patterns=[
+            "leader? subpart",
+            "leader? subpart - subpart",
+            "leader? part -?   subpart",
+            "leader? part      subpart",
+            "- subpart",
+        ],
+    ),
+    # Compiler(
+    #     label="missing_subpart",
+    #     decoder=DECODER,
+    #     patterns=[
+    #         "missing part -?   subpart",
+    #         "missing part      subpart",
+    #         "missing subpart",
+    #     ],
+    # ),
+]

@@ -5,10 +5,13 @@ from traiter.pylib.pipes.finish import FINSH
 
 from .traits.basic import basic_pipe
 from .traits.habit import habit_pipe
+from .traits.link_location import link_location_pipe
 from .traits.link_part import link_part_pipe
+from .traits.link_sex import link_sex_pipe
 from .traits.part import part_pipe
-
-# from traiter.pylib.pipes import debug
+from .traits.part_location import part_location_pipe
+from .traits.shape import shape_pipe
+from .traits.surface import surface_pipe
 
 
 def pipeline():
@@ -26,21 +29,22 @@ def pipeline():
     # pipes.taxa_like()
 
     part_pipe.pipe(nlp)
-    # pipes.sex()
     # pipes.numerics()
-    # pipes.shapes()
+    shape_pipe.pipe(nlp)
+    surface_pipe.pipe(nlp)
     # pipes.margins()
     # pipes.colors()
-    # pipes.part_location()
-
-    link_part_pipe.pipe(nlp)
-    # pipes.link_sex()
-    # pipes.link_locations()
-    # pipes.link_taxa_like()
+    part_location_pipe.pipe(nlp)
 
     nlp.add_pipe(FINSH)
 
-    # debug.tokens(nlp)  # ####################################
+    link_part_pipe.pipe(nlp)
+    link_sex_pipe.pipe(nlp)
+    link_location_pipe.pipe(nlp)
+    # pipes.link_taxa_like()
+
+    # from traiter.pylib.pipes import debug  # ##################
+    # debug.tokens(nlp)  # ######################################
 
     # for name in nlp.pipe_names:
     #     print(name)

@@ -8,24 +8,27 @@ from traiter.pylib.matcher_compiler import Compiler
 
 from ..part.part_compilers import PART_LABELS
 
-SUBPART_PARENTS = ["subpart"]
-SUBPART_CHILDREN = """ color joined shape margin surface venation """.split()
+CHILDREN = """
+    color duration duration margin shape surface venation woodiness
+    """.split()
 
-PART_PARENTS = PART_LABELS + ["subpart"]
-PART_CHILDREN = SUBPART_CHILDREN + ["subpart"]
+PART_PARENTS = PART_LABELS + ["multiple_parts"]
+PART_CHILDREN = CHILDREN + ["subpart"]
 PART_ONCE_CHILDREN = ["size", "count"]
 
-SUBPART_CHILDREN += PART_ONCE_CHILDREN
+SUBPART_PARENTS = ["subpart"]
+SUBPART_CHILDREN = CHILDREN
 
-COMMON_DECODER = {
+
+DECODER = {
     "any": {},
     "clause": {"LOWER": {"REGEX": r"^([^.;:,]+)$"}},
     "phrase": {"LOWER": {"REGEX": r"^([^.;:]+)$"}},
 }
 
 LINK_PART = Compiler(
-    "link_part",
-    decoder=COMMON_DECODER
+    label="link_part",
+    decoder=DECODER
     | {
         "part": {"ENT_TYPE": {"IN": PART_PARENTS}},
         "trait": {"ENT_TYPE": {"IN": PART_CHILDREN}},
@@ -37,8 +40,8 @@ LINK_PART = Compiler(
 )
 
 LINK_PART_ONCE = Compiler(
-    "link_part_once",
-    decoder=COMMON_DECODER
+    label="link_part_once",
+    decoder=DECODER
     | {
         "part": {"ENT_TYPE": {"IN": PART_PARENTS}},
         "trait": {"ENT_TYPE": {"IN": PART_ONCE_CHILDREN}},
@@ -50,8 +53,8 @@ LINK_PART_ONCE = Compiler(
 )
 
 LINK_SUBPART = Compiler(
-    "link_subpart",
-    decoder=COMMON_DECODER
+    label="link_subpart",
+    decoder=DECODER
     | {
         "subpart": {"ENT_TYPE": {"IN": SUBPART_PARENTS}},
         "trait": {"ENT_TYPE": {"IN": SUBPART_CHILDREN}},
@@ -61,5 +64,3 @@ LINK_SUBPART = Compiler(
         "subpart clause* trait",
     ],
 )
-
-COMPILERS = [LINK_PART, LINK_PART_ONCE, LINK_SUBPART]

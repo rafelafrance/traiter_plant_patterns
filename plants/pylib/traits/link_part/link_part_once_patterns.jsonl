@@ -1,2 +1,2 @@
-{"label":"link_part_once","pattern":[{"ENT_TYPE":{"IN":["size","count"]}},{"OP":"*"},{"ENT_TYPE":{"IN":["female_flower_part","flower_part","fruit_part","inflorescence","leaf_part","male_flower_part","part","subpart"]}}]}
-{"label":"link_part_once","pattern":[{"ENT_TYPE":{"IN":["female_flower_part","flower_part","fruit_part","inflorescence","leaf_part","male_flower_part","part","subpart"]}},{"OP":"*"},{"ENT_TYPE":{"IN":["size","count"]}}]}
+{"label":"link_part_once","pattern":[{"ENT_TYPE":{"IN":["size","count"]}},{"OP":"*"},{"ENT_TYPE":{"IN":["female_flower_part","flower_part","fruit_part","inflorescence","leaf_part","male_flower_part","part","multiple_parts"]}}]}
+{"label":"link_part_once","pattern":[{"ENT_TYPE":{"IN":["female_flower_part","flower_part","fruit_part","inflorescence","leaf_part","male_flower_part","part","multiple_parts"]}},{"OP":"*"},{"ENT_TYPE":{"IN":["size","count"]}}]}
