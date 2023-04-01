@@ -685,7 +685,7 @@ class TestCount(unittest.TestCase):
         self.assertEqual(
             test("blade lobes 0 or 1–4(or 5) per side"),
             [
-                {"trait": "leaf_part", "start": 0, "end": 11, "leaf_part": "leaf lobe"},
+                {"trait": "subpart", "start": 0, "end": 11, "subpart": "leaf lobe"},
                 {
                     "min": 0,
                     "low": 1,
@@ -695,7 +695,7 @@ class TestCount(unittest.TestCase):
                     "start": 12,
                     "end": 35,
                     "count_group": "per side",
-                    "leaf_part": "leaf lobe",
+                    "subpart": "leaf lobe",
                 },
             ],
         )
@@ -721,7 +721,7 @@ class TestCount(unittest.TestCase):
         self.assertEqual(
             test("blade lobes 0 or 1–4(–9) per side"),
             [
-                {"trait": "leaf_part", "start": 0, "end": 11, "leaf_part": "leaf lobe"},
+                {"trait": "subpart", "subpart": "leaf lobe", "start": 0, "end": 11},
                 {
                     "min": 0,
                     "low": 1,
@@ -731,7 +731,7 @@ class TestCount(unittest.TestCase):
                     "start": 12,
                     "end": 33,
                     "count_group": "per side",
-                    "leaf_part": "leaf lobe",
+                    "subpart": "leaf lobe",
                 },
             ],
         )

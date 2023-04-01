@@ -72,6 +72,8 @@ sex,pistillate,pistillate
 sex,staminate,staminate
 sex,synoecious,synoecious
 sex,unisexual,unisexual
+skip,leaf-formula,
+skip,lf-formula,
 venation,acrodromous,acrodromous
 venation,actinodromous,actinodromous
 venation,arbuscular,arbuscular

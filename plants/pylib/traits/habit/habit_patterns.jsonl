@@ -1,2 +1,0 @@
-{"label":"habit","pattern":[{"ENT_TYPE":"habit_term"}]}
-{"label":"habit","pattern":[{"ENT_TYPE":"shape_term"},{"TEXT":{"IN":["-","\u2013","\u2014","--","---","\u2014\u2014","~"]},"OP":"?"},{"ENT_TYPE":"habit_tree"}]}

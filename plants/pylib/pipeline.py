@@ -3,44 +3,46 @@ from traiter.pylib import tokenizer
 from traiter.pylib.pipes import extensions
 from traiter.pylib.pipes.finish import FINSH
 
-from .traits.basic import basic_pipe
-from .traits.habit import habit_pipe
-from .traits.link_location import link_location_pipe
-from .traits.link_part import link_part_pipe
-from .traits.link_sex import link_sex_pipe
-from .traits.part import part_pipe
-from .traits.part_location import part_location_pipe
-from .traits.shape import shape_pipe
-from .traits.surface import surface_pipe
+from .traits.basic import basic_pipeline
+from .traits.habit import habit_pipeline
+from .traits.link_location import link_location_pipeline
+from .traits.link_part import link_part_pipeline
+from .traits.link_sex import link_sex_pipeline
+from .traits.margin import margin_pipeline
+from .traits.numeric import numeric_pipeline
+from .traits.part import part_pipeline
+from .traits.part_location import part_location_pipeline
+from .traits.shape import shape_pipeline
+from .traits.surface import surface_pipeline
 
 
-def pipeline():
+def build(model_path=None):
     extensions.add_extensions()
 
     nlp = spacy.load("en_core_web_sm", exclude=["ner", "parser"])
 
     tokenizer.setup_tokenizer(nlp)
 
-    basic_pipe.pipe(nlp)
-    habit_pipe.pipe(nlp)
+    basic_pipeline.build(nlp)
+    habit_pipeline.build(nlp)
 
     # pipes.taxon_terms()
     # pipes.taxa(n=2)
     # pipes.taxa_like()
 
-    part_pipe.pipe(nlp)
-    # pipes.numerics()
-    shape_pipe.pipe(nlp)
-    surface_pipe.pipe(nlp)
-    # pipes.margins()
-    # pipes.colors()
-    part_location_pipe.pipe(nlp)
+    part_pipeline.build(nlp)
+    numeric_pipeline.build(nlp)
+    shape_pipeline.build(nlp)
+    surface_pipeline.build(nlp)
+    margin_pipeline.build(nlp)
+
+    part_location_pipeline.build(nlp)
 
     nlp.add_pipe(FINSH)
 
-    link_part_pipe.pipe(nlp)
-    link_sex_pipe.pipe(nlp)
-    link_location_pipe.pipe(nlp)
+    link_part_pipeline.build(nlp)
+    link_sex_pipeline.build(nlp)
+    link_location_pipeline.build(nlp)
     # pipes.link_taxa_like()
 
     # from traiter.pylib.pipes import debug  # ##################
@@ -49,4 +51,13 @@ def pipeline():
     # for name in nlp.pipe_names:
     #     print(name)
 
+    if model_path:
+        nlp.to_disk(model_path)
+
+    return nlp
+
+
+def load(model_path):
+    extensions.add_extensions()
+    nlp = spacy.load(model_path)
     return nlp

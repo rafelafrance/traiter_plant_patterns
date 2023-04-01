@@ -1,2 +1,0 @@
-{"label":"surface","pattern":[{"ENT_TYPE":"surface_term"}]}
-{"label":"surface","pattern":[{"ENT_TYPE":"surface_leader"},{"TEXT":{"IN":["-","\u2013","\u2014","--","---","\u2014\u2014","~"]},"OP":"?"},{"ENT_TYPE":"surface_term"}]}
