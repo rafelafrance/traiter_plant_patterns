@@ -381,16 +381,6 @@ part_and,and,
 part_and,et,
 part_leader,primary,
 part_leader,secondary,
-part_missing,except,
-part_missing,excepting,
-part_missing,lack,
-part_missing,lacking,
-part_missing,missing,
-part_missing,no,
-part_missing,not,
-part_missing,obsolete,
-part_missing,rarely,
-part_missing,without,
 subpart,aculei,aculei
 subpart,aculeoli,aculeolus
 subpart,aculeolus,aculeolus

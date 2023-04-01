@@ -17,7 +17,7 @@ DECODER = {
     "-": {"TEXT": {"IN": t_const.DASH}, "OP": "+"},
     "and": {"ENT_TYPE": "part_and"},
     "leader": {"ENT_TYPE": "part_leader"},
-    "missing": {"ENT_TYPE": "part_missing"},
+    "missing": {"ENT_TYPE": "missing"},
     "part": {"ENT_TYPE": {"IN": PART_LABELS}},
     "subpart": {"ENT_TYPE": "subpart"},
 }

@@ -6,13 +6,12 @@ from traiter.pylib.traits import trait_util
 
 from .custom_pipe import CUSTOM_PIPE
 from .pattern_compilers import COMPILERS
+from .pattern_compilers import LOCATION_ENTS
 
 HERE = Path(__file__).parent
 TRAIT = HERE.stem
 
 CSV = HERE / f"{TRAIT}.csv"
-
-LABELS = trait_util.get_labels(CSV)
 
 
 def build(nlp: Language, **kwargs):
@@ -29,14 +28,14 @@ def build(nlp: Language, **kwargs):
 
     config = {
         "replace": trait_util.term_data(CSV, "replace"),
-        "labels": LABELS,
+        "labels": LOCATION_ENTS,
     }
     prev = add.custom_pipe(nlp, CUSTOM_PIPE, config=config, after=prev)
 
     prev = add.cleanup_pipe(
         nlp,
         name=f"{TRAIT}_cleanup",
-        remove=trait_util.labels_to_remove(CSV, keep=LABELS),
+        remove=trait_util.labels_to_remove(CSV, keep=LOCATION_ENTS),
         after=prev,
     )
 

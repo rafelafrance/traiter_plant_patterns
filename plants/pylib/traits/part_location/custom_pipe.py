@@ -14,12 +14,10 @@ class PartLocationPipe(BaseCustomPipe):
 
     def __call__(self, doc):
         for ent in [e for e in doc.ents if e.label_ in self.labels]:
+            print(f"{ent=}")
             frags = []
             for token in ent:
                 frag = self.replace.get(token.lower_, token.lower_)
-                if token._.term == "joined":
-                    ent._.data["joined"] = frag
-                else:
-                    frags.append(frag)
+                frags.append(frag)
             ent._.data[ent.label_] = " ".join(frags)
         return doc

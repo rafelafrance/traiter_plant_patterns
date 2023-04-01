@@ -10,13 +10,14 @@ HERE = Path(__file__).parent
 TRAIT = HERE.stem
 
 CSV = HERE / f"{TRAIT}.csv"
+SEX_CSV = HERE / "sex.csv"
 
 REMOVE = ["skip"]
 
 
 def build(nlp: Language, **kwargs):
     with nlp.select_pipes(enable="tokenizer"):
-        prev = add.term_pipe(nlp, name=f"{TRAIT}_terms", path=CSV, **kwargs)
+        prev = add.term_pipe(nlp, name=f"{TRAIT}_terms", path=[CSV, SEX_CSV], **kwargs)
 
     config = {
         "replace": trait_util.term_data(CSV, "replace"),

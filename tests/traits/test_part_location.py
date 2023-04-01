@@ -46,21 +46,13 @@ class TestPartLocation(unittest.TestCase):
                     "trait": "leaf_part",
                     "start": 0,
                     "end": 6,
-                    "part_as_loc": "embracing stem",
+                    "part_as_loc": "embracing stem but not connate",
                 },
                 {
-                    "part_as_loc": "embracing stem",
+                    "part_as_loc": "embracing stem but not connate",
                     "trait": "part_as_loc",
                     "start": 18,
-                    "end": 32,
-                },
-                {
-                    "joined": "connate",
-                    "trait": "joined",
-                    "start": 41,
                     "end": 48,
-                    "leaf_part": "leaf",
-                    "part_as_loc": "embracing stem",
                 },
             ],
         )
@@ -80,7 +72,7 @@ class TestPartLocation(unittest.TestCase):
                     "surface": "ciliate",
                     "trait": "surface",
                     "subpart_as_loc": "at margin",
-                    "start": 17,
+                    "start": 9,
                     "end": 24,
                     "leaf_part": "stipule",
                 },
@@ -149,6 +141,7 @@ class TestPartLocation(unittest.TestCase):
                     "start": 35,
                     "end": 50,
                     "inflorescence": "pseudoraceme",
+                    "location": "terminal",
                 },
                 {
                     "shape": "spheric",
@@ -156,6 +149,7 @@ class TestPartLocation(unittest.TestCase):
                     "start": 54,
                     "end": 61,
                     "inflorescence": "capitulum",
+                    "part_as_loc": "immersed in foliage",
                 },
                 {
                     "inflorescence": "capitulum",
