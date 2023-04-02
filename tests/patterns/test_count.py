@@ -44,7 +44,6 @@ class TestCount(unittest.TestCase):
             [
                 {"leaf_part": "leaf", "trait": "leaf_part", "start": 0, "end": 5},
                 {
-                    "dimensions": ["length", "width"],
                     "length_low": 5.0,
                     "length_high": 10.0,
                     "trait": "size",
