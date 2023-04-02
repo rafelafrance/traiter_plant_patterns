@@ -14,7 +14,6 @@ class PartLocationPipe(BaseCustomPipe):
 
     def __call__(self, doc):
         for ent in [e for e in doc.ents if e.label_ in self.labels]:
-            print(f"{ent=}")
             frags = []
             for token in ent:
                 frag = self.replace.get(token.lower_, token.lower_)

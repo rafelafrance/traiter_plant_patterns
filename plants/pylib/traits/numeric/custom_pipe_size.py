@@ -34,15 +34,17 @@ class SizePipe(BaseCustomPipe):
             elif ent.id_ == "size.high_only":
                 ...
             else:
-                # Put the token data into structures
+                # Gather the token data into structures
                 dims = [Dim(range={}, units="", dim="", about=False, sex="")]
                 for token in ent:
                     if token._.data and token._.flag == "range":
                         dims[-1].range = token._.data
+                        print(token._.data)
                     elif token._.term in self.units_labels:
                         dims[-1].units = self.replace.get(token.lower_, token.lower_)
                     elif token._.term == "dim":
-                        dims[-1].dim = self.replace.get(token.lower_, token.lower_)
+                        if word := self.replace.get(token.lower_):
+                            dims[-1].dim = word
                     elif token._.term in ("about", "quest"):
                         dims[-1].about = True
                     elif token._.term == "sex":
@@ -63,7 +65,7 @@ class SizePipe(BaseCustomPipe):
                 for dim in dims:
                     dim.dim = dim.dim if dim.dim else defaults.pop(0)
 
-                # Build the trait
+                # Build the trait data
                 if sex := [d.sex for d in dims if d.sex]:
                     ent._.data["sex"] = sex[0]
                 if any(d.about for d in dims):

@@ -29,8 +29,8 @@ COMPILERS = [
             "about? 99.9-99.9 cm  sex/dim*",
             "about? 99.9-99.9 cm? sex/dim* x to? about? 99.9-99.9 cm sex/dim*",
             (
-                "      about? 99.9-99.9 cm? sex/dim*"
-                "x to? about? 99.9-99.9 cm? sex/dim*"
+                "      about? 99.9-99.9 cm? sex/dim* "
+                "x to? about? 99.9-99.9 cm? sex/dim* "
                 "x to? about? 99.9-99.9 cm  sex/dim*"
             ),
         ],
@@ -48,8 +48,9 @@ COMPILERS = [
         id="size.double_dim",
         decoder=DECODER,
         patterns=[
-            "about? 99.9-99.9 cm  sex? ,? dim and dim",
-            "about? 99.9-99.9 cm? sex? ,? 99.9-99.9 cm dim and? ,? dim",
+            "about? 99.9-99.9 cm  sex? ,? dim+ and dim+",
+            "about? 99.9-99.9 cm? sex? ,? 99.9-99.9 cm dim+ and dim+",
+            "about? 99.9-99.9 cm? sex? ,? 99.9-99.9 cm dim+ ,   dim+",
         ],
     ),
     Compiler(

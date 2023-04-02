@@ -41,6 +41,10 @@ def build(nlp: Language, **kwargs):
     config = {"trait": "range"}
     prev = add.custom_pipe(nlp, CUSTOM_PIPE_RANGE, config=config, after=prev)
 
+    from traiter.pylib.pipes import debug  # #####################################
+
+    prev = debug.tokens(nlp, after=prev)  # ######################################
+
     prev = add.ruler_pipe(
         nlp,
         name="numeric_patterns",
@@ -49,8 +53,9 @@ def build(nlp: Language, **kwargs):
         after=prev,
     )
 
-    # from traiter.pylib.pipes import debug  # #####################################
-    # prev = debug.tokens(nlp, after=prev)  # ######################################
+    from traiter.pylib.pipes import debug  # #####################################
+
+    prev = debug.tokens(nlp, after=prev)  # ######################################
 
     replace = trait_util.term_data(CSV, "replace")
     replace |= trait_util.term_data(NUMERIC_CSV, "replace")
