@@ -5,6 +5,10 @@ AND = ["&", "and", "et"]
 CONJ = AND + ["or"]
 TO = ["to"]
 
+NOT_NUMERIC = """
+    not_numeric metric_mass imperial_mass metric_dist imperial_dist
+    """.split()
+
 DECODER = {
     "(": {"TEXT": {"IN": t_const.OPEN}},
     ")": {"TEXT": {"IN": t_const.CLOSE}},
@@ -19,12 +23,12 @@ DECODER = {
     "a.": {"LOWER": {"REGEX": r"^[a-ln-wyz]\.?$"}},  # Keep meters and a cross
     "ambiguous": {"LOWER": {"IN": ["few", "many"]}},
     "and/or": {"LOWER": {"IN": CONJ}},
-    "bad-follower": {"LOWER": {"REGEX": r"^[=:]$"}},
-    "bad-leader": {"LOWER": {"REGEX": r"^[.=]$"}},
+    "bad_follower": {"LOWER": {"REGEX": r"^[=:]$"}},
+    "bad_leader": {"LOWER": {"REGEX": r"^[.=]$"}},
+    "bad_symbol": {"TEXT": {"REGEX": r"^[&/°'\"]+$"}},
     "conj": {"POS": {"IN": ["CCONJ"]}},
     "month": {"ENT_TYPE": "month"},
-    "nope": {"TEXT": {"REGEX": r"^[&/°'\"]+$"}},
-    "skip": {"ENT_TYPE": "bad_numeric"},
+    "not_numeric": {"ENT_TYPE": {"IN": NOT_NUMERIC}},
 }
 
 COMPILERS = [
@@ -120,18 +124,18 @@ COMPILERS = [
         label="not_a_range",
         decoder=DECODER,
         patterns=[
-            "9 nope",
-            "  nope 9",
-            "9 nope 9",
-            "  nope 9 - 9",
-            "9 month",
-            "  month 9",
-            "9 skip",
-            "  skip 9",
-            "  skip 9 , 9",
-            "9 a.",
-            "bad-leader 9",
-            "9 bad-follower",
+            "9.9 bad_symbol",
+            "    bad_symbol 9.9",
+            "9.9 bad_symbol 9.9",
+            "    bad_symbol 9.9 - 9.9",
+            "9.9 month",
+            "    month 9.9",
+            "9.9 not_numeric",
+            "    not_numeric     ,? 9.9",
+            "    not_numeric 9.9 ,  9.9",
+            "9   a.",
+            "    bad_leader  9.9",
+            "9.9 bad_follower",
         ],
     ),
 ]

@@ -53,6 +53,7 @@ class TestCount(unittest.TestCase):
                     "leaf_part": "leaf",
                     "width_low": 4.0,
                     "width_high": 9.0,
+                    "units": "cm",
                 },
             ],
         )
@@ -68,13 +69,6 @@ class TestCount(unittest.TestCase):
                     "flower_part": "petal",
                     "start": 7,
                     "end": 8,
-                },
-                {
-                    "joined": "connate",
-                    "trait": "joined",
-                    "start": 10,
-                    "end": 17,
-                    "flower_part": "petal",
                 },
             ],
         )
@@ -343,10 +337,10 @@ class TestCount(unittest.TestCase):
             test("blade lobes 0 or 1–4(or 5) per side"),
             [
                 {
-                    "trait": "leaf_part",
+                    "trait": "subpart",
                     "start": 0,
                     "end": 11,
-                    "leaf_part": "leaf lobe",
+                    "subpart": "leaf lobe",
                 },
                 {
                     "min": 0,
@@ -357,7 +351,7 @@ class TestCount(unittest.TestCase):
                     "trait": "count",
                     "start": 12,
                     "end": 35,
-                    "leaf_part": "leaf lobe",
+                    "subpart": "leaf lobe",
                 },
             ],
         )
@@ -405,7 +399,7 @@ class TestCount(unittest.TestCase):
         self.assertEqual(
             test("blade lobes 0 or 1–4(–9) per side"),
             [
-                {"trait": "leaf_part", "start": 0, "end": 11, "leaf_part": "leaf lobe"},
+                {"trait": "subpart", "start": 0, "end": 11, "subpart": "leaf lobe"},
                 {
                     "min": 0,
                     "low": 1,
@@ -415,7 +409,7 @@ class TestCount(unittest.TestCase):
                     "start": 12,
                     "end": 33,
                     "count_group": "per side",
-                    "leaf_part": "leaf lobe",
+                    "subpart": "leaf lobe",
                 },
             ],
         )
@@ -644,7 +638,6 @@ class TestCount(unittest.TestCase):
                     "trait": "subpart",
                     "start": 28,
                     "end": 35,
-                    "subpart_as_loc": "at apex of hypanthial aculei",
                     "flower_part": "flower",
                 },
                 {

@@ -6,11 +6,12 @@ from traiter.pylib import util as t_util
 from traiter.pylib.traits.base_custom_pipe import BaseCustomPipe
 
 CUSTOM_PIPE_SIZE = "custom_pipe_size"
+
 CROSS = t_const.CROSS + t_const.COMMA
 
 
 @dataclass()
-class Dim:
+class Dimension:
     range: dict
     units: str
     dim: str
@@ -23,59 +24,86 @@ class Dim:
 class SizePipe(BaseCustomPipe):
     trait: str
     replace: dict[str, str]
-    units_replace: dict[str, str]
-    units_labels: list[str]
     factors_cm: dict[str, float]
 
     def __call__(self, doc):
         for ent in [e for e in doc.ents if e.label_ == self.trait]:
-            if ent.id_ == "size.double_dim":
-                ...
+
+            dimensions = self.scan_tokens(ent)
+
+            if ent.id_ == "size":
+                pass
             elif ent.id_ == "size.high_only":
-                ...
-            else:
-                # Gather the token data into structures
-                dims = [Dim(range={}, units="", dim="", about=False, sex="")]
+                dimensions[0].range = {"high": dimensions[0].range["low"]}
+
+            elif ent.id_ == "size.double_dim":
+                dims = []
                 for token in ent:
-                    if token._.data and token._.flag == "range":
-                        dims[-1].range = token._.data
-                        print(token._.data)
-                    elif token._.term in self.units_labels:
-                        dims[-1].units = self.replace.get(token.lower_, token.lower_)
-                    elif token._.term == "dim":
-                        if word := self.replace.get(token.lower_):
-                            dims[-1].dim = word
-                    elif token._.term in ("about", "quest"):
-                        dims[-1].about = True
-                    elif token._.term == "sex":
-                        dims[-1].sex = self.replace.get(token.lower_, token.lower_)
-                    elif token.lower_ in CROSS:
-                        new = Dim(range={}, units="", dim="", about=False, sex="")
-                        dims.append(new)
+                    if token._.term == "dim":
+                        dims.append(self.replace.get(token.lower_, token.lower_))
 
-                # Fill units
-                default_units = next(d.units for d in dims if d.units)
-                for dim in dims:
-                    dim.units = dim.units if dim.units else default_units
+                for dimension, dim in zip(dimensions, dims):
+                    dimension.dim = dim
 
-                # Fill dimensions
-                defaults = ["length", "width", "thickness"]
-                used = [d.dim for d in dims if d.dim]
-                defaults = [d for d in defaults if d not in used]
-                for dim in dims:
-                    dim.dim = dim.dim if dim.dim else defaults.pop(0)
-
-                # Build the trait data
-                if sex := [d.sex for d in dims if d.sex]:
-                    ent._.data["sex"] = sex[0]
-                if any(d.about for d in dims):
-                    ent._.data["uncertain"] = True
-                for dim in dims:
-                    for key, value in dim.range.items():
-                        key = f"{dim.dim}_{key}"
-                        factor = self.factors_cm[dim.units]
-                        value = t_util.to_positive_float(value)
-                        value = round(value * factor, 3)
-                        ent._.data[key] = value
+            self.fill_units(dimensions)
+            self.fill_dimensions(dimensions)
+            self.fill_trait_data(dimensions, ent)
 
         return doc
+
+    def scan_tokens(self, ent):
+        dimensions = [Dimension(range={}, units="", dim="", about=False, sex="")]
+
+        for token in ent:
+            if token._.data and token._.flag == "range":
+                dimensions[-1].range = token._.data
+            elif token._.term in ("metric_length", "imperial_length"):
+                if word := self.replace.get(token.lower_):
+                    dimensions[-1].units += word
+            elif token._.term == "dim":
+                if word := self.replace.get(token.lower_):
+                    dimensions[-1].dim += word
+            elif token._.term in ("about", "quest"):
+                dimensions[-1].about = True
+            elif token._.term == "sex":
+                if word := self.replace.get(token.lower_):
+                    dimensions[-1].sex += word
+            elif token.lower_ in CROSS:
+                new = Dimension(range={}, units="", dim="", about=False, sex="")
+                dimensions.append(new)
+
+        return dimensions
+
+    @staticmethod
+    def fill_units(dimensions):
+        default_units = next(d.units for d in dimensions if d.units)
+        for dim in dimensions:
+            dim.units = dim.units if dim.units else default_units
+
+    @staticmethod
+    def fill_dimensions(dimensions):
+        used = [d.dim for d in dimensions if d.dim]
+        defaults = ["length", "width", "thickness"]
+        defaults = [d for d in defaults if d not in used]
+        for dim in dimensions:
+            dim.dim = dim.dim if dim.dim else defaults.pop(0)
+
+    def fill_trait_data(self, dimensions, ent):
+        ent._.data["units"] = "cm"
+        if sex := [d.sex for d in dimensions if d.sex]:
+            ent._.data["sex"] = sex[0]
+        if any(d.about for d in dimensions):
+            ent._.data["uncertain"] = True
+
+        # "dimensions" is used to link traits
+        dims = sorted(d.dim for d in dimensions)
+        ent._.data["dimensions"] = dims if len(dims) > 1 else dims[0]
+
+        # Build the key and value for the range's: min, low, high, max
+        for dim in dimensions:
+            for key, value in dim.range.items():
+                key = f"{dim.dim}_{key}"
+                factor = self.factors_cm[dim.units]
+                value = t_util.to_positive_float(value)
+                value = round(value * factor, 3)
+                ent._.data[key] = value

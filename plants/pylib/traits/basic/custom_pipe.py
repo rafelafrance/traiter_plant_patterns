@@ -18,5 +18,6 @@ class BasicPipe(BaseCustomPipe):
             for token in ent:
                 if token.text not in "[ ] ( )":
                     frags.append(self.replace.get(token.lower_, token.lower_))
+            print(frags)
             ent._.data[ent.label_] = " ".join(frags)
         return doc

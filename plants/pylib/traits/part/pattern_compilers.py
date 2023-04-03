@@ -27,17 +27,17 @@ COMPILERS = [
         label="part",
         decoder=DECODER,
         patterns=[
-            "leader? part",
-            "leader? part - part",
+            "leader? part+",
+            "leader? part+ - part+",
         ],
     ),
     Compiler(
         label="missing_part",
         decoder=DECODER,
         patterns=[
-            "missing part and part",
-            "missing part",
-            "missing part -   part",
+            "missing part+ and part+",
+            "missing part+",
+            "missing part+ -   part+",
         ],
     ),
     Compiler(
@@ -52,20 +52,20 @@ COMPILERS = [
         label="subpart",
         decoder=DECODER,
         patterns=[
-            "leader? subpart",
-            "leader? subpart - subpart",
-            "leader? part -?   subpart",
-            "leader? part      subpart",
+            "leader? subpart+",
+            "leader? subpart+ - subpart+",
+            "leader? part+ -?   subpart+",
+            "leader? part+      subpart+",
             "- subpart",
         ],
     ),
-    # Compiler(
-    #     label="missing_subpart",
-    #     decoder=DECODER,
-    #     patterns=[
-    #         "missing part -?   subpart",
-    #         "missing part      subpart",
-    #         "missing subpart",
-    #     ],
-    # ),
+    Compiler(
+        label="missing_subpart",
+        decoder=DECODER,
+        patterns=[
+            "missing part+ -?   subpart+",
+            "missing part+      subpart+",
+            "missing subpart+",
+        ],
+    ),
 ]

@@ -12,7 +12,6 @@ from traiter.pylib import const as t_const
 from traiter.pylib.traits import add_pipe as add
 
 from . import pattern_compilers as comp
-from .pattern_compilers import LINK_LOCATION
 
 HERE = Path(__file__).parent
 TRAIT = HERE.stem
@@ -21,12 +20,22 @@ TRAIT = HERE.stem
 def build(nlp: Language, **kwargs):
     prev = add.link_pipe(
         nlp,
-        name=TRAIT,
-        compiler=LINK_LOCATION,
-        parents=comp.PARENTS,
-        children=comp.CHILDREN,
+        name=f"{TRAIT}_part",
+        compiler=comp.LINK_LOCATION_PART,
+        parents=comp.PART_PARENTS,
+        children=comp.PART_CHILDREN,
         weights=t_const.TOKEN_WEIGHTS,
         **kwargs,
+    )
+
+    prev = add.link_pipe(
+        nlp,
+        name=f"{TRAIT}_subpart",
+        compiler=comp.LINK_LOCATION_SUBPART,
+        parents=comp.SUBPART_PARENTS,
+        children=comp.SUBPART_CHILDREN,
+        weights=t_const.TOKEN_WEIGHTS,
+        after=prev,
     )
 
     return prev

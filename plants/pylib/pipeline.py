@@ -23,13 +23,12 @@ def build(model_path=None):
 
     tokenizer.setup_tokenizer(nlp)
 
-    basic_pipeline.build(nlp)
-    habit_pipeline.build(nlp)
-
     # pipes.taxon_terms()
     # pipes.taxa(n=2)
     # pipes.taxa_like()
 
+    basic_pipeline.build(nlp)
+    habit_pipeline.build(nlp)
     part_pipeline.build(nlp)
     numeric_pipeline.build(nlp)
     shape_pipeline.build(nlp)

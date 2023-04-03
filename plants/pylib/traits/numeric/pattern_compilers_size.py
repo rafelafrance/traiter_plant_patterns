@@ -6,15 +6,15 @@ LENGTH_ENTS = ["metric_length", "imperial_length"]
 
 DECODER = {
     "99.9": {"TEXT": {"REGEX": t_const.FLOAT_TOKEN_RE}},
-    "99.9-99.9": {"ENT_TYPE": "range", "OP": "+"},
-    "[?]": {"ENT_TYPE": "quest"},
+    "99-99": {"ENT_TYPE": "range", "OP": "+"},
     ",": {"TEXT": {"IN": t_const.COMMA}},
     "about": {"ENT_TYPE": "about"},
+    "any": {},
     "and": {"LOWER": "and"},
     "cm": {"ENT_TYPE": {"IN": LENGTH_ENTS}},
     "dim": {"ENT_TYPE": "dim"},
     "sex/dim": {"ENT_TYPE": {"IN": SEX_DIM_ENTS}},
-    "not_size": {"ENT_TYPE": "not_size"},
+    "not_numeric": {"ENT_TYPE": "not_numeric"},
     "sex": {"ENT_TYPE": "sex"},
     "to": {"LOWER": "to"},
     "x": {"LOWER": {"IN": t_const.CROSS + t_const.COMMA}},
@@ -26,12 +26,12 @@ COMPILERS = [
         id="size",
         decoder=DECODER,
         patterns=[
-            "about? 99.9-99.9 cm  sex/dim*",
-            "about? 99.9-99.9 cm? sex/dim* x to? about? 99.9-99.9 cm sex/dim*",
+            "about* 99-99                    about*       cm+ sex/dim*",
+            "about* 99-99 cm* sex/dim* x to? about* 99-99 cm+ sex/dim*",
             (
-                "      about? 99.9-99.9 cm? sex/dim* "
-                "x to? about? 99.9-99.9 cm? sex/dim* "
-                "x to? about? 99.9-99.9 cm  sex/dim*"
+                "      about* 99-99 cm* sex/dim* "
+                "x to? about* 99-99 cm* sex/dim* "
+                "x to? about* 99-99 cm+ sex/dim*"
             ),
         ],
     ),
@@ -40,7 +40,7 @@ COMPILERS = [
         id="size.high_only",
         decoder=DECODER,
         patterns=[
-            "to about? 99.9 [?]? cm sex/dim*",
+            "to about* 99.9 about* cm+ sex/dim*",
         ],
     ),
     Compiler(
@@ -48,17 +48,18 @@ COMPILERS = [
         id="size.double_dim",
         decoder=DECODER,
         patterns=[
-            "about? 99.9-99.9 cm  sex? ,? dim+ and dim+",
-            "about? 99.9-99.9 cm? sex? ,? 99.9-99.9 cm dim+ and dim+",
-            "about? 99.9-99.9 cm? sex? ,? 99.9-99.9 cm dim+ ,   dim+",
+            "about* 99-99 cm+ sex? ,? dim+ and  dim+",
+            "about* 99-99 cm* sex? ,? 99-99 cm+ dim+ and dim+",
+            "about* 99-99 cm* sex? ,? 99-99 cm+ dim+ ,   dim+",
         ],
     ),
     Compiler(
         label="not_a_size",
         decoder=DECODER,
         patterns=[
-            "not_size about? 99.9-99.9 cm",
-            "not_size about? 99.9-99.9 cm? x about? 99.9-99.9 cm",
+            "not_numeric about* 99-99 cm+",
+            "not_numeric about* 99-99 cm* x about* 99-99 cm+",
+            "                   99-99 cm not_numeric",
         ],
     ),
 ]

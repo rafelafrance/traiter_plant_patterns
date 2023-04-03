@@ -11,17 +11,18 @@ TRAIT = HERE.stem
 
 CSV = HERE / f"{TRAIT}.csv"
 SEX_CSV = HERE / "sex.csv"
+ALL_CSVS = [CSV, SEX_CSV]
 
 REMOVE = ["skip"]
 
 
 def build(nlp: Language, **kwargs):
     with nlp.select_pipes(enable="tokenizer"):
-        prev = add.term_pipe(nlp, name=f"{TRAIT}_terms", path=[CSV, SEX_CSV], **kwargs)
+        prev = add.term_pipe(nlp, name=f"{TRAIT}_terms", path=ALL_CSVS, **kwargs)
 
     config = {
-        "replace": trait_util.term_data(CSV, "replace"),
-        "labels": [t for t in trait_util.get_labels(CSV) if t not in REMOVE],
+        "replace": trait_util.term_data(ALL_CSVS, "replace"),
+        "labels": trait_util.get_labels(ALL_CSVS),
     }
     prev = add.custom_pipe(nlp, CUSTOM_PIPE, config=config, after=prev)
 

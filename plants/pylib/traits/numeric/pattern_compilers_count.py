@@ -3,11 +3,13 @@ from traiter.pylib.traits.pattern_compiler import Compiler
 
 from ..part.pattern_compilers import PART_LABELS
 
-# ####################################################################################
+ALL_PARTS = PART_LABELS + ["subpart"]
 NOT_COUNT_SYMBOL = t_const.CROSS + t_const.SLASH
-# NOT_COUNT_ENTS = """ metric_length imperial_length metric_mass imperial_mass """.split()
 NOT_COUNT_PREFIX = """ chapter figure fig nos no # sec sec. """.split()
 EVERY = """ every per each or more """.split()
+NOT_NUMERIC = """
+    not_numeric metric_mass imperial_mass metric_dist imperial_dist
+    """.split()
 
 DECODER = {
     "!": {"TEXT": "!"},
@@ -24,14 +26,15 @@ DECODER = {
     "adp": {"POS": {"IN": ["ADP"]}},
     "any": {},
     "as": {"LOWER": {"IN": ["as"]}},
-    "count_word": {"ENT_TYPE": "count_word"},
+    "count_suffix": {"ENT_TYPE": "count_suffix"},
+    "count_word": {"ENT_TYPE": {"IN": ["count_word", "number_word"]}},
     "dim": {"ENT_TYPE": "dim"},
     "every": {"LOWER": {"IN": EVERY}},
-    "no_ws": {"SPACY": False},
-    # "not_count_ent": {"ENT_TYPE": {"IN": NOT_COUNT_ENTS}},
+    "is_alpha": {"IS_ALPHA": True},
+    "missing": {"ENT_TYPE": "missing"},
     "not_count_symbol": {"LOWER": {"IN": NOT_COUNT_SYMBOL}},
-    "not_count_word": {"ENT_TYPE": "not_count_word"},
-    "part": {"ENT_TYPE": {"IN": PART_LABELS}},
+    "not_numeric": {"ENT_TYPE": {"IN": NOT_NUMERIC}},
+    "part": {"ENT_TYPE": {"IN": ALL_PARTS}},
     "per_count": {"ENT_TYPE": "per_count"},
     "X": {"LOWER": "x"},
     "x": {"LOWER": {"IN": t_const.CROSS + t_const.COMMA}},
@@ -62,13 +65,26 @@ COMPILERS = [
         ],
     ),
     Compiler(
+        label="count",
+        id="count_suffix",
+        decoder=DECODER,
+        patterns=[
+            "missing? 99-99 count_suffix+",
+        ],
+    ),
+    Compiler(
+        label="count",
+        id="count_suffix_word",
+        decoder=DECODER,
+        patterns=[
+            "count_word count_suffix+",
+        ],
+    ),
+    Compiler(
         label="not_a_count",
         decoder=DECODER,
         patterns=[
-            "      not_count_word [.,]? 99-99",
-            # "99-99 not_count_ent",
-            # "99-99 not_count_word   99-99? not_count_ent?",
-            # "99-99 not_count_symbol 99-99? not_count_ent?",
+            "not_numeric [.,]? 99-99",
             "9 / 9",
             "X =? 99-99",
             "99-99 ; 99-99",
@@ -77,7 +93,8 @@ COMPILERS = [
             "99-99 any? any? any? as dim",
             "99-99 °",
             "! -? 9",
-            "no_ws - 9",
+            "is_alpha - 9",
+            "9  not_numeric",
         ],
     ),
 ]
