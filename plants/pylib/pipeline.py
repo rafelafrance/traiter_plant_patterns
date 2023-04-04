@@ -15,6 +15,8 @@ from .traits.part_location import part_location_pipeline
 from .traits.shape import shape_pipeline
 from .traits.surface import surface_pipeline
 
+# from traiter.pylib.pipes import debug  # #########################
+
 
 def build(model_path=None):
     extensions.add_extensions()
@@ -28,8 +30,8 @@ def build(model_path=None):
     # pipes.taxa_like()
 
     basic_pipeline.build(nlp)
-    habit_pipeline.build(nlp)
     part_pipeline.build(nlp)
+    habit_pipeline.build(nlp)
     numeric_pipeline.build(nlp)
     shape_pipeline.build(nlp)
     surface_pipeline.build(nlp)
@@ -39,12 +41,12 @@ def build(model_path=None):
 
     nlp.add_pipe(FINSH)
 
+    # debug.tokens(nlp)  # ######################################
     link_part_pipeline.build(nlp)
     link_sex_pipeline.build(nlp)
     link_location_pipeline.build(nlp)
     # pipes.link_taxa_like()
 
-    # from traiter.pylib.pipes import debug  # ##################
     # debug.tokens(nlp)  # ######################################
 
     # for name in nlp.pipe_names:

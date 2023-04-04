@@ -6,7 +6,7 @@ SHAPE_WORD = ["shape_term", "shape_leader"]
 TO = ["to"]
 UNDERLINE = ["_"]
 
-COMPILERS = [
+SHAPE_COMPILERS = [
     Compiler(
         label="shape",
         decoder={

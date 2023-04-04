@@ -1,7 +1,7 @@
 from traiter.pylib import const as t_const
 from traiter.pylib.traits.pattern_compiler import Compiler
 
-from ..part.pattern_compilers import PART_LABELS
+from ..part.part_pattern_compilers import PART_LABELS
 
 ALL_PARTS = PART_LABELS + ["subpart"]
 NOT_COUNT_SYMBOL = t_const.CROSS + t_const.SLASH
@@ -42,7 +42,7 @@ DECODER = {
 }
 
 
-COMPILERS = [
+COUNT_COMPILERS = [
     Compiler(
         label="count",
         id="count",

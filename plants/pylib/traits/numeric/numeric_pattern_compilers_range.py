@@ -31,7 +31,7 @@ DECODER = {
     "not_numeric": {"ENT_TYPE": {"IN": NOT_NUMERIC}},
 }
 
-COMPILERS = [
+RANGE_COMPILERS = [
     Compiler(
         label="range",
         id="range.low",

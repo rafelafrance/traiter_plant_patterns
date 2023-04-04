@@ -13,6 +13,7 @@ DECODER = {
     "and": {"LOWER": "and"},
     "cm": {"ENT_TYPE": {"IN": LENGTH_ENTS}},
     "dim": {"ENT_TYPE": "dim"},
+    "in": {"LOWER": "in"},
     "sex/dim": {"ENT_TYPE": {"IN": SEX_DIM_ENTS}},
     "not_numeric": {"ENT_TYPE": "not_numeric"},
     "sex": {"ENT_TYPE": "sex"},
@@ -20,18 +21,18 @@ DECODER = {
     "x": {"LOWER": {"IN": t_const.CROSS + t_const.COMMA}},
 }
 
-COMPILERS = [
+SIZE_COMPILERS = [
     Compiler(
         label="size",
         id="size",
         decoder=DECODER,
         patterns=[
-            "about* 99-99                    about*       cm+ sex/dim*",
-            "about* 99-99 cm* sex/dim* x to? about* 99-99 cm+ sex/dim*",
+            "about* 99-99                    about*       cm+ in? sex/dim*",
+            "about* 99-99 cm* sex/dim* x to? about* 99-99 cm+ in? sex/dim*",
             (
-                "      about* 99-99 cm* sex/dim* "
-                "x to? about* 99-99 cm* sex/dim* "
-                "x to? about* 99-99 cm+ sex/dim*"
+                "      about* 99-99 cm* in? sex/dim* "
+                "x to? about* 99-99 cm* in? sex/dim* "
+                "x to? about* 99-99 cm+ in? sex/dim*"
             ),
         ],
     ),
@@ -40,7 +41,7 @@ COMPILERS = [
         id="size.high_only",
         decoder=DECODER,
         patterns=[
-            "to about* 99.9 about* cm+ sex/dim*",
+            "to about* 99.9 about* cm+ in? sex/dim*",
         ],
     ),
     Compiler(

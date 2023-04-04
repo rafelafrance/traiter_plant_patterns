@@ -10,10 +10,8 @@ CUSTOM_PIPE_RANGE = "custom_pipe_range"
 @Language.factory(CUSTOM_PIPE_RANGE)
 @dataclass()
 class RangePipe(BaseCustomPipe):
-    trait: str
-
     def __call__(self, doc):
-        for ent in [e for e in doc.ents if e.label_ == self.trait]:
+        for ent in [e for e in doc.ents if e.label_ == "range"]:
             nums = []
             for token in ent:
                 token._.flag = "range"

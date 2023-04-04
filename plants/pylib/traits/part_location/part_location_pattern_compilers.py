@@ -2,7 +2,7 @@ from pathlib import Path
 
 from traiter.pylib.traits.pattern_compiler import Compiler
 
-from ..part import pattern_compilers as part
+from ..part import part_pattern_compilers as part
 
 HERE = Path(__file__).parent
 TRAIT = HERE.stem
@@ -27,7 +27,7 @@ DECODER = {
     "subpart": {"ENT_TYPE": "subpart"},
 }
 
-COMPILERS = [
+PART_LOCATION_COMPILERS = [
     Compiler(
         label="part_as_loc",
         decoder=DECODER,

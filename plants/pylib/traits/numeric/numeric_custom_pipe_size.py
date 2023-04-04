@@ -22,12 +22,11 @@ class Dimension:
 @Language.factory(CUSTOM_PIPE_SIZE)
 @dataclass()
 class SizePipe(BaseCustomPipe):
-    trait: str
     replace: dict[str, str]
     factors_cm: dict[str, float]
 
     def __call__(self, doc):
-        for ent in [e for e in doc.ents if e.label_ == self.trait]:
+        for ent in [e for e in doc.ents if e.label_ == "size"]:
 
             dimensions = self.scan_tokens(ent)
 
@@ -62,7 +61,8 @@ class SizePipe(BaseCustomPipe):
                     dimensions[-1].units += word
             elif token._.term == "dim":
                 if word := self.replace.get(token.lower_):
-                    dimensions[-1].dim += word
+                    if word not in ("in",):
+                        dimensions[-1].dim += word
             elif token._.term in ("about", "quest"):
                 dimensions[-1].about = True
             elif token._.term == "sex":

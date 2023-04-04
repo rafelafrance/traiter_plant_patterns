@@ -5,35 +5,30 @@ For example: "petals (1–)3–10(–12) mm (pistillate) or 5–8(–10) mm (sta
 Should note that pistillate petals are 3-10 mm and staminate petals are 5-8 mm.
 Named entity recognition (NER) must be run first.
 """
-from pathlib import Path
-
 from spacy import Language
 from traiter.pylib import const as t_const
 from traiter.pylib.traits import add_pipe as add
 
-from . import pattern_compilers as comp
-
-HERE = Path(__file__).parent
-TRAIT = HERE.stem
+from . import link_location_pattern_compilers as comp
 
 
 def build(nlp: Language, **kwargs):
     prev = add.link_pipe(
         nlp,
-        name=f"{TRAIT}_part",
+        name="link_location_part",
         compiler=comp.LINK_LOCATION_PART,
-        parents=comp.PART_PARENTS,
-        children=comp.PART_CHILDREN,
+        parents=comp.LINK_LOCATION_PART_PARENTS,
+        children=comp.LINK_LOCATION_PART_CHILDREN,
         weights=t_const.TOKEN_WEIGHTS,
         **kwargs,
     )
 
     prev = add.link_pipe(
         nlp,
-        name=f"{TRAIT}_subpart",
+        name="link_location_subpart",
         compiler=comp.LINK_LOCATION_SUBPART,
-        parents=comp.SUBPART_PARENTS,
-        children=comp.SUBPART_CHILDREN,
+        parents=comp.LINK_LOCATION_SUBPART_PARENTS,
+        children=comp.LINK_LOCATION_SUBPART_CHILDREN,
         weights=t_const.TOKEN_WEIGHTS,
         after=prev,
     )

@@ -4,40 +4,44 @@ from spacy import Language
 from traiter.pylib.traits import add_pipe as add
 from traiter.pylib.traits import trait_util
 
-from .custom_pipe import CUSTOM_PIPE
-from .pattern_compilers import COMPILERS
-from .pattern_compilers import PART_LABELS
+from .part_custom_pipe import PART_CUSTOM_PIPE
+from .part_pattern_compilers import PART_COMPILERS
+from .part_pattern_compilers import PART_LABELS
 
 HERE = Path(__file__).parent
 TRAIT = HERE.stem
 
-CSV = HERE / f"{TRAIT}.csv"
+CSV = HERE / "part_terms.csv"
+MISSING_CSV = HERE.parent / "basic" / "basic_missing_terms.csv"
+ALL_CSVS = [CSV, MISSING_CSV]
 
-LABELS = PART_LABELS + "missing_part missing_subpart multiple_parts subpart".split()
+ALL_LABELS = PART_LABELS + "missing_part missing_subpart multiple_parts subpart".split()
 
 
 def build(nlp: Language, **kwargs):
     with nlp.select_pipes(enable="tokenizer"):
-        prev = add.term_pipe(nlp, name=f"{TRAIT}_terms", path=CSV, **kwargs)
+        prev = add.term_pipe(
+            nlp, name="part_terms", path=ALL_CSVS, overwrite_ents=True, **kwargs
+        )
 
     prev = add.ruler_pipe(
         nlp,
-        name=f"{TRAIT}_patterns",
-        compiler=COMPILERS,
+        name="part_patterns",
+        compiler=PART_COMPILERS,
         overwrite_ents=True,
         after=prev,
     )
 
     config = {
         "replace": trait_util.term_data(CSV, "replace"),
-        "labels": LABELS,
+        "labels": ALL_LABELS,
     }
-    prev = add.custom_pipe(nlp, CUSTOM_PIPE, config=config, after=prev)
+    prev = add.custom_pipe(nlp, PART_CUSTOM_PIPE, config=config, after=prev)
 
     prev = add.cleanup_pipe(
         nlp,
-        name=f"{TRAIT}_cleanup",
-        remove=trait_util.labels_to_remove(CSV, keep=LABELS),
+        name="part_cleanup",
+        remove=trait_util.labels_to_remove(ALL_CSVS, keep=ALL_LABELS) + ["not_a_part"],
         after=prev,
     )
 

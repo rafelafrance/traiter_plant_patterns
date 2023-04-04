@@ -4,24 +4,23 @@ from spacy import Language
 from traiter.pylib.traits import add_pipe as add
 from traiter.pylib.traits import trait_util
 
-from .custom_pipe import CUSTOM_PIPE
-from .pattern_compilers import COMPILERS
-from .pattern_compilers import LOCATION_ENTS
+from .part_location_custom_pipe import PART_LOCATION_CUSTOM_PIPE
+from .part_location_pattern_compilers import LOCATION_ENTS
+from .part_location_pattern_compilers import PART_LOCATION_COMPILERS
 
 HERE = Path(__file__).parent
-TRAIT = HERE.stem
 
-CSV = HERE / f"{TRAIT}.csv"
+CSV = HERE / "part_location_terms.csv"
 
 
 def build(nlp: Language, **kwargs):
     with nlp.select_pipes(enable="tokenizer"):
-        prev = add.term_pipe(nlp, name=f"{TRAIT}_terms", path=CSV, **kwargs)
+        prev = add.term_pipe(nlp, name="part_location_terms", path=CSV, **kwargs)
 
     prev = add.ruler_pipe(
         nlp,
-        name=f"{TRAIT}_patterns",
-        compiler=COMPILERS,
+        name="part_location_patterns",
+        compiler=PART_LOCATION_COMPILERS,
         overwrite_ents=True,
         after=prev,
     )
@@ -30,11 +29,11 @@ def build(nlp: Language, **kwargs):
         "replace": trait_util.term_data(CSV, "replace"),
         "labels": LOCATION_ENTS,
     }
-    prev = add.custom_pipe(nlp, CUSTOM_PIPE, config=config, after=prev)
+    prev = add.custom_pipe(nlp, PART_LOCATION_CUSTOM_PIPE, config=config, after=prev)
 
     prev = add.cleanup_pipe(
         nlp,
-        name=f"{TRAIT}_cleanup",
+        name="part_location_cleanup",
         remove=trait_util.labels_to_remove(CSV, keep=LOCATION_ENTS),
         after=prev,
     )

@@ -35,6 +35,7 @@ class TestPartLinker(unittest.TestCase):
                     "trait": "size",
                     "start": 59,
                     "end": 74,
+                    "units": "cm",
                     "part": "trunk",
                 },
                 {"part": "trunk", "trait": "part", "start": 80, "end": 85},
@@ -59,6 +60,7 @@ class TestPartLinker(unittest.TestCase):
                     "trait": "size",
                     "start": 114,
                     "end": 130,
+                    "units": "cm",
                     "fruit_part": "pod",
                 },
                 {
@@ -74,6 +76,7 @@ class TestPartLinker(unittest.TestCase):
                     "trait": "size",
                     "start": 143,
                     "end": 156,
+                    "units": "cm",
                     "fruit_part": "replum",
                 },
             ],
@@ -130,7 +133,13 @@ class TestPartLinker(unittest.TestCase):
             test("""juvenile leaves persistent for a long period."""),
             [
                 {"end": 15, "leaf_part": "leaf", "start": 9, "trait": "leaf_part"},
-                {"duration": "persistent", "end": 26, "start": 16, "trait": "duration"},
+                {
+                    "duration": "persistent",
+                    "end": 26,
+                    "start": 16,
+                    "trait": "duration",
+                    "leaf_part": "leaf",
+                },
             ],
         )
 
@@ -139,7 +148,7 @@ class TestPartLinker(unittest.TestCase):
             test("""Most species have stipular spines, bipinnately compound leaves."""),
             [
                 {
-                    "leaf_part": "stipular spines",
+                    "leaf_part": "stipular spine",
                     "trait": "leaf_part",
                     "start": 18,
                     "end": 33,

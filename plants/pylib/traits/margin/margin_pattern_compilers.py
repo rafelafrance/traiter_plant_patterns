@@ -4,7 +4,7 @@ from traiter.pylib.traits.pattern_compiler import Compiler
 LEADERS = """ shape margin_leader """.split()
 FOLLOWERS = """ margin margin_follower """.split()
 
-COMPILERS = [
+MARGIN_COMPILERS = [
     Compiler(
         label="margin",
         decoder={

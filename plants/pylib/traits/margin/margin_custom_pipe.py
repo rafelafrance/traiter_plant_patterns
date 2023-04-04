@@ -3,17 +3,16 @@ from dataclasses import dataclass
 from spacy import Language
 from traiter.pylib.traits.base_custom_pipe import BaseCustomPipe
 
-CUSTOM_PIPE = "margin_custom_pipe"
+MARGIN_CUSTOM_PIPE = "margin_custom_pipe"
 
 
-@Language.factory(CUSTOM_PIPE)
+@Language.factory(MARGIN_CUSTOM_PIPE)
 @dataclass()
 class HabitatPipe(BaseCustomPipe):
-    trait: str
     replace: dict[str, str]
 
     def __call__(self, doc):
-        for ent in [e for e in doc.ents if e.label_ == self.trait]:
+        for ent in [e for e in doc.ents if e.label_ == "margin"]:
             margin = {}  # Dicts preserve order sets do not
             for token in ent:
                 if token._.term in ["margin", "shape"] and token.text != "-":
@@ -21,6 +20,6 @@ class HabitatPipe(BaseCustomPipe):
                     margin[word] = 1
             margin = "-".join(margin)
             margin = self.replace.get(margin, margin)
-            ent._.data[self.trait] = margin
+            ent._.data["margin"] = margin
 
         return doc

@@ -16,6 +16,7 @@ class TestPartLocation(unittest.TestCase):
                     "trait": "size",
                     "start": 9,
                     "end": 15,
+                    "units": "cm",
                     "leaf_part": "stipule",
                 },
                 {
@@ -27,9 +28,10 @@ class TestPartLocation(unittest.TestCase):
                 },
                 {
                     "dimensions": "length",
-                    "joined": "adnate",
+                    "joined": "adnate to petiole",
                     "length_low": 0.1,
                     "length_high": 0.2,
+                    "units": "cm",
                     "trait": "part_as_loc",
                     "start": 34,
                     "end": 62,
@@ -46,13 +48,13 @@ class TestPartLocation(unittest.TestCase):
                     "trait": "leaf_part",
                     "start": 0,
                     "end": 6,
-                    "part_as_loc": "embracing stem but not connate",
+                    "part_as_loc": "embracing stem",
                 },
                 {
-                    "part_as_loc": "embracing stem but not connate",
+                    "part_as_loc": "embracing stem",
                     "trait": "part_as_loc",
                     "start": 18,
-                    "end": 48,
+                    "end": 32,
                 },
             ],
         )

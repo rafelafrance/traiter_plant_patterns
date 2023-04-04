@@ -6,18 +6,18 @@ the "woody" trait.
 """
 from traiter.pylib.traits.pattern_compiler import Compiler
 
-from ..part.pattern_compilers import PART_LABELS
+from ..part.part_pattern_compilers import PART_LABELS
 
 CHILDREN = """
     color duration duration margin shape surface venation woodiness
     """.split()
 
-PART_PARENTS = PART_LABELS + ["multiple_parts"]
-PART_CHILDREN = CHILDREN + ["subpart"]
-LINK_ONCE_CHILDREN = ["size", "count"]
+LINK_PART_PARENTS = PART_LABELS + ["multiple_parts"]
+LINK_PART_CHILDREN = CHILDREN + ["subpart"]
+LINK_PART_ONCE_CHILDREN = ["size", "count"]
 
-SUBPART_PARENTS = ["subpart"]
-SUBPART_CHILDREN = CHILDREN
+LINK_SUBPART_PARENTS = ["subpart"]
+LINK_SUBPART_CHILDREN = CHILDREN
 
 
 DECODER = {
@@ -29,8 +29,8 @@ LINK_PART = Compiler(
     label="link_part",
     decoder=DECODER
     | {
-        "part": {"ENT_TYPE": {"IN": PART_PARENTS}},
-        "trait": {"ENT_TYPE": {"IN": PART_CHILDREN}},
+        "part": {"ENT_TYPE": {"IN": LINK_PART_PARENTS}},
+        "trait": {"ENT_TYPE": {"IN": LINK_PART_CHILDREN}},
     },
     patterns=[
         "trait+ any* part+",
@@ -42,8 +42,8 @@ LINK_PART_ONCE = Compiler(
     label="link_part_once",
     decoder=DECODER
     | {
-        "part": {"ENT_TYPE": {"IN": PART_PARENTS}},
-        "trait": {"ENT_TYPE": {"IN": LINK_ONCE_CHILDREN}},
+        "part": {"ENT_TYPE": {"IN": LINK_PART_PARENTS}},
+        "trait": {"ENT_TYPE": {"IN": LINK_PART_ONCE_CHILDREN}},
     },
     patterns=[
         "trait+ any* part+",
@@ -55,8 +55,8 @@ LINK_SUBPART = Compiler(
     label="link_subpart",
     decoder=DECODER
     | {
-        "subpart": {"ENT_TYPE": {"IN": SUBPART_PARENTS}},
-        "trait": {"ENT_TYPE": {"IN": SUBPART_CHILDREN}},
+        "subpart": {"ENT_TYPE": {"IN": LINK_SUBPART_PARENTS}},
+        "trait": {"ENT_TYPE": {"IN": LINK_SUBPART_CHILDREN}},
     },
     patterns=[
         "trait+   clause* subpart+",
@@ -68,8 +68,8 @@ LINK_SUBPART_ONCE = Compiler(
     label="link_subpart_once",
     decoder=DECODER
     | {
-        "part": {"ENT_TYPE": {"IN": SUBPART_PARENTS}},
-        "trait": {"ENT_TYPE": {"IN": LINK_ONCE_CHILDREN}},
+        "part": {"ENT_TYPE": {"IN": LINK_SUBPART_PARENTS}},
+        "trait": {"ENT_TYPE": {"IN": LINK_PART_ONCE_CHILDREN}},
     },
     patterns=[
         "trait+ any* part+",

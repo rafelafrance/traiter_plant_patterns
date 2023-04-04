@@ -1,7 +1,7 @@
 from traiter.pylib import const as t_const
 from traiter.pylib.traits.pattern_compiler import Compiler
 
-COMPILERS = [
+HABIT_COMPILERS = [
     Compiler(
         label="habit",
         decoder={

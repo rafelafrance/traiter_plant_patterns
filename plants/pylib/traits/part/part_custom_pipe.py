@@ -4,10 +4,10 @@ from dataclasses import dataclass
 from spacy import Language
 from traiter.pylib.traits.base_custom_pipe import BaseCustomPipe
 
-CUSTOM_PIPE = "part_custom_pipe"
+PART_CUSTOM_PIPE = "part_custom_pipe"
 
 
-@Language.factory(CUSTOM_PIPE)
+@Language.factory(PART_CUSTOM_PIPE)
 @dataclass()
 class PartPipe(BaseCustomPipe):
     replace: dict[str, str]
@@ -25,7 +25,7 @@ class PartPipe(BaseCustomPipe):
                     if label not in ("missing_part", "multiple_parts", "subpart"):
                         label = token._.term
 
-                elif token._.term == "part_missing":
+                elif token._.term == "missing":
                     frags[-1].append(self.replace.get(token.lower_, token.lower_))
 
                 elif token._.term == "part_and":

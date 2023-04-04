@@ -6,11 +6,10 @@ from traiter.pylib.traits.pattern_compiler import Compiler
 
 
 HERE = Path(__file__).parent
-TRAIT = HERE.stem
 
-CSV = HERE / f"{TRAIT}.csv"
-
+CSV = HERE / "part_terms.csv"
 NOT_PART = ["part_and", "part_leader", "part_missing", "subpart"]
+
 PART_LABELS = [lb for lb in trait_util.get_labels(CSV) if lb not in NOT_PART]
 
 DECODER = {
@@ -22,7 +21,7 @@ DECODER = {
     "subpart": {"ENT_TYPE": "subpart"},
 }
 
-COMPILERS = [
+PART_COMPILERS = [
     Compiler(
         label="part",
         decoder=DECODER,
@@ -35,8 +34,8 @@ COMPILERS = [
         label="missing_part",
         decoder=DECODER,
         patterns=[
-            "missing part+ and part+",
             "missing part+",
+            "missing part+ and part+",
             "missing part+ -   part+",
         ],
     ),
@@ -66,6 +65,14 @@ COMPILERS = [
             "missing part+ -?   subpart+",
             "missing part+      subpart+",
             "missing subpart+",
+        ],
+    ),
+    Compiler(
+        label="not_a_part",
+        decoder=DECODER,
+        patterns=[
+            "- part+",
+            "- subpart+",
         ],
     ),
 ]

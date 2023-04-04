@@ -10,12 +10,11 @@ CUSTOM_PIPE_COUNT = "custom_pipe_count"
 @Language.factory(CUSTOM_PIPE_COUNT)
 @dataclass()
 class CountPipe(BaseCustomPipe):
-    trait: str
     replace: dict[str, str]
     suffix_term: dict[str, str]
 
     def __call__(self, doc):
-        for ent in [e for e in doc.ents if e.label_ == self.trait]:
+        for ent in [e for e in doc.ents if e.label_ == "count"]:
 
             if ent.id_ == "count_word":
                 ent._.data["low"] = int(self.replace[ent[0].lower_])
@@ -28,7 +27,6 @@ class CountPipe(BaseCustomPipe):
                         for key, value in token._.data.items():
                             ent._.data[key] = t_util.to_positive_int(value)
                     if token._.term == "number_word":
-                        print("number")
                         value = self.replace.get(token.lower_, token.lower_)
                         ent._.data["low"] = t_util.to_positive_int(value)
                     elif token._.term == "count_suffix":
@@ -50,7 +48,6 @@ class CountPipe(BaseCustomPipe):
                     value = self.replace.get(suffix, suffix)
                     key = self.suffix_term.get(suffix)
                     if key:
-                        print(f"{suffix=} {key=} {value=}")
                         ent._.data[key] = value
 
         return doc
