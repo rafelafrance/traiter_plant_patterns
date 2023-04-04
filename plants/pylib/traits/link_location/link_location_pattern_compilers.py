@@ -19,29 +19,32 @@ LINK_LOCATION_SUBPART_CHILDREN = """
     shape size subpart_suffix surface venation woodiness
     """.split()
 
-LINK_LOCATION_PART = Compiler(
-    "link_location",
-    decoder={
-        "location": {"ENT_TYPE": {"IN": LINK_LOCATION_PART_PARENTS}},
-        "trait": {"ENT_TYPE": {"IN": LINK_LOCATION_PART_CHILDREN}},
-        "clause": {"TEXT": {"NOT_IN": list(".;:,")}},
-    },
-    patterns=[
-        "trait    clause* location",
-        "location clause* trait",
-    ],
-)
+
+def link_location_part_compilers():
+    return Compiler(
+        "link_location",
+        decoder={
+            "location": {"ENT_TYPE": {"IN": LINK_LOCATION_PART_PARENTS}},
+            "trait": {"ENT_TYPE": {"IN": LINK_LOCATION_PART_CHILDREN}},
+            "clause": {"TEXT": {"NOT_IN": list(".;:,")}},
+        },
+        patterns=[
+            "trait    clause* location",
+            "location clause* trait",
+        ],
+    )
 
 
-LINK_LOCATION_SUBPART = Compiler(
-    "link_location",
-    decoder={
-        "location": {"ENT_TYPE": {"IN": LINK_LOCATION_SUBPART_PARENTS}},
-        "trait": {"ENT_TYPE": {"IN": LINK_LOCATION_SUBPART_CHILDREN}},
-        "clause": {"TEXT": {"NOT_IN": list(".;:,")}},
-    },
-    patterns=[
-        "trait    clause* location",
-        "location clause* trait",
-    ],
-)
+def link_location_subpart_compilers():
+    return Compiler(
+        "link_location",
+        decoder={
+            "location": {"ENT_TYPE": {"IN": LINK_LOCATION_SUBPART_PARENTS}},
+            "trait": {"ENT_TYPE": {"IN": LINK_LOCATION_SUBPART_CHILDREN}},
+            "clause": {"TEXT": {"NOT_IN": list(".;:,")}},
+        },
+        patterns=[
+            "trait    clause* location",
+            "location clause* trait",
+        ],
+    )

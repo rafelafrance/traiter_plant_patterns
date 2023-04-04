@@ -1,24 +1,23 @@
 from traiter.pylib import const as t_const
 from traiter.pylib.traits.pattern_compiler import Compiler
 
-LEADERS = """ shape margin_leader """.split()
-FOLLOWERS = """ margin margin_follower """.split()
 
-MARGIN_COMPILERS = [
-    Compiler(
-        label="margin",
-        decoder={
-            "-": {"TEXT": {"IN": t_const.DASH}},
-            "margin": {"ENT_TYPE": "margin"},
-            "shape": {"ENT_TYPE": "shape"},
-            "leader": {"ENT_TYPE": {"IN": LEADERS}},
-            "follower": {"ENT_TYPE": {"IN": FOLLOWERS}},
-        },
-        patterns=[
-            "leader* -* margin+",
-            "leader* -* margin -* follower*",
-            "leader* -* margin -* shape? follower+ shape?",
-            "shape+ -* follower+",
-        ],
-    ),
-]
+def margin_compilers():
+    return [
+        Compiler(
+            label="margin",
+            decoder={
+                "-": {"TEXT": {"IN": t_const.DASH}},
+                "margin": {"ENT_TYPE": "margin"},
+                "shape": {"ENT_TYPE": "shape"},
+                "leader": {"ENT_TYPE": {"IN": ["shape", "margin_leader"]}},
+                "follower": {"ENT_TYPE": {"IN": ["margin", "margin_follower"]}},
+            },
+            patterns=[
+                "leader* -* margin+",
+                "leader* -* margin -* follower*",
+                "leader* -* margin -* shape? follower+ shape?",
+                "shape+ -* follower+",
+            ],
+        ),
+    ]

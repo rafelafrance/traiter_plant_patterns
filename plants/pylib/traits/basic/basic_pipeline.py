@@ -6,22 +6,25 @@ from traiter.pylib.traits import trait_util
 
 from plants.pylib.traits.basic.basic_custom_pipe import BASIC_CUSTOM_PIPE
 
-HERE = Path(__file__).parent
-TRAIT = HERE.stem
 
-CSV = HERE / "basic_terms.csv"
-SEX_CSV = HERE / "basic_sex_terms.csv"
-MISSING_CSV = HERE / "basic_missing_terms.csv"
-ALL_CSVS = [CSV, MISSING_CSV, SEX_CSV]
+def get_csvs():
+    here = Path(__file__).parent
+    return [
+        here / "basic_terms.csv",
+        here / "basic_sex_terms.csv",
+        here / "basic_missing_terms.csv",
+    ]
 
 
 def build(nlp: Language, **kwargs):
+    all_csvs = get_csvs()
+
     with nlp.select_pipes(enable="tokenizer"):
-        prev = add.term_pipe(nlp, name="basic_terms", path=ALL_CSVS, **kwargs)
+        prev = add.term_pipe(nlp, name="basic_terms", path=all_csvs, **kwargs)
 
     config = {
-        "replace": trait_util.term_data(ALL_CSVS, "replace"),
-        "labels": trait_util.get_labels(ALL_CSVS),
+        "replace": trait_util.term_data(all_csvs, "replace"),
+        "labels": trait_util.get_labels(all_csvs),
     }
     prev = add.custom_pipe(nlp, BASIC_CUSTOM_PIPE, config=config, after=prev)
 

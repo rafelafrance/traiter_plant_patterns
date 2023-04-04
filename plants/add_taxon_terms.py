@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Use binomial species names but single taxon names for higher and lower ranks."""
+"""Mostly use binomials names for species and monomials for higher and lower taxa."""
 import argparse
 import csv
 import logging
@@ -12,10 +12,19 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import regex
-from pylib.vocabulary import terms
+from pylib import const
+from pylib.traits import habit
+from pylib.traits import numeric
+from pylib.traits import part
+from pylib.traits import shape
+from pylib.traits import surface
+from pylib.traits import taxon
 from tqdm import tqdm
 from traiter.pylib import log
-from traiter.pylib.term_list import TermList
+from traiter.pylib.traits import color
+from traiter.pylib.traits import habitat
+from traiter.pylib.traits import trait_util as tu
+from traiter.pylib.traits import us_location
 
 ITIS_SPECIES_ID = 220
 
@@ -29,9 +38,12 @@ class Record:
 
 class Ranks:
     def __init__(self):
-        self.ranks = TermList().read(terms.VOCAB_DIR / "ranks.csv")
+        rank_csv = Path(taxon.__file__).parent / "rank_terms.csv"
+        with open(rank_csv) as term_file:
+            reader = csv.DictReader(term_file)
+            self.ranks = list(reader)
         self.id2rank = {int(r["rank_id"]): r["replace"] for r in self.ranks}
-        self.rank_names = {r["pattern"]: r["replace"] for r in self.ranks}
+        self.rank_names = tu.term_data(rank_csv, "replace")
         self.lower = {r for i, r in self.id2rank.items() if i > ITIS_SPECIES_ID}
         self.higher = {r for i, r in self.id2rank.items() if i < ITIS_SPECIES_ID}
 
@@ -80,42 +92,55 @@ class Taxa:
         """Some taxa interfere with other parses."""
         new = {}
 
+        all_csvs = [
+            Path(color.__file__).parent / "color_terms.csv",
+            Path(habit.__file__).parent / "habit_terms.csv",
+            Path(habitat.__file__).parent / "habitat_terms.csv",
+            Path(numeric.__file__).parent / "numeric_terms.csv",
+            Path(part.__file__).parent / "part_terms.csv",
+            Path(taxon.__file__).parent / "rank_terms.csv",
+            Path(shape.__file__).parent / "shape_terms.csv",
+            Path(surface.__file__).parent / "surface_terms.csv",
+            Path(us_location.__file__).parent / "us_location_terms.csv",
+        ]
+
         problem_words = {"temp", "uncertain", "unknown", "dummy", "name"}
 
+        lower, text = tu.read_terms(all_csvs)
+
         problem_taxa = {"harms", "side", "may", "lake"}
-        problem_taxa |= {t["pattern"].lower() for t in terms.PLANT_TERMS}
-        shared = "colors habitats us_locations"
-        problem_taxa |= {t["pattern"].lower() for t in TermList().shared(shared)}
+        problem_taxa |= {t["pattern"].lower() for t in lower}
+        problem_taxa |= {t["pattern"].lower() for t in text}
 
         taxa = sorted(self.taxon.items())
 
-        for taxon, rank in taxa:
-            words = taxon.split()
+        for taxon_, rank in taxa:
+            words = taxon_.split()
 
-            if taxon.lower() in problem_taxa:
-                print(f"Removed {taxon} {rank}")
+            if taxon_.lower() in problem_taxa:
+                print(f"Removed {taxon_} {rank}")
                 continue
 
             if any(w.lower() in problem_words for w in words):
-                print(f"Removed {taxon} {rank}")
+                print(f"Removed {taxon_} {rank}")
                 continue
 
-            if not self.valid_pattern.match(taxon):
+            if not self.valid_pattern.match(taxon_):
                 if show_rejected:
-                    print(f"Removed {taxon} {rank}")
+                    print(f"Removed {taxon_} {rank}")
                 continue
 
-            if len(taxon) < terms.MIN_TAXON_LEN:
+            if len(taxon_) < const.MIN_TAXON_LEN:
                 if show_rejected:
-                    print(f"Removed {taxon} {rank}")
+                    print(f"Removed {taxon_} {rank}")
                 continue
 
-            if any(len(w) < terms.MIN_TAXON_WORD_LEN for w in words):
+            if any(len(w) < const.MIN_TAXON_WORD_LEN for w in words):
                 if show_rejected:
-                    print(f"Removed {taxon} {rank}")
+                    print(f"Removed {taxon_} {rank}")
                 continue
 
-            new[taxon] = rank
+            new[taxon_] = rank
 
         self.taxon = new
 
@@ -136,14 +161,12 @@ def main():
     counts = count_ranks(records)
     sort_ranks(counts, records, taxa)
 
-    csv_path = terms.DATA_DIR / "taxa.csv"
-    terms.TAXA_VOCAB.unlink(missing_ok=True)
-    write_csv(records, csv_path)
+    write_csv(records)
 
-    write_mock_csv(records)
-
-    with zipfile.ZipFile(terms.TAXA_VOCAB, "w", zipfile.ZIP_DEFLATED) as zippy:
-        zippy.write(csv_path, arcname=csv_path.name)
+    # write_mock_csv(records)
+    #
+    # with zipfile.ZipFile(terms.TAXA_VOCAB, "w", zipfile.ZIP_DEFLATED) as zippy:
+    #     zippy.write(monomial_csv, arcname=monomial_csv.name)
 
     log.finished()
 
@@ -179,29 +202,40 @@ def build_records(taxa):
 
     records = []
 
-    for taxon, ranks in taxa.taxon.items():
-        word_count = len(taxon.split())
+    for taxon_, ranks in taxa.taxon.items():
+        word_count = len(taxon_.split())
         if word_count < 3:
             records.append(
                 Record(
                     label="monomial" if word_count == 1 else "binomial",
-                    pattern=taxon.lower(),
+                    pattern=taxon_.lower(),
                     ranks=" ".join(ranks),
                 )
             )
         else:
-            logging.error(f"Parse error: {taxon}")
+            logging.error(f"Parse error: {taxon_}")
             sys.exit(1)
 
     return records
 
 
-def write_csv(rows, path):
-    with open(path, "w") as out_csv:
+def write_csv(rows):
+    monomial_csv = const.DATA_DIR / "monomial_terms.csv"
+    binomial_csv = const.DATA_DIR / "binomial_terms.csv"
+
+    with open(monomial_csv, "w") as out_csv:
         writer = csv.writer(out_csv)
-        writer.writerow(""" label pattern ranks """.split())
+        writer.writerow(""" pattern ranks """.split())
         for r in rows:
-            writer.writerow([r.label, r.pattern, r.ranks])
+            if r.label == "monomial":
+                writer.writerow([r.pattern, r.ranks])
+
+    with open(binomial_csv, "w") as out_csv:
+        writer = csv.writer(out_csv)
+        writer.writerow(""" pattern """.split())
+        for r in rows:
+            if r.label == "binomial":
+                writer.writerow([r.pattern])
 
 
 def write_mock_csv(records):
@@ -323,17 +357,6 @@ def parse_args():
         type=Path,
         metavar="PATH",
         help="""Get even more taxa from this CSV file.""",
-    )
-
-    arg_parser.add_argument(
-        "--traiter-vocab-dir",
-        type=Path,
-        metavar="PATH",
-        help="""We want to remove taxa that interfere with parsing standard Traiter
-            terms. Enter the directory that contains the standard traiter vocabulary
-            and it will scan thru this for all CSVs and remove taxa that are a direct
-            match.
-            """,
     )
 
     arg_parser.add_argument(

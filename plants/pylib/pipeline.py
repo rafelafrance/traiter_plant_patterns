@@ -31,11 +31,12 @@ def build(model_path=None):
 
     basic_pipeline.build(nlp)
     part_pipeline.build(nlp)
-    habit_pipeline.build(nlp)
     numeric_pipeline.build(nlp)
+
+    habit_pipeline.build(nlp)
+    margin_pipeline.build(nlp)
     shape_pipeline.build(nlp)
     surface_pipeline.build(nlp)
-    margin_pipeline.build(nlp)
 
     part_location_pipeline.build(nlp)
 

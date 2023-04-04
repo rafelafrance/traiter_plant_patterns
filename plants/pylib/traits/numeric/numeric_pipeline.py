@@ -10,40 +10,36 @@ from traiter.pylib.traits import units
 from .numeric_custom_pipe_count import CUSTOM_PIPE_COUNT
 from .numeric_custom_pipe_range import CUSTOM_PIPE_RANGE
 from .numeric_custom_pipe_size import CUSTOM_PIPE_SIZE
-from .numeric_pattern_compilers_count import COUNT_COMPILERS
-from .numeric_pattern_compilers_range import RANGE_COMPILERS
-from .numeric_pattern_compilers_size import SIZE_COMPILERS
+from .numeric_pattern_compilers_count import count_compilers
+from .numeric_pattern_compilers_range import range_compilers
+from .numeric_pattern_compilers_size import size_compilers
 
 HERE = Path(__file__).parent
 
-CSV = HERE / "numeric_terms.csv"
-DIST_CSV = Path(units.__file__).parent / "unit_distance_terms.csv"
-LENGTH_CSV = Path(units.__file__).parent / "unit_length_terms.csv"
-MASS_CSV = Path(units.__file__).parent / "unit_mass_terms.csv"
-MISSING_CSV = HERE.parent / "basic" / "basic_missing_terms.csv"
-MONTH_CSV = Path(month.__file__).parent / "month_terms.csv"
-NUMERIC_CSV = Path(t_numeric.__file__).parent / "numeric_terms.csv"
-SEX_CSV = HERE.parent / "basic" / "basic_sex_terms.csv"
-ALL_CSVS = [
-    CSV,
-    MONTH_CSV,
-    NUMERIC_CSV,
-    SEX_CSV,
-    LENGTH_CSV,
-    MASS_CSV,
-    DIST_CSV,
-    MISSING_CSV,
-]
+
+def get_csvs():
+    return [
+        HERE / "numeric_terms.csv",
+        Path(units.__file__).parent / "unit_distance_terms.csv",
+        Path(units.__file__).parent / "unit_length_terms.csv",
+        Path(units.__file__).parent / "unit_mass_terms.csv",
+        HERE.parent / "basic" / "basic_missing_terms.csv",
+        Path(month.__file__).parent / "month_terms.csv",
+        Path(t_numeric.__file__).parent / "numeric_terms.csv",
+        HERE.parent / "basic" / "basic_sex_terms.csv",
+    ]
 
 
 def build(nlp: Language, **kwargs):
+    all_csvs = get_csvs()
+
     with nlp.select_pipes(enable="tokenizer"):
-        prev = add.term_pipe(nlp, name="numeric_terms", path=ALL_CSVS, **kwargs)
+        prev = add.term_pipe(nlp, name="numeric_terms", path=all_csvs, **kwargs)
 
     prev = add.ruler_pipe(
         nlp,
         name="range_patterns",
-        compiler=RANGE_COMPILERS,
+        compiler=range_compilers(),
         overwrite_ents=False,
         after=prev,
     )
@@ -53,28 +49,28 @@ def build(nlp: Language, **kwargs):
     prev = add.ruler_pipe(
         nlp,
         name="numeric_patterns",
-        compiler=COUNT_COMPILERS + SIZE_COMPILERS,
+        compiler=count_compilers() + size_compilers(),
         overwrite_ents=True,
         after=prev,
     )
 
-    replace = trait_util.term_data(ALL_CSVS, "replace")
+    replace = trait_util.term_data(all_csvs, "replace")
 
     config = {
         "replace": replace,
-        "suffix_term": trait_util.term_data(CSV, "suffix_term"),
+        "suffix_term": trait_util.term_data(all_csvs, "suffix_term"),
     }
     prev = add.custom_pipe(nlp, CUSTOM_PIPE_COUNT, config=config, after=prev)
 
-    prev = add.debug_tokens(nlp, after=prev)  # ################################
+    # prev = add.debug_tokens(nlp, after=prev)  # ################################
 
     config = {
         "replace": replace,
-        "factors_cm": trait_util.term_data(LENGTH_CSV, "factor_cm", float),
+        "factors_cm": trait_util.term_data(all_csvs, "factor_cm", float),
     }
     prev = add.custom_pipe(nlp, CUSTOM_PIPE_SIZE, config=config, after=prev)
 
-    remove = trait_util.labels_to_remove(ALL_CSVS, keep=["count", "size", "sex"])
+    remove = trait_util.labels_to_remove(all_csvs, keep=["count", "size", "sex"])
     remove += ["not_a_range", "not_a_count", "not_a_size"]
     prev = add.cleanup_pipe(nlp, name="numeric_cleanup", remove=remove, after=prev)
 

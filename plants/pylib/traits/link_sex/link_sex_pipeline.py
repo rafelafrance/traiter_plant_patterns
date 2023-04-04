@@ -10,14 +10,14 @@ from traiter.pylib import const as t_const
 from traiter.pylib.traits import add_pipe as add
 
 from . import link_sex_pattern_compilers as comp
-from .link_sex_pattern_compilers import LINK_SEX
+from .link_sex_pattern_compilers import link_sex_compilers
 
 
 def build(nlp: Language, **kwargs):
     prev = add.link_pipe(
         nlp,
         name="link_sex",
-        compiler=LINK_SEX,
+        compiler=link_sex_compilers(),
         parents=comp.LINK_SEX_PARENTS,
         children=comp.LINK_SEX_CHILDREN,
         weights=t_const.TOKEN_WEIGHTS,

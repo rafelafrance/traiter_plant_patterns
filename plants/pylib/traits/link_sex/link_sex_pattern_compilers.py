@@ -9,15 +9,17 @@ LINK_SEX_CHILDREN = """
     shape size subpart subpart_as_loc subpart_suffix surface venation woodiness
     """.split()
 
-LINK_SEX = Compiler(
-    "link_sex",
-    decoder={
-        "sex": {"ENT_TYPE": {"IN": LINK_SEX_PARENTS}},
-        "trait": {"ENT_TYPE": {"IN": LINK_SEX_CHILDREN}},
-        "phrase": {"TEXT": {"NOT_IN": list(".;:")}},
-    },
-    patterns=[
-        "trait phrase* sex",
-        "sex   phrase* trait",
-    ],
-)
+
+def link_sex_compilers():
+    return Compiler(
+        "link_sex",
+        decoder={
+            "sex": {"ENT_TYPE": {"IN": LINK_SEX_PARENTS}},
+            "trait": {"ENT_TYPE": {"IN": LINK_SEX_CHILDREN}},
+            "phrase": {"TEXT": {"NOT_IN": list(".;:")}},
+        },
+        patterns=[
+            "trait phrase* sex",
+            "sex   phrase* trait",
+        ],
+    )

@@ -25,54 +25,62 @@ DECODER = {
     "clause": {"TEXT": {"NOT_IN": list(".;:,")}},
 }
 
-LINK_PART = Compiler(
-    label="link_part",
-    decoder=DECODER
-    | {
-        "part": {"ENT_TYPE": {"IN": LINK_PART_PARENTS}},
-        "trait": {"ENT_TYPE": {"IN": LINK_PART_CHILDREN}},
-    },
-    patterns=[
-        "trait+ any* part+",
-        "part+  any* trait+",
-    ],
-)
 
-LINK_PART_ONCE = Compiler(
-    label="link_part_once",
-    decoder=DECODER
-    | {
-        "part": {"ENT_TYPE": {"IN": LINK_PART_PARENTS}},
-        "trait": {"ENT_TYPE": {"IN": LINK_PART_ONCE_CHILDREN}},
-    },
-    patterns=[
-        "trait+ any* part+",
-        "part+  any* trait+",
-    ],
-)
+def link_part_compilers():
+    return Compiler(
+        label="link_part",
+        decoder=DECODER
+        | {
+            "part": {"ENT_TYPE": {"IN": LINK_PART_PARENTS}},
+            "trait": {"ENT_TYPE": {"IN": LINK_PART_CHILDREN}},
+        },
+        patterns=[
+            "trait+ any* part+",
+            "part+  any* trait+",
+        ],
+    )
 
-LINK_SUBPART = Compiler(
-    label="link_subpart",
-    decoder=DECODER
-    | {
-        "subpart": {"ENT_TYPE": {"IN": LINK_SUBPART_PARENTS}},
-        "trait": {"ENT_TYPE": {"IN": LINK_SUBPART_CHILDREN}},
-    },
-    patterns=[
-        "trait+   clause* subpart+",
-        "subpart+ clause* trait+",
-    ],
-)
 
-LINK_SUBPART_ONCE = Compiler(
-    label="link_subpart_once",
-    decoder=DECODER
-    | {
-        "part": {"ENT_TYPE": {"IN": LINK_SUBPART_PARENTS}},
-        "trait": {"ENT_TYPE": {"IN": LINK_PART_ONCE_CHILDREN}},
-    },
-    patterns=[
-        "trait+ any* part+",
-        "part+  any* trait+",
-    ],
-)
+def link_part_once_compilers():
+    return Compiler(
+        label="link_part_once",
+        decoder=DECODER
+        | {
+            "part": {"ENT_TYPE": {"IN": LINK_PART_PARENTS}},
+            "trait": {"ENT_TYPE": {"IN": LINK_PART_ONCE_CHILDREN}},
+        },
+        patterns=[
+            "trait+ any* part+",
+            "part+  any* trait+",
+        ],
+    )
+
+
+def link_subpart_compilers():
+    return Compiler(
+        label="link_subpart",
+        decoder=DECODER
+        | {
+            "subpart": {"ENT_TYPE": {"IN": LINK_SUBPART_PARENTS}},
+            "trait": {"ENT_TYPE": {"IN": LINK_SUBPART_CHILDREN}},
+        },
+        patterns=[
+            "trait+   clause* subpart+",
+            "subpart+ clause* trait+",
+        ],
+    )
+
+
+def link_subpart_once_compilers():
+    return Compiler(
+        label="link_subpart_once",
+        decoder=DECODER
+        | {
+            "part": {"ENT_TYPE": {"IN": LINK_SUBPART_PARENTS}},
+            "trait": {"ENT_TYPE": {"IN": LINK_PART_ONCE_CHILDREN}},
+        },
+        patterns=[
+            "trait+ any* part+",
+            "part+  any* trait+",
+        ],
+    )

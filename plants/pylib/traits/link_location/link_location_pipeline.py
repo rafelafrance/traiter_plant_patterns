@@ -16,7 +16,7 @@ def build(nlp: Language, **kwargs):
     prev = add.link_pipe(
         nlp,
         name="link_location_part",
-        compiler=comp.LINK_LOCATION_PART,
+        compiler=comp.link_location_part_compilers(),
         parents=comp.LINK_LOCATION_PART_PARENTS,
         children=comp.LINK_LOCATION_PART_CHILDREN,
         weights=t_const.TOKEN_WEIGHTS,
@@ -26,7 +26,7 @@ def build(nlp: Language, **kwargs):
     prev = add.link_pipe(
         nlp,
         name="link_location_subpart",
-        compiler=comp.LINK_LOCATION_SUBPART,
+        compiler=comp.link_location_subpart_compilers(),
         parents=comp.LINK_LOCATION_SUBPART_PARENTS,
         children=comp.LINK_LOCATION_SUBPART_CHILDREN,
         weights=t_const.TOKEN_WEIGHTS,
