@@ -10,6 +10,8 @@ ROOT_DIR = Path("../.." if IS_SUBDIR else ".")
 
 DATA_DIR = ROOT_DIR / "data"
 
+MODEL_PATH = DATA_DIR / "traiter_plants_model"
+
 # #########################################################################
 # Used for validating taxon names
 

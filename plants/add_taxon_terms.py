@@ -6,10 +6,11 @@ import logging
 import sqlite3
 import sys
 import textwrap
-import zipfile
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
+from zipfile import ZIP_DEFLATED
+from zipfile import ZipFile
 
 import regex
 from pylib import const
@@ -163,11 +164,6 @@ def main():
 
     write_csv(records)
 
-    # write_mock_csv(records)
-    #
-    # with zipfile.ZipFile(terms.TAXA_VOCAB, "w", zipfile.ZIP_DEFLATED) as zippy:
-    #     zippy.write(monomial_csv, arcname=monomial_csv.name)
-
     log.finished()
 
 
@@ -222,6 +218,8 @@ def build_records(taxa):
 def write_csv(rows):
     monomial_csv = const.DATA_DIR / "monomial_terms.csv"
     binomial_csv = const.DATA_DIR / "binomial_terms.csv"
+    monomial_zip = Path(taxon.__file__).parent / "monomial_terms.zip"
+    binomial_zip = Path(taxon.__file__).parent / "binomial_terms.zip"
 
     with open(monomial_csv, "w") as out_csv:
         writer = csv.writer(out_csv)
@@ -229,6 +227,8 @@ def write_csv(rows):
         for r in rows:
             if r.label == "monomial":
                 writer.writerow([r.pattern, r.ranks])
+    with ZipFile(monomial_zip, "w", ZIP_DEFLATED, compresslevel=9) as zippy:
+        zippy.write(monomial_csv, arcname=monomial_csv.name)
 
     with open(binomial_csv, "w") as out_csv:
         writer = csv.writer(out_csv)
@@ -236,19 +236,8 @@ def write_csv(rows):
         for r in rows:
             if r.label == "binomial":
                 writer.writerow([r.pattern])
-
-
-def write_mock_csv(records):
-    mock_path = terms.VOCAB_DIR / "mock_taxa.csv"
-
-    with open(mock_path) as in_csv:
-        reader = csv.DictReader(in_csv)
-        old = {r["pattern"] for r in reader}
-
-    new = [r for r in records if r.pattern in old]
-    new = sorted(new, key=lambda n: (n.label, n.pattern))
-
-    write_csv(new, mock_path)
+    with ZipFile(binomial_zip, "w", ZIP_DEFLATED, compresslevel=9) as zippy:
+        zippy.write(binomial_csv, arcname=binomial_csv.name)
 
 
 def read_taxa(args, taxa):
@@ -261,9 +250,6 @@ def read_taxa(args, taxa):
     if args.wfot_tsv:
         read_wfot_taxa(args.wfot_tsv, taxa)
 
-    if args.old_taxa_csv:
-        read_old_taxa(args.old_taxa_csv, taxa)
-
     if args.other_taxa_csv:
         read_other_taxa(args.other_taxa_csv, taxa)
 
@@ -272,19 +258,8 @@ def read_other_taxa(other_taxa_csv, taxa):
     with open(other_taxa_csv) as in_file:
         reader = csv.DictReader(in_file)
         for row in reader:
-            taxa.add_taxon_and_rank(row["taxon"], row["rank"])
-
-
-def read_old_taxa(old_taxa_csv, taxa):
-    with open(old_taxa_csv) as in_file:
-        reader = csv.DictReader(in_file)
-        for row in list(reader):
-            pattern = row["pattern"]
-            ranks = set(row["ranks"].split())
-            ranks -= {"species"}
-            if not ranks:
-                continue
-            taxa.add_taxon_and_rank(pattern, ranks.pop())
+            for rank in set(row["ranks"].split()):
+                taxa.add_taxon_and_rank(row["taxon"], rank)
 
 
 def read_wfot_taxa(wfot_tsv, taxa):
@@ -343,13 +318,6 @@ def parse_args():
         type=Path,
         metavar="PATH",
         help="""Get terms from this WFO Taxonomic TSV.""",
-    )
-
-    arg_parser.add_argument(
-        "--old-taxa-csv",
-        type=Path,
-        metavar="PATH",
-        help="""Get old taxon terms from this CSV.""",
     )
 
     arg_parser.add_argument(

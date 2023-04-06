@@ -1,6 +1,6 @@
-from traiter.pylib import const
 from traiter.pylib.util import shorten
 
+from plants.pylib import const
 from plants.pylib import pipeline
 
 PIPELINE = pipeline.build(const.MODEL_PATH)
@@ -12,8 +12,7 @@ def test(text: str) -> list[dict]:
     doc = PIPELINE(text)
     traits = [e._.data for e in doc.ents]
 
-    from pprint import pp
-
-    pp(traits, compact=True)
+    # from pprint import pp
+    # pp(traits, compact=True)
 
     return traits

@@ -14,19 +14,18 @@ from .numeric_pattern_compilers_count import count_compilers
 from .numeric_pattern_compilers_range import range_compilers
 from .numeric_pattern_compilers_size import size_compilers
 
-HERE = Path(__file__).parent
-
 
 def get_csvs():
+    here = Path(__file__).parent
     return [
-        HERE / "numeric_terms.csv",
+        here / "numeric_terms.csv",
         Path(units.__file__).parent / "unit_distance_terms.csv",
         Path(units.__file__).parent / "unit_length_terms.csv",
         Path(units.__file__).parent / "unit_mass_terms.csv",
-        HERE.parent / "basic" / "basic_missing_terms.csv",
+        here.parent / "misc" / "missing_terms.csv",
         Path(month.__file__).parent / "month_terms.csv",
         Path(t_numeric.__file__).parent / "numeric_terms.csv",
-        HERE.parent / "basic" / "basic_sex_terms.csv",
+        here.parent / "misc" / "sex_terms.csv",
     ]
 
 

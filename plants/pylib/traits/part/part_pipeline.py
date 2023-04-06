@@ -15,7 +15,7 @@ def get_csvs():
     here = Path(__file__).parent
     return [
         here / "part_terms.csv",
-        here.parent / "basic" / "basic_missing_terms.csv",
+        here.parent / "misc" / "missing_terms.csv",
     ]
 
 
