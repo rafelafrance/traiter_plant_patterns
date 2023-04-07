@@ -3,6 +3,7 @@ from traiter.pylib import tokenizer
 from traiter.pylib.pipes import extensions
 from traiter.pylib.pipes.finish import FINSH
 
+from .traits.delete_missing import delete_missing_pipeline
 from .traits.habit import habit_pipeline
 from .traits.link_location import link_location_pipeline
 from .traits.link_part import link_part_pipeline
@@ -23,14 +24,14 @@ from .traits.taxon import taxon_pipeline
 def build(model_path=None):
     extensions.add_extensions()
 
-    nlp = spacy.load("en_core_web_sm", exclude=["ner", "parser"])
+    nlp = spacy.load("en_core_web_sm", exclude=["parser", "ner"])
 
     tokenizer.setup_tokenizer(nlp)
 
-    taxon_pipeline.build(nlp)
-    # pipes.taxa(n=2)
+    taxon_pipeline.build(nlp, authorities=2)
     # pipes.taxa_like()
 
+    misc_pipeline.build(nlp)
     part_pipeline.build(nlp)
     numeric_pipeline.build(nlp)
 
@@ -38,8 +39,6 @@ def build(model_path=None):
     margin_pipeline.build(nlp)
     shape_pipeline.build(nlp)
     surface_pipeline.build(nlp)
-
-    misc_pipeline.build(nlp)
 
     part_location_pipeline.build(nlp)
 
@@ -50,8 +49,13 @@ def build(model_path=None):
     link_location_pipeline.build(nlp)
     # pipes.link_taxa_like()
 
+    delete_missing_pipeline.build(nlp)
+
     if model_path:
         nlp.to_disk(model_path)
+
+    # for name in nlp.pipe_names:
+    #     print(name)
 
     return nlp
 

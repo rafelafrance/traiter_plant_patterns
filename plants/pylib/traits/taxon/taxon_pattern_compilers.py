@@ -6,7 +6,7 @@ from traiter.pylib.traits.pattern_compiler import Compiler
 RANK_CSV = Path(__file__).parent / "rank_terms.csv"
 
 RANK_TERMS = trait_util.read_terms(RANK_CSV)
-HIGHER_RANK = sorted({r["label"] for r in RANK_TERMS})
+HIGHER_RANK = sorted({r["label"] for r in RANK_TERMS if r["level"] == "higher"})
 
 ABBREV_RE = r"^[A-Z][.,_]$"
 

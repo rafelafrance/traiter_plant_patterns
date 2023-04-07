@@ -343,3 +343,18 @@ class TestTaxon(unittest.TestCase):
                 }
             ],
         )
+
+    def test_taxon_21(self):
+        self.assertEqual(
+            test("""Mimosa sensitiva (L.) Fox, Trans."""),
+            [
+                {
+                    "authority": "Linnaeus",
+                    "rank": "species",
+                    "taxon": "Mimosa sensitiva",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 21,
+                }
+            ],
+        )

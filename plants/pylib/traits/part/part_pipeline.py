@@ -23,9 +23,7 @@ def build(nlp: Language, **kwargs):
     all_csvs = get_csvs()
 
     with nlp.select_pipes(enable="tokenizer"):
-        prev = add.term_pipe(
-            nlp, name="part_terms", path=all_csvs, overwrite_ents=True, **kwargs
-        )
+        prev = add.term_pipe(nlp, name="part_terms", path=all_csvs, **kwargs)
 
     prev = add.ruler_pipe(
         nlp,

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from spacy import Language
 from traiter.pylib.traits.base_custom_pipe import BaseCustomPipe
 
-MISC_CUSTOM_PIPE = "MISC_custom_pipe"
+MISC_CUSTOM_PIPE = "misc_custom_pipe"
 
 
 @Language.factory(MISC_CUSTOM_PIPE)

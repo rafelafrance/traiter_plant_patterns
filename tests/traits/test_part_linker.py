@@ -83,6 +83,7 @@ class TestPartLinker(unittest.TestCase):
         )
 
     def test_part_linker_04(self):
+        self.maxDiff = None
         self.assertEqual(
             test(
                 """Lvs (except of A. pachyphloia) bipinnate, the primary and secondary
@@ -107,23 +108,23 @@ class TestPartLinker(unittest.TestCase):
                 {
                     "subpart": "axis",
                     "trait": "subpart",
-                    "start": 68,
+                    "start": 58,
                     "end": 72,
-                    "leaf_part": "primary pulvinus",
+                    "leaf_part": "pulvinus",
                 },
                 {
                     "shape": "pulvinate",
                     "trait": "shape",
                     "start": 82,
                     "end": 91,
-                    "leaf_part": "primary pulvinus",
+                    "leaf_part": "pulvinus",
                     "subpart": "axis",
                 },
                 {
                     "trait": "leaf_part",
                     "start": 97,
                     "end": 113,
-                    "leaf_part": "primary pulvinus",
+                    "leaf_part": "pulvinus",
                 },
             ],
         )

@@ -33,27 +33,28 @@ class TaxonPipe(BaseCustomPipe):
         taxon = None
 
         for token in ent:
+            token._.flag = "taxon"
+
             # Taxon and its rank
             if token._.term == "monomial":
                 taxon = token.lower_
                 taxon = taxon.replace("- ", "-")
 
                 # A given rank will override the one in the DB
-                if not rank and (rank_ := self.monomial_ranks.get(taxon.lower(), "")):
+                rank_ = self.monomial_ranks.get(token.lower_)
+                if not rank and rank_:
                     rank_ = rank_.split()[0]
-                    if (
-                        self.level[rank_] == "higher"
-                        and token.shape_ in t_const.NAME_SHAPES
-                    ):
+                    level = self.level[rank_]
+                    if level == "higher" and token.shape_ in t_const.NAME_SHAPES:
                         rank = rank_
                     elif (
-                        self.level[rank_] in ["lower", "species"]
+                        level in ["lower", "species"]
                         and token.shape_ not in t_const.TITLE_SHAPES
                     ):
                         rank = rank_
 
             # A given rank overrides the one in the DB
-            elif self.level.get(token._.term) == "higher":
+            elif self.level.get(token.lower_) == "higher":
                 rank = self.rank_replace.get(token.lower_, token.lower_)
 
             elif token.pos_ in ["PROPN", "NOUN"]:
@@ -61,6 +62,7 @@ class TaxonPipe(BaseCustomPipe):
 
         if not rank:
             ent._.delete = True
+            return
 
         taxon = taxon.title() if self.level[rank] == "higher" else taxon.lower()
         if len(taxon) < const.MIN_TAXON_LEN:
@@ -70,12 +72,14 @@ class TaxonPipe(BaseCustomPipe):
             "taxon": taxon.title() if self.level[rank] == "higher" else taxon.lower(),
             "rank": rank,
         }
+        ent[0]._.data = ent._.data
 
     def on_taxon_match(self, ent):
         taxon = []
         rank_seen = False
 
         for i, token in enumerate(ent):
+            token._.flag = "taxon"
 
             if self.level.get(token.lower_) == "lower":
                 taxon.append(self.rank_abbrev.get(token.lower_, token.lower_))
@@ -99,8 +103,8 @@ class TaxonPipe(BaseCustomPipe):
                 taxon.append(token.text)
 
             else:
-                print("deleting")
                 ent._.delete = True
+                return
 
         if re.match(ABBREV_RE, taxon[0]) and len(taxon) > 1:
             taxon[0] = taxon[0] if taxon[0][-1] == "." else taxon[0] + "."
@@ -111,3 +115,4 @@ class TaxonPipe(BaseCustomPipe):
         taxon = taxon[0].upper() + taxon[1:]
 
         ent._.data = {"taxon": taxon, "rank": ent.id_}
+        ent[0]._.data = ent._.data
