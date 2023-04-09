@@ -9,17 +9,16 @@ from spacy import Language
 from traiter.pylib import const as t_const
 from traiter.pylib.traits import add_pipe as add
 
-from . import link_sex_pattern_compilers as comp
-from .link_sex_pattern_compilers import link_sex_compilers
+from . import link_sex_patterns as pat
 
 
 def build(nlp: Language, **kwargs):
     prev = add.link_pipe(
         nlp,
         name="link_sex",
-        compiler=link_sex_compilers(),
-        parents=comp.LINK_SEX_PARENTS,
-        children=comp.LINK_SEX_CHILDREN,
+        compiler=pat.link_sex_patterns(),
+        parents=pat.LINK_SEX_PARENTS,
+        children=pat.LINK_SEX_CHILDREN,
         weights=t_const.TOKEN_WEIGHTS,
         **kwargs,
     )

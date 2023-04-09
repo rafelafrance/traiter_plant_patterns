@@ -4,8 +4,7 @@ from spacy import Language
 from traiter.pylib.traits import add_pipe as add
 from traiter.pylib.traits import trait_util
 
-from .margin_custom_pipe import MARGIN_CUSTOM_PIPE
-from .margin_pattern_compilers import margin_compilers
+from . import margin_patterns as pat
 
 
 def build(nlp: Language, **kwargs):
@@ -14,16 +13,12 @@ def build(nlp: Language, **kwargs):
     with nlp.select_pipes(enable="tokenizer"):
         prev = add.term_pipe(nlp, name="margin_terms", path=margin_csv, **kwargs)
 
-    prev = add.ruler_pipe(
+    prev = add.trait_pipe(
         nlp,
         name="margin_patterns",
-        compiler=margin_compilers(),
-        overwrite_ents=True,
+        compiler=pat.margin_patterns(),
         after=prev,
     )
-
-    config = {"replace": trait_util.term_data(margin_csv, "replace")}
-    prev = add.custom_pipe(nlp, MARGIN_CUSTOM_PIPE, config=config, after=prev)
 
     prev = add.cleanup_pipe(
         nlp,

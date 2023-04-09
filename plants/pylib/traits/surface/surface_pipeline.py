@@ -1,34 +1,26 @@
-from pathlib import Path
-
 from spacy import Language
 from traiter.pylib.traits import add_pipe as add
 from traiter.pylib.traits import trait_util
 
-from .surface_custom_pipe import SURFACE_CUSTOM_PIPE
-from .surface_pattern_compilers import surface_compilers
+from .surface_action import SURFACE_CSV
+from .surface_patterns import surface_patterns
 
 
 def build(nlp: Language, **kwargs):
-    surface_csv = Path(__file__).parent / "surface_terms.csv"
-
     with nlp.select_pipes(enable="tokenizer"):
-        prev = add.term_pipe(nlp, name="surface_terms", path=surface_csv, **kwargs)
+        prev = add.term_pipe(nlp, name="surface_terms", path=SURFACE_CSV, **kwargs)
 
-    prev = add.ruler_pipe(
+    prev = add.trait_pipe(
         nlp,
         name="surface_patterns",
-        compiler=surface_compilers(),
-        overwrite_ents=True,
+        compiler=surface_patterns(),
         after=prev,
     )
-
-    config = {"replace": trait_util.term_data(surface_csv, "replace")}
-    prev = add.custom_pipe(nlp, SURFACE_CUSTOM_PIPE, config=config, after=prev)
 
     prev = add.cleanup_pipe(
         nlp,
         name="surface_cleanup",
-        remove=trait_util.labels_to_remove(surface_csv, keep="surface"),
+        remove=trait_util.labels_to_remove(SURFACE_CSV, keep="surface"),
         after=prev,
     )
 

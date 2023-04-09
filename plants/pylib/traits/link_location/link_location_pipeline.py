@@ -9,16 +9,16 @@ from spacy import Language
 from traiter.pylib import const as t_const
 from traiter.pylib.traits import add_pipe as add
 
-from . import link_location_pattern_compilers as comp
+from . import link_location_patterns as pat
 
 
 def build(nlp: Language, **kwargs):
     prev = add.link_pipe(
         nlp,
         name="link_location_part",
-        compiler=comp.link_location_part_compilers(),
-        parents=comp.LINK_LOCATION_PART_PARENTS,
-        children=comp.LINK_LOCATION_PART_CHILDREN,
+        compiler=pat.link_location_patterns(),
+        parents=pat.LINK_LOCATION_PART_PARENTS,
+        children=pat.LINK_LOCATION_PART_CHILDREN,
         weights=t_const.TOKEN_WEIGHTS,
         **kwargs,
     )
@@ -26,9 +26,9 @@ def build(nlp: Language, **kwargs):
     prev = add.link_pipe(
         nlp,
         name="link_location_subpart",
-        compiler=comp.link_location_subpart_compilers(),
-        parents=comp.LINK_LOCATION_SUBPART_PARENTS,
-        children=comp.LINK_LOCATION_SUBPART_CHILDREN,
+        compiler=pat.link_location_subpart_patterns(),
+        parents=pat.LINK_LOCATION_SUBPART_PARENTS,
+        children=pat.LINK_LOCATION_SUBPART_CHILDREN,
         weights=t_const.TOKEN_WEIGHTS,
         after=prev,
     )

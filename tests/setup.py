@@ -1,9 +1,11 @@
 from traiter.pylib.util import shorten
 
-from plants.pylib import const
 from plants.pylib import pipeline
 
-PIPELINE = pipeline.build(const.MODEL_PATH)
+# from plants.pylib import const
+
+PIPELINE = pipeline.build()
+# PIPELINE = pipeline.build(MODEL_PATH)
 # PIPELINE = pipeline.load(MODEL_PATH)
 
 

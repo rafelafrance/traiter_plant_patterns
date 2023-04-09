@@ -6,7 +6,7 @@ from traiter.pylib import const as t_const
 from traiter.pylib.traits.base_custom_pipe import BaseCustomPipe
 
 from ... import const
-from .taxon_pattern_compilers import ABBREV_RE
+from .taxon_patterns import ABBREV_RE
 
 TAXON_CUSTOM_PIPE = "taxon_custom_pipe"
 

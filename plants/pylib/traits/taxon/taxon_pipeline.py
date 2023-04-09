@@ -6,12 +6,12 @@ from traiter.pylib import taxon_util
 from traiter.pylib.traits import add_pipe as add
 from traiter.pylib.traits import trait_util
 
-from .taxon_auth_custom_pipe import TAXON_AUTH_CUSTOM_PIPE
-from .taxon_auth_pattern_compilers import taxon_auth_compilers
-from .taxon_auth_pattern_compilers import taxon_linnaeus_compilers
+from .taxon_auth_action import TAXON_AUTH_CUSTOM_PIPE
+from .taxon_auth_patterns import taxon_auth_compilers
+from .taxon_auth_patterns import taxon_linnaeus_compilers
 from .taxon_custom_pipe import TAXON_CUSTOM_PIPE
-from .taxon_linaeus_custom_pipe import TAXON_LINNAEUS_CUSTOM_PIPE
-from .taxon_pattern_compilers import taxon_compilers
+from .taxon_linnaeus_action import TAXON_LINNAEUS_CUSTOM_PIPE
+from .taxon_patterns import taxon_compilers
 
 
 def build(nlp: Language, authorities=2, **kwargs):
@@ -48,7 +48,7 @@ def build(nlp: Language, authorities=2, **kwargs):
         "binomial_abbrev": taxon_util.abbrev_binomial_term(terms["binomial_terms"]),
     }
     prev = add.custom_pipe(nlp, TAXON_CUSTOM_PIPE, config=config, after=prev)
-    prev = add.merge_selected_ents(nlp, name="merge_taxon", labels="taxon", after=prev)
+    # prev = add.merge_selected_ents(nlp, name="merge_taxon", labels="taxon", after=prev)
 
     prev = add.ruler_pipe(
         nlp,
@@ -60,8 +60,8 @@ def build(nlp: Language, authorities=2, **kwargs):
 
     prev = add.custom_pipe(nlp, TAXON_LINNAEUS_CUSTOM_PIPE, after=prev)
 
-    prev = add.debug_tokens(nlp, after=prev)  # #################################
-    prev = add.debug_ents(nlp, after=prev)  # #################################
+    # prev = add.debug_tokens(nlp, after=prev)  # #################################
+    # prev = add.debug_ents(nlp, after=prev)  # #################################
 
     prev = add.ruler_pipe(
         nlp,

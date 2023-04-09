@@ -1,7 +1,6 @@
 import spacy
 from traiter.pylib import tokenizer
 from traiter.pylib.pipes import extensions
-from traiter.pylib.pipes.finish import FINSH
 
 from .traits.delete_missing import delete_missing_pipeline
 from .traits.habit import habit_pipeline
@@ -15,7 +14,8 @@ from .traits.part import part_pipeline
 from .traits.part_location import part_location_pipeline
 from .traits.shape import shape_pipeline
 from .traits.surface import surface_pipeline
-from .traits.taxon import taxon_pipeline
+
+# from .traits.taxon import taxon_pipeline
 
 # from traiter.pylib.pipes import debug  # #########################
 # debug.tokens(nlp)  # #############################################
@@ -28,7 +28,7 @@ def build(model_path=None):
 
     tokenizer.setup_tokenizer(nlp)
 
-    taxon_pipeline.build(nlp, authorities=2)
+    # taxon_pipeline.build(nlp, authorities=2)
     # pipes.taxa_like()
 
     misc_pipeline.build(nlp)
@@ -41,8 +41,6 @@ def build(model_path=None):
     surface_pipeline.build(nlp)
 
     part_location_pipeline.build(nlp)
-
-    nlp.add_pipe(FINSH)
 
     link_part_pipeline.build(nlp)
     link_sex_pipeline.build(nlp)

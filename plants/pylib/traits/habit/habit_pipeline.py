@@ -4,8 +4,7 @@ from spacy import Language
 from traiter.pylib.traits import add_pipe as add
 from traiter.pylib.traits import trait_util
 
-from .habit_custom_pipe import HABIT_CUSTOM_PIPE
-from .habit_pattern_compilers import habit_compilers
+from .habit_patterns import habit_compilers
 
 
 def get_csvs():
@@ -22,18 +21,12 @@ def build(nlp: Language, **kwargs):
     with nlp.select_pipes(enable="tokenizer"):
         prev = add.term_pipe(nlp, name="habit_terms", path=all_csvs, **kwargs)
 
-    prev = add.ruler_pipe(
+    prev = add.trait_pipe(
         nlp,
         name="habit_patterns",
         compiler=habit_compilers(),
-        overwrite_ents=True,
         after=prev,
     )
-
-    config = {
-        "replace": trait_util.term_data(all_csvs, "replace"),
-    }
-    prev = add.custom_pipe(nlp, HABIT_CUSTOM_PIPE, config=config, after=prev)
 
     prev = add.cleanup_pipe(
         nlp,
