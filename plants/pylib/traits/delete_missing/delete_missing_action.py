@@ -40,16 +40,8 @@ class DeleteMissing:
 
             entities.append(ent)
 
-        doc.set_ents(entities)
+        doc.ents = entities
         return doc
-
-    def to_disk(self, path, exclude=tuple()):  # noqa
-        path = Path(path)
-        if not path.exists():
-            path.mkdir()
-        data_path = path / "data.json"
-        with data_path.open("w", encoding="utf8") as data_file:
-            data_file.write(json.dumps(self.delete))
 
     def to_disk(self, path, exclude=tuple()):  # noqa
         path = Path(path)

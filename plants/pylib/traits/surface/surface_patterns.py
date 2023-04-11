@@ -11,7 +11,7 @@ def surface_patterns():
             on_match=SURFACE_MATCH,
             decoder={
                 "-": {"TEXT": {"IN": t_const.DASH}},
-                "surface": {"ENT_TYPE": "surface_term"},
+                "surface": {"ENT_TYPE": "surface"},
                 "surface_leader": {"ENT_TYPE": "surface_leader"},
             },
             patterns=[

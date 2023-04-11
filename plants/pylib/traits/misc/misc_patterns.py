@@ -1,3 +1,4 @@
+from traiter.pylib import const as t_const
 from traiter.pylib.traits.pattern_compiler import Compiler
 
 from .misc_action import LABELS
@@ -9,7 +10,14 @@ def misc_patterns():
         Compiler(
             label="misc",
             on_match=MISC_MATCH,
-            decoder={"term": {"ENT_TYPE": {"IN": LABELS}}},
-            patterns=[" term+ "],
+            decoder={
+                "(": {"TEXT": {"IN": t_const.OPEN}},
+                ")": {"TEXT": {"IN": t_const.CLOSE}},
+                "term": {"ENT_TYPE": {"IN": LABELS}},
+            },
+            patterns=[
+                "  term ",
+                "( term )",
+            ],
         ),
     ]

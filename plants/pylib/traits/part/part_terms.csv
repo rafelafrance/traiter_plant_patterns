@@ -315,7 +315,6 @@ part,craspedium,craspedium
 part,endodermis,
 part,epidermis,
 part,fascicle,fascicle
-part,flowered,flower
 part,indumenta,indumentum
 part,indumentum,indumentum
 part,indumentums,indumentum
@@ -417,9 +416,9 @@ subpart,glands,gland
 subpart,groove,groove
 subpart,hair,hair
 subpart,hairs,hair
-subpart,horned,horn
+subpart,horn,horn
+subpart,horns,horn
 subpart,intervenium,intervenium
-subpart,jointed,joint
 subpart,leaf axil,leaf-axil
 subpart,leaf-axil,leaf-axil
 subpart,lf-axil,leaf-axil
@@ -428,7 +427,6 @@ subpart,limbs,limb
 subpart,lobe,lobe
 subpart,lobed,lobe
 subpart,lobes,lobe
-subpart,locular,locular
 subpart,margin,margin
 subpart,margins,margin
 subpart,microphyll,microphyll

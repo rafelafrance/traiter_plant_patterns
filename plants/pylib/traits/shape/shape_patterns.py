@@ -3,7 +3,7 @@ from traiter.pylib.traits.pattern_compiler import Compiler
 
 from .shape_action import SHAPE_MATCH
 
-SHAPE_LOC = ["shape_term", "shape_leader", "location"]
+SHAPE_LOC = ["shape", "shape_leader", "location"]
 
 
 def shape_patterns():
@@ -16,10 +16,10 @@ def shape_patterns():
                 "-/to": {"LOWER": {"IN": t_const.DASH + ["to", "_"]}},
                 "9": {"IS_DIGIT": True},
                 "angular": {"LOWER": {"IN": ["angular", "angulate"]}},
-                "shape": {"ENT_TYPE": "shape_term"},
+                "shape": {"ENT_TYPE": "shape"},
                 "shape_leader": {"ENT_TYPE": "shape_leader"},
                 "shape_loc": {"ENT_TYPE": {"IN": SHAPE_LOC}},
-                "shape_word": {"ENT_TYPE": {"IN": ["shape_term", "shape_leader"]}},
+                "shape_word": {"ENT_TYPE": {"IN": ["shape", "shape_leader"]}},
             },
             patterns=[
                 "shape_loc*   -*    shape+",

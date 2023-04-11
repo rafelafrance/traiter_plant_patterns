@@ -12,6 +12,8 @@ def build(nlp: Language, **kwargs):
     with nlp.select_pipes(enable="tokenizer"):
         prev = add.term_pipe(nlp, name="part_terms", path=ALL_CSVS, **kwargs)
 
+    # prev = add.debug_tokens(nlp, after=prev)  # ################################
+
     prev = add.trait_pipe(
         nlp,
         name="part_patterns",

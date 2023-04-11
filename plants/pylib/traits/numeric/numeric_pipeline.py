@@ -2,10 +2,11 @@ from spacy import Language
 from traiter.pylib.traits import add_pipe as add
 from traiter.pylib.traits import trait_util
 
-from .numeric_action_range import ALL_CSVS
-from .numeric_patterns_count import count_patterns
-from .numeric_patterns_range import range_patterns
-from .numeric_patterns_size import size_patterns
+from .count_patterns import count_patterns
+from .range_action import ALL_CSVS
+from .range_action import MOST_CSVS
+from .range_patterns import range_patterns
+from .size_patterns import size_patterns
 
 
 def build(nlp: Language, **kwargs):
@@ -17,8 +18,11 @@ def build(nlp: Language, **kwargs):
         nlp,
         name="range_patterns",
         compiler=range_patterns(),
+        keep=["per_count"],
         after=prev,
     )
+
+    # prev = add.debug_tokens(nlp, after=prev)  # ################################
 
     prev = add.trait_pipe(
         nlp,
@@ -29,8 +33,9 @@ def build(nlp: Language, **kwargs):
 
     # prev = add.debug_tokens(nlp, after=prev)  # ################################
 
-    remove = trait_util.labels_to_remove(ALL_CSVS, keep=["count", "size", "sex"])
-    remove += ["not_a_range", "not_a_count", "not_a_size"]
+    remove = trait_util.labels_to_remove(MOST_CSVS, keep=["count", "size", "sex"])
+    remove += """
+        not_a_range not_a_count not_a_size range part_and part_leader """.split()
     prev = add.cleanup_pipe(nlp, name="numeric_cleanup", remove=remove, after=prev)
 
     return prev

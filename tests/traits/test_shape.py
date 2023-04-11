@@ -221,17 +221,17 @@ class TestShape(unittest.TestCase):
             test("Leaf blades lobe apex rounded"),
             [
                 {
-                    "trait": "leaf_part",
+                    "trait": "subpart",
+                    "subpart": "leaf lobe apex",
                     "start": 0,
                     "end": 21,
-                    "leaf_part": "leaf lobe apex",
                 },
                 {
                     "shape": "orbicular",
                     "trait": "shape",
                     "start": 22,
                     "end": 29,
-                    "leaf_part": "leaf lobe apex",
+                    "subpart": "leaf lobe apex",
                 },
             ],
         )
@@ -248,13 +248,6 @@ class TestShape(unittest.TestCase):
                     "end": 29,
                     "leaf_part": "leaf",
                 },
-                {
-                    "subpart": "lobe",
-                    "trait": "subpart",
-                    "start": 51,
-                    "end": 56,
-                    "leaf_part": "leaf",
-                },
             ],
         )
 
@@ -267,27 +260,32 @@ class TestShape(unittest.TestCase):
             ),
             [
                 {"leaf_part": "leaf", "trait": "leaf_part", "start": 0, "end": 6},
-                {"leaf_part": "petiole", "trait": "leaf_part", "start": 8, "end": 21},
+                {
+                    "leaf_part": "petiole leaf",
+                    "trait": "leaf_part",
+                    "start": 8,
+                    "end": 21,
+                },
                 {
                     "shape": "polygonal",
                     "trait": "shape",
-                    "leaf_part": "petiole",
                     "start": 22,
                     "end": 41,
+                    "leaf_part": "petiole leaf",
                 },
                 {
                     "shape": "reniform-polygonal",
                     "trait": "shape",
-                    "leaf_part": "petiole",
                     "start": 45,
                     "end": 62,
+                    "leaf_part": "petiole leaf",
                 },
                 {
                     "shape": "polygonal",
                     "trait": "shape",
-                    "leaf_part": "petiole",
                     "start": 66,
                     "end": 86,
+                    "leaf_part": "petiole leaf",
                 },
             ],
         )

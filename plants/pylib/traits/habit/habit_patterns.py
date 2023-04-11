@@ -11,8 +11,8 @@ def habit_compilers():
             on_match=act.HABIT_MATCH,
             decoder={
                 "-": {"TEXT": {"IN": t_const.DASH}, "OP": "+"},
-                "habit": {"ENT_TYPE": "habit_term"},
-                "shape": {"ENT_TYPE": "shape_term"},
+                "habit": {"ENT_TYPE": "habit"},
+                "shape": {"ENT_TYPE": "shape"},
                 "tree": {"ENT_TYPE": "habit_tree"},
             },
             patterns=[

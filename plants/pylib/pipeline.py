@@ -14,8 +14,7 @@ from .traits.part import part_pipeline
 from .traits.part_location import part_location_pipeline
 from .traits.shape import shape_pipeline
 from .traits.surface import surface_pipeline
-
-# from .traits.taxon import taxon_pipeline
+from .traits.taxon import taxon_pipeline
 
 # from traiter.pylib.pipes import debug  # #########################
 # debug.tokens(nlp)  # #############################################
@@ -28,7 +27,7 @@ def build(model_path=None):
 
     tokenizer.setup_tokenizer(nlp)
 
-    # taxon_pipeline.build(nlp, authorities=2)
+    taxon_pipeline.build(nlp, extend=2)
     # pipes.taxa_like()
 
     misc_pipeline.build(nlp)

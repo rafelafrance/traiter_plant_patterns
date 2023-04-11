@@ -2,9 +2,9 @@ from traiter.pylib import const as t_const
 from traiter.pylib.pipes.reject_match import REJECT_MATCH
 from traiter.pylib.traits.pattern_compiler import Compiler
 
-from .numeric_action_size import SIZE_DOUBLE_DIM_MATCH
-from .numeric_action_size import SIZE_HIGH_ONLY_MATCH
-from .numeric_action_size import SIZE_MATCH
+from .size_action import SIZE_DOUBLE_DIM_MATCH
+from .size_action import SIZE_HIGH_ONLY_MATCH
+from .size_action import SIZE_MATCH
 
 
 def size_patterns():

@@ -2,7 +2,7 @@ from traiter.pylib import const as t_const
 from traiter.pylib.pipes.reject_match import REJECT_MATCH
 from traiter.pylib.traits.pattern_compiler import Compiler
 
-from .numeric_action_range import RANGE_MATCH
+from .range_action import RANGE_MATCH
 
 AND = ["&", "and", "et"]
 CONJ = AND + ["or"]
@@ -29,7 +29,7 @@ def range_patterns():
         "ambiguous": {"LOWER": {"IN": ["few", "many"]}},
         "and/or": {"LOWER": {"IN": CONJ}},
         "bad_follower": {"LOWER": {"REGEX": r"^[=:]$"}},
-        "bad_leader": {"LOWER": {"REGEX": r"^[.=]$"}},
+        "bad_leader": {"LOWER": {"REGEX": r"^[=]$"}},
         "bad_symbol": {"TEXT": {"REGEX": r"^[&/°'\"]+$"}},
         "conj": {"POS": {"IN": ["CCONJ"]}},
         "month": {"ENT_TYPE": "month"},

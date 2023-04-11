@@ -5,8 +5,8 @@ from traiter.pylib import const as t_const
 from traiter.pylib import util as t_util
 from traiter.pylib.traits import trait_util
 
-from .numeric_action_range import ALL_CSVS
-from .numeric_action_range import REPLACE
+from .range_action import ALL_CSVS
+from .range_action import REPLACE
 
 SIZE_MATCH = "size_match"
 SIZE_HIGH_ONLY_MATCH = "size_high_only_match"
@@ -64,7 +64,7 @@ def scan_tokens(ent):
     dimensions = [Dimension(range={}, units="", dim="", about=False, sex="")]
 
     for token in ent:
-        if token._.data and token._.flag == "range":
+        if token._.flag == "range_data":
             dimensions[-1].range = token._.data
         elif token._.term in ("metric_length", "imperial_length"):
             if word := REPLACE.get(token.lower_):

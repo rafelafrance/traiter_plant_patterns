@@ -1,15 +1,20 @@
+from traiter.pylib import const as t_const
 from traiter.pylib.traits.pattern_compiler import Compiler
 
 from ..part import part_patterns as part
+from .part_location_action import PART_LOCATION_MATCH
 
 LOCATION_ENTS = """
     location flower_location part_as_loc subpart_as_loc part_as_distance
     """.split()
 
+TO = ["to"]
+
 
 def part_location_patterns():
     decoder = {
-        "99-99": {"ENT_TYPE": "range"},
+        "9.9": {"TEXT": {"REGEX": t_const.FLOAT_TOKEN_RE}},
+        "-/to": {"LOWER": {"IN": t_const.DASH + TO + ["_"]}},
         "adj": {"POS": "ADJ"},
         "cm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
         "joined": {"ENT_TYPE": "joined"},
@@ -25,6 +30,7 @@ def part_location_patterns():
     return [
         Compiler(
             label="part_as_loc",
+            on_match=PART_LOCATION_MATCH,
             decoder=decoder,
             patterns=[
                 "missing? joined?  leader prep? part",
@@ -34,6 +40,7 @@ def part_location_patterns():
         ),
         Compiler(
             label="subpart_as_loc",
+            on_match=PART_LOCATION_MATCH,
             decoder=decoder,
             patterns=[
                 "missing? joined?  leader subpart",
@@ -44,10 +51,11 @@ def part_location_patterns():
         ),
         Compiler(
             label="part_as_distance",
+            on_match=PART_LOCATION_MATCH,
             decoder=decoder,
             patterns=[
-                "missing? joined?  leader part prep? 99-99 cm",
-                "missing? location leader part prep? 99-99 cm",
+                "missing? joined?  leader prep? part prep? 9.9 -/to* 9.9? cm",
+                "missing? location leader prep? part prep? 9.9 -/to* 9.9? cm",
             ],
         ),
     ]

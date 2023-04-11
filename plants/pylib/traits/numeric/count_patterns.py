@@ -3,8 +3,8 @@ from traiter.pylib.pipes.reject_match import REJECT_MATCH
 from traiter.pylib.traits.pattern_compiler import Compiler
 
 from ..part.part_patterns import PART_LABELS
-from .numeric_action_count import COUNT_MATCH
-from .numeric_action_count import COUNT_WORD_MATCH
+from .count_action import COUNT_MATCH
+from .count_action import COUNT_WORD_MATCH
 
 ALL_PARTS = PART_LABELS + ["subpart"]
 NOT_COUNT_SYMBOL = t_const.CROSS + t_const.SLASH
@@ -41,6 +41,7 @@ def count_patterns():
         "not_numeric": {"ENT_TYPE": {"IN": NOT_NUMERIC}},
         "part": {"ENT_TYPE": {"IN": ALL_PARTS}},
         "per_count": {"ENT_TYPE": "per_count"},
+        "subpart": {"ENT_TYPE": "subpart"},
         "X": {"LOWER": "x"},
         "x": {"LOWER": {"IN": t_const.CROSS + t_const.COMMA}},
         "°": {"TEXT": "°"},
@@ -57,10 +58,12 @@ def count_patterns():
                 "  99-99 -*             per_count+",
                 "( 99-99 )              per_count+",
                 "  99-99 -* every+ part per_count*",
-                "( 99-99 )  every  part",
+                "( 99-99 )  every+ part",
                 "per_count+ adp? 99-99",
                 "missing? 99-99 count_suffix+",
-                "count_word count_suffix+",
+                "count_word     count_suffix+",
+                "missing? 99-99 subpart+",
+                "count_word     subpart+",
             ],
         ),
         Compiler(

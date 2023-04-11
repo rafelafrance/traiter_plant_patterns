@@ -21,7 +21,7 @@ def shape_match(ent):
     else:
         shape = {}  # Dicts preserve order sets do not
         for token in ent:
-            if token._.term == "shape_term" and token.text != "-":
+            if token._.term == "shape" and token.text != "-":
                 word = REPLACE.get(token.lower_, token.lower_)
                 shape[word] = 1
         shape = "-".join(shape)

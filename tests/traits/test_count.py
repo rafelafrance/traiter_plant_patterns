@@ -296,7 +296,7 @@ class TestCount(unittest.TestCase):
     def test_count_16(self):
         self.assertEqual(
             test("plants weigh up to 200 pounds"),
-            [{"part": "plant", "trait": "part", "start": 0, "end": 6}],
+            [],
         )
 
     def test_count_17(self):
@@ -831,11 +831,11 @@ class TestCount(unittest.TestCase):
     def test_count_50(self):
         self.assertEqual(
             test("plant, !-17 Neto "),
-            [{"end": 5, "part": "plant", "start": 0, "trait": "part"}],
+            [],
         )
 
     def test_count_51(self):
         self.assertEqual(
             test("plant RO-173"),
-            [{"end": 5, "part": "plant", "start": 0, "trait": "part"}],
+            [],
         )

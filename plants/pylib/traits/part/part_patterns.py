@@ -74,7 +74,6 @@ def part_compilers():
             decoder=decoder,
             patterns=[
                 "- part+",
-                "- subpart+",
             ],
         ),
     ]

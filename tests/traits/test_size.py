@@ -866,9 +866,9 @@ class TestSize(unittest.TestCase):
                 {"part": "trunk", "trait": "part", "start": 0, "end": 5},
                 {
                     "dimensions": "diameter",
-                    "diameter_high": 8.0,
+                    "diameter_low": 8.0,
                     "trait": "size",
-                    "start": 6,
+                    "start": 9,
                     "end": 23,
                     "uncertain": True,
                     "part": "trunk",

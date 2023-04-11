@@ -15,25 +15,10 @@ class TestReproduction(unittest.TestCase):
                 {"sex": "bisexual", "trait": "sex", "start": 0, "end": 8},
                 {"sex": "unisexual", "trait": "sex", "start": 10, "end": 19},
                 {
-                    "part": "plant",
-                    "trait": "part",
-                    "start": 24,
-                    "end": 30,
-                    "sex": "unisexual",
-                },
-                {
                     "reproduction": "gynodioecious",
                     "trait": "reproduction",
                     "start": 41,
                     "end": 54,
-                    "part": "plant",
-                    "sex": "unisexual",
-                },
-                {
-                    "part": "plant",
-                    "trait": "part",
-                    "start": 59,
-                    "end": 65,
                     "sex": "unisexual",
                 },
                 {
@@ -41,7 +26,6 @@ class TestReproduction(unittest.TestCase):
                     "trait": "reproduction",
                     "start": 66,
                     "end": 75,
-                    "part": "plant",
                     "sex": "unisexual",
                 },
             ],

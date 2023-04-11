@@ -1,46 +1,56 @@
-from dataclasses import dataclass
-
-from spacy import Language
+from spacy import registry
 from traiter.pylib import const as t_const
-from traiter.pylib.traits.base_custom_pipe import BaseCustomPipe
 
-from .taxon_auth_patterns import AND
+from .taxon_action import AND
 
-TAXON_AUTH_CUSTOM_PIPE = "taxon_auth"
+TAXON_AUTH_MATCH = "taxon_auth_match"
+TAXON_LINNAEUS_MATCH = "taxon_linnaeus_match"
 
 
-@Language.factory(TAXON_AUTH_CUSTOM_PIPE)
-@dataclass()
-class TaxonAuthPipe(BaseCustomPipe):
-    def __call__(self, doc):
-        for ent in [e for e in doc.ents if e.label_ in ("taxon", "is_auth")]:
-            print(ent)
-            auth = []
-            data = {}
+@registry.misc(TAXON_AUTH_MATCH)
+def taxon_auth_match(ent):
+    auth = []
+    data = {}
 
-            for token in ent:
+    for token in ent:
 
-                if token._.data:
-                    data = token._.data
+        if token._.flag == "taxon_data":
+            data = token._.data
 
-                elif token._.flag == "taxon":
-                    pass
+        elif token._.flag == "taxon":
+            pass
 
-                elif auth and token.lower_ in AND:
-                    auth.append("and")
+        elif auth and token.lower_ in AND:
+            auth.append("and")
 
-                elif token._.flag != "taxon" and token.shape_ in t_const.NAME_SHAPES:
-                    if len(token) == 1:
-                        auth.append(token.text + ".")
-                    else:
-                        auth.append(token.text)
+        elif token.shape_ in t_const.NAME_SHAPES:
+            if len(token) == 1:
+                auth.append(token.text + ".")
+            else:
+                auth.append(token.text)
 
-            ent._.data = data
+        token._.flag = "taxon"
 
-            if auth and not ent._.data.get("authority"):
-                auth = " ".join(auth)
-                ent._.data["authority"] = auth
+    ent._.data = data
+    ent._.relabel = data["rank"]
 
-            ent[0]._.data = ent._.data
+    auth = " ".join(auth)
+    ent._.data["authority"] = auth
 
-        return doc
+    ent[0]._.data = ent._.data
+    ent[0]._.flag = "taxon_data"
+
+
+@registry.misc(TAXON_LINNAEUS_MATCH)
+def taxon_linnaeus_match(ent):
+    for token in ent:
+
+        if token._.flag == "taxon_data":
+            ent._.data = token._.data
+
+        token._.flag = "taxon"
+
+    ent._.data["authority"] = "Linnaeus"
+
+    ent[0]._.data = ent._.data
+    ent[0]._.flag = "taxon_data"

@@ -25,18 +25,20 @@ ALL_LABELS = PART_LABELS + OTHER_LABELS
 def part_match(ent):
     frags = [[]]
     label = ent.label_
-    relabel = ""
+    relabel = ent.label_
 
     for token in ent:
-        token._.flag = "part"
+        token._.flag = "part" if token._.term in PART_LABELS else "subpart"
 
-        if token._.term in ALL_LABELS:
+        if relabel not in OTHER_LABELS and token._.term in PART_LABELS:
             relabel = token._.term
 
-        if token._.term in PART_LABELS:
+        if token._.term in ALL_LABELS:
             part = REPLACE.get(token.lower_, token.lower_)
+
             if part not in frags[-1]:
                 frags[-1].append(part)
+
             if label not in ("missing_part", "multiple_parts", "subpart"):
                 label = token._.term
 
