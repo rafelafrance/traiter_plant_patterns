@@ -1,8 +1,12 @@
 from traiter.pylib.util import shorten
 
-from plants.pylib.pipeline import pipeline
+from plants.pylib import pipeline
 
-PIPELINE = pipeline()
+PIPELINE = pipeline.build()
+
+# from plants.pylib import const
+# PIPELINE = pipeline.build(const.MODEL_PATH)
+# PIPELINE = pipeline.load(const.MODEL_PATH)
 
 
 def test(text: str) -> list[dict]:

@@ -1,0 +1,15 @@
+label,pattern
+bad_prefix,de
+bad_prefix,el
+bad_prefix,la
+bad_prefix,le
+bad_prefix,no
+bad_prefix,se
+bad_prefix,costa
+bad_prefix,santa
+bad_prefix,collector
+bad_prefix,coll
+bad_prefix,col
+bad_suffix,river
+bad_suffix,mountain
+bad_suffix,road
