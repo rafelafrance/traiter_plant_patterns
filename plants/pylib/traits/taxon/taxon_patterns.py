@@ -1,24 +1,19 @@
 from traiter.pylib.pipes import reject_match
 from traiter.pylib.traits.pattern_compiler import Compiler
 
-from .taxon_action import ABBREV_RE
-from .taxon_action import HIGHER_RANK
-from .taxon_action import RENAME_TAXON_MATCH
-from .taxon_action import SINGLE_TAXON_MATCH
-from .taxon_action import TAXON_LABELS_LINNAEUS
-from .taxon_action import TAXON_MATCH
+from . import taxon_action as act
 
 
 def taxon_patterns():
     decoder = {
         ":": {"TEXT": {"IN": [":", ";"]}},
-        "A.": {"TEXT": {"REGEX": ABBREV_RE}},
+        "A.": {"TEXT": {"REGEX": act.ABBREV_RE}},
         "bad_prefix": {"ENT_TYPE": "bad_prefix"},
         "bad_suffix": {"ENT_TYPE": "bad_suffix"},
         "maybe": {"POS": {"IN": ["PROPN", "NOUN"]}},
         "binomial": {"ENT_TYPE": "binomial"},
         "monomial": {"ENT_TYPE": "monomial"},
-        "higher_rank": {"ENT_TYPE": {"IN": HIGHER_RANK}},
+        "higher_rank": {"ENT_TYPE": {"IN": act.HIGHER_RANK}},
         "subsp": {"ENT_TYPE": "subspecies_rank"},
         "var": {"ENT_TYPE": "variety_rank"},
         "subvar": {"ENT_TYPE": "subvariety_rank"},
@@ -30,7 +25,7 @@ def taxon_patterns():
     return [
         Compiler(
             label="singleton",
-            on_match=SINGLE_TAXON_MATCH,
+            on_match=act.SINGLE_TAXON_MATCH,
             decoder=decoder,
             patterns=[
                 "monomial",
@@ -40,7 +35,7 @@ def taxon_patterns():
         ),
         Compiler(
             label="species",
-            on_match=TAXON_MATCH,
+            on_match=act.TAXON_MATCH,
             decoder=decoder,
             patterns=[
                 "binomial{2}",
@@ -50,7 +45,7 @@ def taxon_patterns():
         ),
         Compiler(
             label="subspecies",
-            on_match=TAXON_MATCH,
+            on_match=act.TAXON_MATCH,
             decoder=decoder,
             patterns=[
                 "   binomial{2} subsp? monomial",
@@ -63,7 +58,7 @@ def taxon_patterns():
         ),
         Compiler(
             label="variety",
-            on_match=TAXON_MATCH,
+            on_match=act.TAXON_MATCH,
             decoder=decoder,
             patterns=[
                 "   binomial{2}                var monomial",
@@ -90,7 +85,7 @@ def taxon_patterns():
         ),
         Compiler(
             label="subvariety",
-            on_match=TAXON_MATCH,
+            on_match=act.TAXON_MATCH,
             decoder=decoder,
             patterns=[
                 "   binomial{2}                subvar monomial",
@@ -127,7 +122,7 @@ def taxon_patterns():
         ),
         Compiler(
             label="form",
-            on_match=TAXON_MATCH,
+            on_match=act.TAXON_MATCH,
             decoder=decoder,
             patterns=[
                 "   binomial{2}                f. monomial",
@@ -164,7 +159,7 @@ def taxon_patterns():
         ),
         Compiler(
             label="subform",
-            on_match=TAXON_MATCH,
+            on_match=act.TAXON_MATCH,
             decoder=decoder,
             patterns=[
                 "   binomial{2}                subf monomial",
@@ -218,12 +213,31 @@ def taxon_patterns():
     ]
 
 
+def multi_taxon_patterns():
+    return [
+        Compiler(
+            label="multi_taxon",
+            on_match=act.MULTI_TAXON_MATCH,
+            decoder={
+                "and": {"LOWER": {"IN": act.AND}},
+                "taxon": {"ENT_TYPE": {"IN": act.TAXON_LABELS}},
+            },
+            patterns=[
+                "taxon and taxon",
+            ],
+        )
+    ]
+
+
 def taxon_rename_patterns():
     return Compiler(
         label="taxon",
-        on_match=RENAME_TAXON_MATCH,
+        on_match=act.RENAME_TAXON_MATCH,
         decoder={
-            "taxon": {"ENT_TYPE": {"IN": TAXON_LABELS_LINNAEUS}},
+            "taxon": {"ENT_TYPE": {"IN": act.TAXON_LABELS_LINNAEUS}},
+            "rank": {"ENT_TYPE": {"IN": act.ANY_RANK}},
         },
-        patterns=["taxon"],
+        patterns=[
+            "rank* taxon",
+        ],
     )

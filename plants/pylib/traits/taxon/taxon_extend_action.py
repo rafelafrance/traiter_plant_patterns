@@ -20,7 +20,6 @@ def taxon_extend_match(ent):
     for token in ent:
 
         if token._.flag == "taxon_data":
-            print(token._.data)
             ent._.data = token._.data
             taxon.append(ent._.data["taxon"])
             if ent._.data.get("authority"):

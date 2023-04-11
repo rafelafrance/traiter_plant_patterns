@@ -248,6 +248,13 @@ class TestShape(unittest.TestCase):
                     "end": 29,
                     "leaf_part": "leaf",
                 },
+                {
+                    "subpart": "lobe",
+                    "trait": "subpart",
+                    "start": 51,
+                    "end": 56,
+                    "leaf_part": "leaf",
+                },
             ],
         )
 

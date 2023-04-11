@@ -22,6 +22,7 @@ class TestSubpart(unittest.TestCase):
                     "start": 14,
                     "end": 28,
                     "subpart": "lobe",
+                    "location": "terminal",
                 },
             ],
         )

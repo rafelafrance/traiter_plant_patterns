@@ -7,6 +7,7 @@ from .traits.habit import habit_pipeline
 from .traits.link_location import link_location_pipeline
 from .traits.link_part import link_part_pipeline
 from .traits.link_sex import link_sex_pipeline
+from .traits.link_taxon_like import link_taxon_like_pipeline
 from .traits.margin import margin_pipeline
 from .traits.misc import misc_pipeline
 from .traits.numeric import numeric_pipeline
@@ -15,6 +16,7 @@ from .traits.part_location import part_location_pipeline
 from .traits.shape import shape_pipeline
 from .traits.surface import surface_pipeline
 from .traits.taxon import taxon_pipeline
+from .traits.taxon_like import taxon_like_pipeline
 
 # from traiter.pylib.pipes import debug  # #########################
 # debug.tokens(nlp)  # #############################################
@@ -28,7 +30,6 @@ def build(model_path=None):
     tokenizer.setup_tokenizer(nlp)
 
     taxon_pipeline.build(nlp, extend=2)
-    # pipes.taxa_like()
 
     misc_pipeline.build(nlp)
     part_pipeline.build(nlp)
@@ -40,11 +41,12 @@ def build(model_path=None):
     surface_pipeline.build(nlp)
 
     part_location_pipeline.build(nlp)
+    taxon_like_pipeline.build(nlp)
 
     link_part_pipeline.build(nlp)
     link_sex_pipeline.build(nlp)
     link_location_pipeline.build(nlp)
-    # pipes.link_taxa_like()
+    link_taxon_like_pipeline.build(nlp)
 
     delete_missing_pipeline.build(nlp)
 

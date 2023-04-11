@@ -8,6 +8,7 @@ from .taxon_action import TAXON_LABELS_LINNAEUS
 from .taxon_auth_patterns import taxon_auth_patterns
 from .taxon_auth_patterns import taxon_linnaeus_patterns
 from .taxon_extend_patterns import taxon_extend_patterns
+from .taxon_patterns import multi_taxon_patterns
 from .taxon_patterns import taxon_patterns
 from .taxon_patterns import taxon_rename_patterns
 
@@ -46,7 +47,7 @@ def build(nlp: Language, extend=1, **kwargs):
     prev = add.trait_pipe(
         nlp,
         name="taxon_linnaeus_patterns",
-        compiler=taxon_linnaeus_patterns(),
+        compiler=taxon_linnaeus_patterns() + multi_taxon_patterns(),
         after=prev,
         merge=TAXON_LABELS_LINNAEUS,
     )
@@ -73,7 +74,7 @@ def build(nlp: Language, extend=1, **kwargs):
             after=prev,
         )
 
-    prev = add.debug_tokens(nlp, after=prev)  # #################################
+    # prev = add.debug_tokens(nlp, after=prev)  # #################################
 
     prev = add.trait_pipe(
         nlp,
@@ -82,7 +83,7 @@ def build(nlp: Language, extend=1, **kwargs):
         after=prev,
     )
 
-    prev = add.debug_tokens(nlp, after=prev)  # #################################
+    # prev = add.debug_tokens(nlp, after=prev)  # #################################
     # prev = add.debug_ents(nlp, after=prev)  # ###################################
 
     csvs = [ALL_CSVS["taxon_terms"], ALL_CSVS["rank_terms"]]

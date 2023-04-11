@@ -12,6 +12,8 @@ from ... import const
 
 TAXON_MATCH = "taxon_match"
 SINGLE_TAXON_MATCH = "single_taxon_match"
+RENAME_TAXON_MATCH = "rename_taxon_match"
+MULTI_TAXON_MATCH = "multi_taxon_match"
 
 
 def get_csvs():
@@ -48,6 +50,7 @@ BINOMIAL_ABBREV = taxon_util.abbrev_binomial_term(ALL_CSVS["binomial_terms"])
 RANK_REPLACE = trait_util.term_data(ALL_CSVS["rank_terms"], "replace")
 RANK_ABBREV = trait_util.term_data(ALL_CSVS["rank_terms"], "abbrev")
 RANK_TERMS = trait_util.read_terms(ALL_CSVS["rank_terms"])
+ANY_RANK = sorted({r["label"] for r in RANK_TERMS})
 HIGHER_RANK = sorted({r["label"] for r in RANK_TERMS if r["level"] == "higher"})
 LOWER_RANK = sorted({r["label"] for r in RANK_TERMS if r["level"] == "lower"})
 
@@ -155,12 +158,30 @@ def on_single_taxon_match(ent):
     ent[0]._.flag = "taxon_data"
 
 
-RENAME_TAXON_MATCH = "rename_taxon_match"
+@registry.misc(MULTI_TAXON_MATCH)
+def multi_taxon_match(ent):
+    taxa = []
+
+    for sub_ent in ent.ents:
+        taxa.append(sub_ent._.data["taxon"])
+        ent._.data["rank"] = sub_ent._.data["rank"]
+
+    ent._.data["taxon"] = taxa
 
 
 @registry.misc(RENAME_TAXON_MATCH)
 def rename_taxon_match(ent):
+    rank = ""
+
     for token in ent:
+
         if token._.flag == "taxon_data":
             ent._.data = token._.data
+
+        elif token._.term in ANY_RANK:
+            rank = RANK_REPLACE.get(token.lower_, token.lower_)
+
+    if rank:
+        ent._.data["rank"] = rank
+
     ent._.relabel = "taxon"
