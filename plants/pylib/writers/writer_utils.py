@@ -1,10 +1,18 @@
-from ..vocabulary import terms
+from traiter.pylib.traits import trait_util
+
+from ..traits.part.part_action import PART_LABELS
+from ..traits.part_location.part_location_action import PART_LOCATION_CSV
+
+LOCATION_ENTS = trait_util.get_labels(PART_LOCATION_CSV)
 
 TITLE_SKIPS = ["start", "end"]
 FIELD_SKIPS = TITLE_SKIPS + ["trait", "dimensions"]
-FIELD_SKIPS += terms.PART_ENTS + terms.SUBPART_ENTS
+FIELD_SKIPS += PART_LABELS + ["subpart"]
 COLUMN_SKIPS = FIELD_SKIPS + ["taxon"]
-TRAIT_SKIPS = terms.PART_ENTS + terms.SUBPART_ENTS + terms.LOCATION_ENTS + ["sex"]
+TRAIT_SKIPS = PART_LABELS + LOCATION_ENTS + ["subpart", "sex"]
+
+PARTS_SET = set(PART_LABELS)
+SUBPART_SET = {"subpart"}
 
 
 def get_label(trait):
@@ -12,11 +20,11 @@ def get_label(trait):
 
     label = {}  # Dicts preserve order sets do not
 
-    part_key = list(keys & terms.PARTS_SET)
+    part_key = list(keys & PARTS_SET)
     part = trait[part_key[0]] if part_key else ""
     label[" ".join(part) if isinstance(part, list) else part] = 1
 
-    subpart_key = list(keys & terms.SUBPART_SET)
+    subpart_key = list(keys & SUBPART_SET)
     if subpart_key:
         label[trait[subpart_key[0]]] = 1
 

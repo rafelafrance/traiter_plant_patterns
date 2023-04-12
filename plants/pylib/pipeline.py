@@ -33,6 +33,7 @@ def build(model_path=None):
 
     misc_pipeline.build(nlp)
     part_pipeline.build(nlp)
+
     numeric_pipeline.build(nlp)
 
     habit_pipeline.build(nlp)

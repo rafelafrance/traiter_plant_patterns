@@ -21,11 +21,8 @@ def build(nlp: Language, **kwargs):
         after=prev,
     )
 
-    prev = add.cleanup_pipe(
-        nlp,
-        name="part_cleanup",
-        remove=trait_util.labels_to_remove(ALL_CSVS, keep=ALL_LABELS) + ["not_a_part"],
-        after=prev,
-    )
+    remove = trait_util.labels_to_remove(ALL_CSVS, keep=ALL_LABELS)
+    remove += ["not_a_part", "bad_part_prefix", "bad_part_suffix"]
+    prev = add.cleanup_pipe(nlp, name="part_cleanup", remove=remove, after=prev)
 
     return prev

@@ -57,5 +57,6 @@ def count_match(ent):
 
 @registry.misc(COUNT_WORD_MATCH)
 def count_word_match(ent):
-    del ent._.data["count_word"]
+    if "count_word" in ent._.data:
+        del ent._.data["count_word"]
     ent._.data["low"] = int(REPLACE[ent[0].lower_])

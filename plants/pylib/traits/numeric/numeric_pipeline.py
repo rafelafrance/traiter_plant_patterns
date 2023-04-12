@@ -4,7 +4,6 @@ from traiter.pylib.traits import trait_util
 
 from .count_patterns import count_patterns
 from .range_action import ALL_CSVS
-from .range_action import MOST_CSVS
 from .range_patterns import range_patterns
 from .size_patterns import size_patterns
 
@@ -33,9 +32,10 @@ def build(nlp: Language, **kwargs):
 
     # prev = add.debug_tokens(nlp, after=prev)  # ################################
 
-    remove = trait_util.labels_to_remove(MOST_CSVS, keep=["count", "size", "sex"])
+    remove = trait_util.labels_to_remove(ALL_CSVS, keep=["count", "size", "sex"])
     remove += """
-        not_a_range not_a_count not_a_size range part_and part_leader """.split()
+        not_numeric not_a_range not_a_count not_a_size range
+        part_and part_leader bad_part_prefix bad_part_suffix """.split()
     prev = add.cleanup_pipe(nlp, name="numeric_cleanup", remove=remove, after=prev)
 
     return prev

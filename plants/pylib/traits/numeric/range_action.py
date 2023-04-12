@@ -6,12 +6,11 @@ from traiter.pylib.traits import terms
 from traiter.pylib.traits import trait_util
 
 from .. import misc
-from .. import part
 
 RANGE_MATCH = "range_match"
 
 
-MOST_CSVS = [
+ALL_CSVS = [
     Path(__file__).parent / "numeric_terms.csv",
     Path(misc.__file__).parent / "missing_terms.csv",
     Path(misc.__file__).parent / "sex_terms.csv",
@@ -21,8 +20,6 @@ MOST_CSVS = [
     Path(terms.__file__).parent / "numeric_terms.csv",
     Path(terms.__file__).parent / "month_terms.csv",
 ]
-PART_CSV = Path(part.__file__).parent / "part_terms.csv"
-ALL_CSVS = MOST_CSVS + [PART_CSV]
 
 REPLACE = trait_util.term_data(ALL_CSVS, "replace")
 

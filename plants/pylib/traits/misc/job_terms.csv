@@ -10,6 +10,7 @@ col_label,collector(s):,collector
 det_label,det,determiner
 det_label,det.,determiner
 det_label,determined,determiner
+det_label,determined by,determiner
 det_label,determiner,determiner
 det_label,determiner(s),determiner
 det_label,determiner(s):,determiner

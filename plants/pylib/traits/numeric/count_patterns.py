@@ -2,7 +2,7 @@ from traiter.pylib import const as t_const
 from traiter.pylib.pipes.reject_match import REJECT_MATCH
 from traiter.pylib.traits.pattern_compiler import Compiler
 
-from ..part.part_patterns import PART_LABELS
+from ..part.part_action import PART_LABELS
 from .count_action import COUNT_MATCH
 from .count_action import COUNT_WORD_MATCH
 

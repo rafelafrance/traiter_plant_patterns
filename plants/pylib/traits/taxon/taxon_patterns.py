@@ -8,8 +8,8 @@ def taxon_patterns():
     decoder = {
         ":": {"TEXT": {"IN": [":", ";"]}},
         "A.": {"TEXT": {"REGEX": act.ABBREV_RE}},
-        "bad_prefix": {"ENT_TYPE": "bad_prefix"},
-        "bad_suffix": {"ENT_TYPE": "bad_suffix"},
+        "bad_prefix": {"ENT_TYPE": "bad_taxon_prefix"},
+        "bad_suffix": {"ENT_TYPE": "bad_taxon_suffix"},
         "maybe": {"POS": {"IN": ["PROPN", "NOUN"]}},
         "binomial": {"ENT_TYPE": "binomial"},
         "monomial": {"ENT_TYPE": "monomial"},
