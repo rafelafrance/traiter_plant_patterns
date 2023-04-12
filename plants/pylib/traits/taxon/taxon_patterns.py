@@ -234,7 +234,7 @@ def taxon_rename_patterns():
         label="taxon",
         on_match=act.RENAME_TAXON_MATCH,
         decoder={
-            "taxon": {"ENT_TYPE": {"IN": act.TAXON_LABELS_LINNAEUS}},
+            "taxon": {"ENT_TYPE": {"IN": act.TAXON_LABELS_PLUS}},
             "rank": {"ENT_TYPE": {"IN": act.ANY_RANK}},
         },
         patterns=[

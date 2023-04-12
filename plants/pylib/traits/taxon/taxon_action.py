@@ -62,7 +62,7 @@ TAXON_LABELS = """
     singleton species subspecies variety subvariety form subform
     """.split()
 
-TAXON_LABELS_LINNAEUS = TAXON_LABELS + ["linnaeus"]
+TAXON_LABELS_PLUS = TAXON_LABELS + ["linnaeus", "not_linnaeus", "taxon", "auth1"]
 
 
 @registry.misc(TAXON_MATCH)
@@ -111,7 +111,7 @@ def taxon_match(ent):
 
 
 @registry.misc(SINGLE_TAXON_MATCH)
-def on_single_taxon_match(ent):
+def single_taxon_match(ent):
     rank = None
     taxon = None
 

@@ -4,7 +4,7 @@ from traiter.pylib.traits.pattern_compiler import Compiler
 from . import habit_action as act
 
 
-def habit_compilers():
+def habit_patterns():
     return [
         Compiler(
             label="habit",

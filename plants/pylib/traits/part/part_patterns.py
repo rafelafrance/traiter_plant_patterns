@@ -6,7 +6,7 @@ from .part_action import PART_LABELS
 from .part_action import PART_MATCH
 
 
-def part_compilers():
+def part_patterns():
     decoder = {
         "-": {"TEXT": {"IN": t_const.DASH}, "OP": "+"},
         "and": {"ENT_TYPE": "part_and"},

@@ -4,7 +4,7 @@ from spacy import Language
 from traiter.pylib.traits import add_pipe as add
 from traiter.pylib.traits import trait_util
 
-from .habit_patterns import habit_compilers
+from .habit_patterns import habit_patterns
 
 
 def get_csvs():
@@ -24,7 +24,7 @@ def build(nlp: Language, **kwargs):
     prev = add.trait_pipe(
         nlp,
         name="habit_patterns",
-        compiler=habit_compilers(),
+        compiler=habit_patterns(),
         after=prev,
     )
 

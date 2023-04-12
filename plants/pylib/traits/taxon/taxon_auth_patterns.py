@@ -5,6 +5,7 @@ from .taxon_action import AND
 from .taxon_action import TAXON_LABELS
 from .taxon_auth_action import TAXON_AUTH_MATCH
 from .taxon_auth_action import TAXON_LINNAEUS_MATCH
+from .taxon_auth_action import TAXON_NOT_LINNAEUS_MATCH
 
 LINNAEUS = ["l", "l.", "lin", "lin.", "linn", "linn.", "linnaeus"]
 
@@ -60,12 +61,11 @@ def taxon_linnaeus_patterns():
             ],
         ),
         Compiler(
-            label="is_auth",
-            on_match=TAXON_AUTH_MATCH,
+            label="not_linnaeus",
+            on_match=TAXON_NOT_LINNAEUS_MATCH,
             decoder=decoder,
             patterns=[
                 "taxon L. .? auth",
-                "taxon L. .? auth auth",
             ],
         ),
     ]

@@ -4,7 +4,7 @@ from traiter.pylib.traits import trait_util
 
 from .taxon_action import ALL_CSVS
 from .taxon_action import TAXON_LABELS
-from .taxon_action import TAXON_LABELS_LINNAEUS
+from .taxon_action import TAXON_LABELS_PLUS
 from .taxon_auth_patterns import taxon_auth_patterns
 from .taxon_auth_patterns import taxon_linnaeus_patterns
 from .taxon_extend_patterns import taxon_extend_patterns
@@ -30,40 +30,30 @@ def build(nlp: Language, extend=1, **kwargs):
             **kwargs,
         )
 
-    # prev = add.debug_tokens(nlp, after=prev)  # #################################
-    # prev = add.debug_ents(nlp, after=prev)  # ###################################
-
     prev = add.trait_pipe(
         nlp,
         name="taxon_patterns",
         compiler=taxon_patterns(),
-        after=prev,
         merge=TAXON_LABELS,
-        keep=TAXON_LABELS,
+        after=prev,
     )
-
-    # prev = add.debug_tokens(nlp, after=prev)  # #################################
 
     prev = add.trait_pipe(
         nlp,
         name="taxon_linnaeus_patterns",
         compiler=taxon_linnaeus_patterns() + multi_taxon_patterns(),
+        merge=TAXON_LABELS_PLUS,
         after=prev,
-        merge=TAXON_LABELS_LINNAEUS,
     )
-
-    # prev = add.debug_tokens(nlp, after=prev)  # #################################
 
     prev = add.trait_pipe(
         nlp,
         name="taxon_auth_patterns",
         compiler=taxon_auth_patterns(),
-        after=prev,
-        merge=TAXON_LABELS_LINNAEUS,
+        merge=TAXON_LABELS_PLUS,
         keep=["singleton"],
+        after=prev,
     )
-
-    # prev = add.debug_tokens(nlp, after=prev)  # #################################
 
     for i in range(1, extend + 1):
         name = f"taxon_extend_{i}"
@@ -71,10 +61,9 @@ def build(nlp: Language, extend=1, **kwargs):
             nlp,
             name=name,
             compiler=taxon_extend_patterns(),
+            merge=TAXON_LABELS_PLUS,
             after=prev,
         )
-
-    # prev = add.debug_tokens(nlp, after=prev)  # #################################
 
     prev = add.trait_pipe(
         nlp,

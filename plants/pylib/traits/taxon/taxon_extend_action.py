@@ -3,7 +3,6 @@ from traiter.pylib import const as t_const
 
 from .taxon_action import AND
 from .taxon_action import LOWER_RANK
-from .taxon_action import MAYBE
 from .taxon_action import RANK_ABBREV
 from .taxon_action import RANK_REPLACE
 

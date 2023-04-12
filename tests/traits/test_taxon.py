@@ -358,3 +358,76 @@ class TestTaxon(unittest.TestCase):
                 }
             ],
         )
+
+    def test_associated_taxon_22(self):
+        """It labels a primary and associated taxa."""
+        self.assertEqual(
+            test(
+                """
+                Cephalanthus occidentalis L. Rubiaceas
+                Associated species: Cornus obliqua
+                """
+            ),
+            [
+                {
+                    "taxon": "Cephalanthus occidentalis",
+                    "rank": "species",
+                    "authority": "L. Rubiaceas",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 38,
+                },
+                {
+                    "taxon": "Cornus obliqua",
+                    "rank": "species",
+                    "trait": "taxon",
+                    "start": 59,
+                    "end": 73,
+                },
+            ],
+        )
+
+    def test_taxon_23(self):
+        self.assertEqual(
+            test("""Mimosa sensitiva (L.) subsp. varia Fox."""),
+            [
+                {
+                    "authority": ["Linnaeus", "Fox"],
+                    "rank": "subspecies",
+                    "taxon": "Mimosa sensitiva subsp. varia",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 38,
+                }
+            ],
+        )
+
+    def test_taxon_24(self):
+        self.assertEqual(
+            test("""Mimosa sensitiva (R. Person) subsp. varia Fox."""),
+            [
+                {
+                    "authority": ["R. Person", "Fox"],
+                    "rank": "subspecies",
+                    "taxon": "Mimosa sensitiva subsp. varia",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 45,
+                }
+            ],
+        )
+
+    def test_taxon_25(self):
+        self.assertEqual(
+            test("""Mimosa sensitiva (L. Person) subsp. varia Fox."""),
+            [
+                {
+                    "authority": ["L. Person", "Fox"],
+                    "rank": "subspecies",
+                    "taxon": "Mimosa sensitiva subsp. varia",
+                    "trait": "taxon",
+                    "start": 0,
+                    "end": 45,
+                }
+            ],
+        )

@@ -4,7 +4,7 @@ from traiter.pylib.traits import trait_util
 
 from .part_action import ALL_CSVS
 from .part_action import ALL_LABELS
-from .part_patterns import part_compilers
+from .part_patterns import part_patterns
 
 
 def build(nlp: Language, **kwargs):
@@ -17,7 +17,7 @@ def build(nlp: Language, **kwargs):
     prev = add.trait_pipe(
         nlp,
         name="part_patterns",
-        compiler=part_compilers(),
+        compiler=part_patterns(),
         after=prev,
     )
 
