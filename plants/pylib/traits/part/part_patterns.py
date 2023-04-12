@@ -10,7 +10,7 @@ def part_patterns():
     decoder = {
         "-": {"TEXT": {"IN": t_const.DASH}, "OP": "+"},
         "and": {"ENT_TYPE": "part_and"},
-        "bad_suffix": {"ENT_TYPE": "bad_part_suffix"},
+        "bad_part": {"ENT_TYPE": "bad_part"},
         "leader": {"ENT_TYPE": "part_leader"},
         "missing": {"ENT_TYPE": "missing"},
         "part": {"ENT_TYPE": {"IN": PART_LABELS}},
@@ -75,7 +75,7 @@ def part_patterns():
             decoder=decoder,
             patterns=[
                 "- part+",
-                "  part+ bad_suffix",
+                "bad_part",
             ],
         ),
     ]

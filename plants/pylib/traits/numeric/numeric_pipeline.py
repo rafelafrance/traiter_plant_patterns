@@ -21,8 +21,6 @@ def build(nlp: Language, **kwargs):
         after=prev,
     )
 
-    # prev = add.debug_tokens(nlp, after=prev)  # ################################
-
     prev = add.trait_pipe(
         nlp,
         name="numeric_patterns",
@@ -30,12 +28,10 @@ def build(nlp: Language, **kwargs):
         after=prev,
     )
 
-    # prev = add.debug_tokens(nlp, after=prev)  # ################################
-
     remove = trait_util.labels_to_remove(ALL_CSVS, keep=["count", "size", "sex"])
-    remove += """
-        not_numeric not_a_range not_a_count not_a_size range
-        part_and part_leader bad_part_prefix bad_part_suffix """.split()
+    remove += """ not_numeric not_a_range not_a_count not_a_size range """.split()
     prev = add.cleanup_pipe(nlp, name="numeric_cleanup", remove=remove, after=prev)
+
+    # prev = add.debug_tokens(nlp, after=prev)  # ################################
 
     return prev

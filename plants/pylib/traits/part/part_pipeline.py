@@ -22,7 +22,7 @@ def build(nlp: Language, **kwargs):
     )
 
     remove = trait_util.labels_to_remove(ALL_CSVS, keep=ALL_LABELS)
-    remove += ["not_a_part", "bad_part_prefix", "bad_part_suffix"]
+    remove += ["not_a_part", "bad_part"]
     prev = add.cleanup_pipe(nlp, name="part_cleanup", remove=remove, after=prev)
 
     return prev

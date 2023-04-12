@@ -1,5 +1,6 @@
 import spacy
 from traiter.pylib import tokenizer
+from traiter.pylib.pipes import debug  # #########################
 from traiter.pylib.pipes import extensions
 
 from .traits.delete_missing import delete_missing_pipeline
@@ -18,7 +19,6 @@ from .traits.surface import surface_pipeline
 from .traits.taxon import taxon_pipeline
 from .traits.taxon_like import taxon_like_pipeline
 
-# from traiter.pylib.pipes import debug  # #########################
 # debug.tokens(nlp)  # #############################################
 
 
