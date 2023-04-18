@@ -14,18 +14,19 @@ from zipfile import ZipFile
 
 import regex
 from pylib import const
-from pylib.traits import habit
-from pylib.traits import numeric
-from pylib.traits import part
-from pylib.traits import shape
-from pylib.traits import surface
-from pylib.traits import taxon
 from tqdm import tqdm
 from traiter.pylib import log
-from traiter.pylib.traits import color
-from traiter.pylib.traits import habitat
-from traiter.pylib.traits import trait_util as tu
-from traiter.pylib.traits import us_location
+from traiter.traits import color
+from traiter.traits import habitat
+from traiter.traits import terms
+from traiter.traits import trait_util as tu
+
+from plants.traits import habit
+from plants.traits import numeric
+from plants.traits import part
+from plants.traits import shape
+from plants.traits import surface
+from plants.traits import taxon
 
 ITIS_SPECIES_ID = 220
 
@@ -102,7 +103,7 @@ class Taxa:
             Path(taxon.__file__).parent / "rank_terms.csv",
             Path(shape.__file__).parent / "shape_terms.csv",
             Path(surface.__file__).parent / "surface_terms.csv",
-            Path(us_location.__file__).parent / "us_location_terms.csv",
+            Path(terms.__file__).parent / "us_location_terms.csv",
         ]
 
         problem_words = {"temp", "uncertain", "unknown", "dummy", "name"}
