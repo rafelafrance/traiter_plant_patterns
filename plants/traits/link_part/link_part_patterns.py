@@ -6,7 +6,7 @@ the "woody" trait.
 """
 from traiter.traits.pattern_compiler import Compiler
 
-from ..part.part_patterns import PART_LABELS
+from plants.traits.part.part_patterns import PART_LABELS
 
 CHILDREN = """
     color duration duration margin shape surface venation woodiness

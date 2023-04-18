@@ -4,7 +4,7 @@ from pathlib import Path
 from spacy import registry
 from traiter.traits import trait_util
 
-from .. import misc
+from plants.traits import misc
 
 PART_MATCH = "part_match"
 

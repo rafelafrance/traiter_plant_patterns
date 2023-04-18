@@ -1,8 +1,8 @@
 from spacy import Language
 from traiter.traits import add_pipe as add
 
-from ..part.part_patterns import PART_LABELS
 from .delete_missing_action import DELETE_MISSING
+from plants.traits.part.part_patterns import PART_LABELS
 
 
 def build(nlp: Language, **kwargs):

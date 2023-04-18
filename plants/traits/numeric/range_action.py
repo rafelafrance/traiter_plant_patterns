@@ -5,7 +5,7 @@ from spacy import registry
 from traiter.traits import terms
 from traiter.traits import trait_util
 
-from .. import misc
+from plants.traits import misc
 
 RANGE_MATCH = "range_match"
 

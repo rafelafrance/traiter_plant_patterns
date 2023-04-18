@@ -2,9 +2,9 @@ from traiter.pipes.reject_match import REJECT_MATCH
 from traiter.pylib import const as t_const
 from traiter.traits.pattern_compiler import Compiler
 
-from ..part.part_action import PART_LABELS
 from .count_action import COUNT_MATCH
 from .count_action import COUNT_WORD_MATCH
+from plants.traits.part.part_action import PART_LABELS
 
 ALL_PARTS = PART_LABELS + ["subpart"]
 NOT_COUNT_SYMBOL = t_const.CROSS + t_const.SLASH

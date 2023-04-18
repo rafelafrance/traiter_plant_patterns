@@ -1,8 +1,8 @@
 from traiter.pylib import const as t_const
 from traiter.traits.pattern_compiler import Compiler
 
-from ..part import part_patterns as part
 from .part_location_action import PART_LOCATION_MATCH
+from plants.traits.part import part_patterns as part
 
 LOCATION_ENTS = """
     location flower_location part_as_loc subpart_as_loc part_as_distance
