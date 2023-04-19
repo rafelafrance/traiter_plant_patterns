@@ -108,3 +108,5 @@ disable = [
 
 [tool.ruff]
 line-length = 88
+
+[tool.pyright]

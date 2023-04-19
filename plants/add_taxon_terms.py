@@ -106,13 +106,12 @@ class Taxa:
             Path(terms.__file__).parent / "us_location_terms.csv",
         ]
 
-        problem_words = {"temp", "uncertain", "unknown", "dummy", "name"}
+        problem_words = {"dummy", "name", "temp", "uncertain", "unknown"}
 
-        lower, text = tu.read_terms(all_csvs)
+        rows = tu.read_terms(all_csvs)
 
         problem_taxa = {"flora", "floral", "harms", "lake", "may", "side"}
-        problem_taxa |= {t["pattern"].lower() for t in lower}
-        problem_taxa |= {t["pattern"].lower() for t in text}
+        problem_taxa |= {t["pattern"].lower() for t in rows}
 
         taxa = sorted(self.taxon.items())
 
@@ -163,7 +162,7 @@ def main():
     counts = count_ranks(records)
     sort_ranks(counts, records, taxa)
 
-    # write_csv(records)
+    write_csv(records)
 
     log.finished()
 
@@ -260,7 +259,7 @@ def read_other_taxa(other_taxa_csv, taxa):
         reader = csv.DictReader(in_file)
         for row in reader:
             for rank in set(row["ranks"].split()):
-                taxa.add_taxon_and_rank(row["taxon"], rank)
+                taxa.add_taxon_and_rank(row["pattern"], rank)
 
 
 def read_wfot_taxa(wfot_tsv, taxa):
