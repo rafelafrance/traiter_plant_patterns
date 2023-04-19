@@ -1,22 +1,22 @@
 import spacy
-from traiter.pipes import extensions
-from traiter.pipes import tokenizer
+from traiter.pylib.pipes import extensions
+from traiter.pylib.pipes import tokenizer
 
-from plants.traits.delete_missing import delete_missing_pipeline
-from plants.traits.habit import habit_pipeline
-from plants.traits.link_location import link_location_pipeline
-from plants.traits.link_part import link_part_pipeline
-from plants.traits.link_sex import link_sex_pipeline
-from plants.traits.link_taxon_like import link_taxon_like_pipeline
-from plants.traits.margin import margin_pipeline
-from plants.traits.misc import misc_pipeline
-from plants.traits.numeric import numeric_pipeline
-from plants.traits.part import part_pipeline
-from plants.traits.part_location import part_location_pipeline
-from plants.traits.shape import shape_pipeline
-from plants.traits.surface import surface_pipeline
-from plants.traits.taxon import taxon_pipeline
-from plants.traits.taxon_like import taxon_like_pipeline
+from plants.pylib.traits.delete_missing import delete_missing_pipeline
+from plants.pylib.traits.habit import habit_pipeline
+from plants.pylib.traits.link_location import link_location_pipeline
+from plants.pylib.traits.link_part import link_part_pipeline
+from plants.pylib.traits.link_sex import link_sex_pipeline
+from plants.pylib.traits.link_taxon_like import link_taxon_like_pipeline
+from plants.pylib.traits.margin import margin_pipeline
+from plants.pylib.traits.misc import misc_pipeline
+from plants.pylib.traits.numeric import numeric_pipeline
+from plants.pylib.traits.part import part_pipeline
+from plants.pylib.traits.part_location import part_location_pipeline
+from plants.pylib.traits.shape import shape_pipeline
+from plants.pylib.traits.surface import surface_pipeline
+from plants.pylib.traits.taxon import taxon_pipeline
+from plants.pylib.traits.taxon_like import taxon_like_pipeline
 
 # debug.tokens(nlp)  # #############################################
 

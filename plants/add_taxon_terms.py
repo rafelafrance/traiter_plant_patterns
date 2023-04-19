@@ -16,17 +16,17 @@ import regex
 from pylib import const
 from tqdm import tqdm
 from traiter.pylib import log
-from traiter.traits import color
-from traiter.traits import habitat
-from traiter.traits import terms
-from traiter.traits import trait_util as tu
+from traiter.pylib.traits import color
+from traiter.pylib.traits import habitat
+from traiter.pylib.traits import terms
+from traiter.pylib.traits import trait_util as tu
 
-from plants.traits import habit
-from plants.traits import numeric
-from plants.traits import part
-from plants.traits import shape
-from plants.traits import surface
-from plants.traits import taxon
+from plants.pylib.traits import habit
+from plants.pylib.traits import numeric
+from plants.pylib.traits import part
+from plants.pylib.traits import shape
+from plants.pylib.traits import surface
+from plants.pylib.traits import taxon
 
 ITIS_SPECIES_ID = 220
 
@@ -110,7 +110,7 @@ class Taxa:
 
         lower, text = tu.read_terms(all_csvs)
 
-        problem_taxa = {"harms", "side", "may", "lake"}
+        problem_taxa = {"flora", "floral", "harms", "lake", "may", "side"}
         problem_taxa |= {t["pattern"].lower() for t in lower}
         problem_taxa |= {t["pattern"].lower() for t in text}
 
@@ -163,7 +163,7 @@ def main():
     counts = count_ranks(records)
     sort_ranks(counts, records, taxa)
 
-    write_csv(records)
+    # write_csv(records)
 
     log.finished()
 
