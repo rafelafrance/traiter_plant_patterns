@@ -64,20 +64,26 @@ def scan_tokens(ent):
     dimensions = [Dimension(range={}, units="", dim="", about=False, sex="")]
 
     for token in ent:
+
         if token._.flag == "range_data":
             dimensions[-1].range = token._.data
+
         elif token._.term in ("metric_length", "imperial_length"):
             if word := REPLACE.get(token.lower_):
                 dimensions[-1].units += word
+
         elif token._.term == "dim":
-            if word := REPLACE.get(token.lower_):
-                if word not in ("in",):
-                    dimensions[-1].dim += word
+            if token.lower_ not in ("in",):
+                dimensions[-1].dim += token.lower_
+                dimensions[-1].dim = REPLACE.get(dimensions[-1].dim, dimensions[-1].dim)
+
         elif token._.term in ("about", "quest"):
             dimensions[-1].about = True
+
         elif token._.term == "sex":
             if word := REPLACE.get(token.lower_):
                 dimensions[-1].sex += word
+
         elif token.lower_ in CROSS:
             new = Dimension(range={}, units="", dim="", about=False, sex="")
             dimensions.append(new)
@@ -87,22 +93,27 @@ def scan_tokens(ent):
 
 def fill_units(dimensions):
     default_units = next(d.units for d in dimensions if d.units)
+
     for dim in dimensions:
         dim.units = dim.units if dim.units else default_units
 
 
 def fill_dimensions(dimensions):
     used = [d.dim for d in dimensions if d.dim]
+
     defaults = ["length", "width", "thickness"]
     defaults = [d for d in defaults if d not in used]
+
     for dim in dimensions:
         dim.dim = dim.dim if dim.dim else defaults.pop(0)
 
 
 def fill_trait_data(dimensions, ent):
     ent._.data["units"] = "cm"
+
     if sex := [d.sex for d in dimensions if d.sex]:
         ent._.data["sex"] = sex[0]
+
     if any(d.about for d in dimensions):
         ent._.data["uncertain"] = True
 
