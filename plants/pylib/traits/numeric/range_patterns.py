@@ -8,6 +8,8 @@ AND = ["&", "and", "et"]
 CONJ = AND + ["or"]
 TO = ["to"]
 
+MIN_OR = t_const.FLOAT_RE + f"(or|{'|'.join(AND)})"
+
 NOT_NUMERIC = """
     not_numeric metric_mass imperial_mass metric_dist imperial_dist
     """.split()
@@ -32,6 +34,7 @@ def range_patterns():
         "bad_leader": {"LOWER": {"REGEX": r"^[=]$"}},
         "bad_symbol": {"TEXT": {"REGEX": r"^[&/°'\"]+$"}},
         "conj": {"POS": {"IN": ["CCONJ"]}},
+        "9.9or": {"LOWER": {"REGEX": MIN_OR}},
         "month": {"ENT_TYPE": "month"},
         "not_numeric": {"ENT_TYPE": {"IN": NOT_NUMERIC}},
     }
@@ -56,6 +59,7 @@ def range_patterns():
             patterns=[
                 "( 9.9 -/or ) 9.9",
                 "( 9.9 -/to ) 9.9",
+                "( 9.9or ) 9.9",
             ],
         ),
         Compiler(
@@ -89,6 +93,8 @@ def range_patterns():
                 "( 9.9   -/or )   9.9 - and/or 9.9",
                 "( 9.9   and/or ) 9.9   and/or 9.9",
                 "  9.9 ( and/or   9.9    -/to  9.9 )",
+                "( 9.9or )        9.9 -/to     9.9",
+                "( 9.9or )        9.9 - and/or 9.9",
             ],
         ),
         Compiler(
@@ -98,6 +104,7 @@ def range_patterns():
             decoder=decoder,
             patterns=[
                 "( 9.9 - ) 9.9 -? ( -/to 9.9 [+]? )",
+                "( 9.9or ) 9.9 -? ( -/to 9.9 [+]? )",
                 "  9.9 -   9.9 - ( -/to 9.9 )",
                 "  9.9 - and/or 9.9 -/to 9.9",
             ],
@@ -131,6 +138,8 @@ def range_patterns():
                 "9.9 -/to 9.9 ( -/or 9.9 ) ( -/or 9.9 [+]? )",
                 "9.9 9.9 -/to and/or 9.9 ( -/or 9.9 [+]? )",
                 "9.9 and/or 9.9 - 9.9 ( -/or 9.9 [+]? )",
+                "( 9.9or ) 9.9 - 9.9 ( -/to 9.9 [+]? )",
+                "( 9.9or ) 9.9 - and/or 9.9 ( -/or 9.9 [+]? )",
             ],
         ),
         Compiler(

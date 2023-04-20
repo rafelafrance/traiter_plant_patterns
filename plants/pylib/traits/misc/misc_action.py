@@ -6,6 +6,7 @@ from traiter.pylib.traits import trait_util
 MISC_MATCH = "misc_match"
 
 ALL_CSVS = list(Path(__file__).parent.glob("*.csv"))
+ALL_CSVS = [c for c in ALL_CSVS if c.stem != "job_terms"]
 
 REPLACE = trait_util.term_data(ALL_CSVS, "replace")
 LABELS = trait_util.get_labels(ALL_CSVS)
