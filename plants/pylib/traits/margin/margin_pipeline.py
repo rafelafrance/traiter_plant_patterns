@@ -20,11 +20,5 @@ def build(nlp: Language, **kwargs):
         after=prev,
     )
 
-    prev = add.cleanup_pipe(
-        nlp,
-        name="margin_cleanup",
-        remove=trait_util.labels_to_remove(margin_csv, keep="margin"),
-        after=prev,
-    )
-
+    prev = add.cleanup_pipe(nlp, name="margin_cleanup", after=prev)
     return prev

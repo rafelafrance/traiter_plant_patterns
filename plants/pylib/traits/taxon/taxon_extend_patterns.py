@@ -10,6 +10,7 @@ def taxon_extend_patterns():
         Compiler(
             label="extend",
             id="taxon",
+            keep="taxon",
             on_match=TAXON_EXTEND_MATCH,
             decoder={
                 "(": {"TEXT": {"IN": t_const.OPEN}},

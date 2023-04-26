@@ -21,6 +21,7 @@ def part_patterns():
             label="part",
             id="part",
             on_match=act.PART_MATCH,
+            keep=act.ALL_LABELS,
             decoder=decoder,
             patterns=[
                 "leader? part+",
@@ -30,6 +31,7 @@ def part_patterns():
         Compiler(
             label="missing_part",
             on_match=act.PART_MATCH,
+            keep=act.ALL_LABELS,
             decoder=decoder,
             patterns=[
                 "missing part+",
@@ -40,6 +42,7 @@ def part_patterns():
         Compiler(
             label="multiple_parts",
             on_match=act.PART_MATCH,
+            keep=act.ALL_LABELS,
             decoder=decoder,
             patterns=[
                 "leader? part+ and part+",
@@ -49,6 +52,7 @@ def part_patterns():
         Compiler(
             label="subpart",
             on_match=act.PART_MATCH,
+            keep=act.ALL_LABELS,
             decoder=decoder,
             patterns=[
                 "leader? subpart+",
@@ -61,6 +65,7 @@ def part_patterns():
         Compiler(
             label="missing_subpart",
             on_match=act.PART_MATCH,
+            keep=act.ALL_LABELS,
             decoder=decoder,
             patterns=[
                 "missing part+ -?   subpart+",

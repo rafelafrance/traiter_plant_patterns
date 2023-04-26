@@ -1,6 +1,6 @@
 from spacy.language import Language
 from traiter.pylib.traits import add_pipe as add
-from traiter.pylib.traits import trait_util
+from traiter.pylib.traits import pattern_compiler
 
 from . import count_patterns as c_pat
 from . import range_action as act
@@ -17,7 +17,7 @@ def build(nlp: Language, **kwargs):
         nlp,
         name="range_patterns",
         compiler=r_pat.range_patterns(),
-        keep=["per_count", "date", "elevation", "lat_long", "collector", "determiner"],
+        keep=pattern_compiler.ACCUMULATOR.keep + ["per_count"],
         after=prev,
     )
 
@@ -28,9 +28,7 @@ def build(nlp: Language, **kwargs):
         after=prev,
     )
 
-    remove = trait_util.labels_to_remove(act.ALL_CSVS, keep=["count", "size", "sex"])
-    remove += """ not_numeric not_a_range not_a_count not_a_size range """.split()
-    prev = add.cleanup_pipe(nlp, name="numeric_cleanup", remove=remove, after=prev)
+    prev = add.cleanup_pipe(nlp, name="numeric_cleanup", after=prev)
 
     # prev = add.debug_tokens(nlp, after=prev)  # ################################
 

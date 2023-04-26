@@ -9,6 +9,7 @@ def misc_patterns():
         Compiler(
             label="misc",
             on_match=act.MISC_MATCH,
+            keep=act.LABELS,
             decoder={
                 "(": {"TEXT": {"IN": t_const.OPEN}},
                 ")": {"TEXT": {"IN": t_const.CLOSE}},

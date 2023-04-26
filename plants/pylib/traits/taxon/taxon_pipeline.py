@@ -70,9 +70,6 @@ def build(nlp: Language, extend=1, **kwargs):
     # prev = add.debug_tokens(nlp, after=prev)  # #################################
     # prev = add.debug_ents(nlp, after=prev)  # ###################################
 
-    csvs = [t_act.ALL_CSVS["taxon_terms"], t_act.ALL_CSVS["rank_terms"]]
-    remove = trait_util.labels_to_remove(csvs, keep=["taxon"])
-    remove += ["bad_taxon", "monomial", "binomial"]
-    prev = add.cleanup_pipe(nlp, name="taxon_cleanup", remove=remove, after=prev)
+    prev = add.cleanup_pipe(nlp, name="taxon_cleanup", after=prev)
 
     return prev

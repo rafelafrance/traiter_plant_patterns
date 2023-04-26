@@ -27,10 +27,13 @@ def taxon_auth_patterns():
             label="auth1",
             id="taxon",
             on_match=TAXON_AUTH_MATCH,
+            keep="taxon",
             decoder=decoder,
             patterns=[
                 "taxon ( auth+             _? )",
                 "taxon ( auth+ and   auth+ _? )",
+                "taxon ( auth+             _? ) auth",
+                "taxon ( auth+ and   auth+ _? ) auth auth",
                 "taxon   auth                  ",
                 "taxon   auth        auth      ",
                 "taxon   auth+ and   auth      ",
@@ -54,6 +57,7 @@ def taxon_linnaeus_patterns():
         Compiler(
             label="linnaeus",
             on_match=TAXON_LINNAEUS_MATCH,
+            keep="taxon",
             decoder=decoder,
             patterns=[
                 "taxon ( linnaeus )",
@@ -63,6 +67,7 @@ def taxon_linnaeus_patterns():
         Compiler(
             label="not_linnaeus",
             on_match=TAXON_NOT_LINNAEUS_MATCH,
+            keep="taxon",
             decoder=decoder,
             patterns=[
                 "taxon L. .? auth",

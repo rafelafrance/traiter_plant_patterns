@@ -30,6 +30,7 @@ def size_patterns():
             label="size",
             id="size",
             on_match=SIZE_MATCH,
+            keep="size",
             decoder=decoder,
             patterns=[
                 "about* 99-99                    about*       cm+ in? sex/dim*",
@@ -45,6 +46,7 @@ def size_patterns():
             label="size.high_only",
             id="size",
             on_match=SIZE_HIGH_ONLY_MATCH,
+            keep="size",
             decoder=decoder,
             patterns=[
                 "to about* 99.9 about* cm+ in? sex/dim*",
@@ -54,6 +56,7 @@ def size_patterns():
             label="size.double_dim",
             id="size",
             on_match=SIZE_DOUBLE_DIM_MATCH,
+            keep="size",
             decoder=decoder,
             patterns=[
                 "about* 99-99 cm+ sex? ,? dim+ and  dim+",

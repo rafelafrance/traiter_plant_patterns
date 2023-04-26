@@ -145,12 +145,12 @@ class TestTaxon(unittest.TestCase):
             test("""Mimosa sensitiva (Bentham) Fox, Trans."""),
             [
                 {
-                    "authority": "Bentham",
+                    "authority": "Bentham Fox",
                     "rank": "species",
                     "taxon": "Mimosa sensitiva",
                     "trait": "taxon",
                     "start": 0,
-                    "end": 26,
+                    "end": 30,
                 }
             ],
         )

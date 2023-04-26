@@ -1,6 +1,5 @@
 from spacy import Language
 from traiter.pylib.traits import add_pipe as add
-from traiter.pylib.traits import trait_util
 
 from . import taxon_like_action as act
 from . import taxon_like_patterns as pat
@@ -19,11 +18,6 @@ def build(nlp: Language, **kwargs):
         after=prev,
     )
 
-    prev = add.cleanup_pipe(
-        nlp,
-        name="taxon_like_cleanup",
-        remove=trait_util.labels_to_remove(act.TAXON_LIKE_CSV, keep="taxon_like"),
-        after=prev,
-    )
+    prev = add.cleanup_pipe(nlp, name="taxon_like_cleanup", after=prev)
 
     return prev

@@ -52,6 +52,7 @@ def count_patterns():
             id="count",
             on_match=act.COUNT_MATCH,
             decoder=decoder,
+            keep="count",
             patterns=[
                 "  99-99",
                 "  99-99 -*             per_count+",
@@ -68,6 +69,7 @@ def count_patterns():
         Compiler(
             label="count_word",
             id="count",
+            keep="count",
             on_match=act.COUNT_WORD_MATCH,
             decoder=decoder,
             patterns=[

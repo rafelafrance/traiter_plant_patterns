@@ -1,6 +1,5 @@
 from spacy import Language
 from traiter.pylib.traits import add_pipe as add
-from traiter.pylib.traits import trait_util
 
 from . import shape_action as act
 from . import shape_patterns as pat
@@ -18,11 +17,6 @@ def build(nlp: Language, **kwargs):
         after=prev,
     )
 
-    prev = add.cleanup_pipe(
-        nlp,
-        name="shape_cleanup",
-        remove=trait_util.labels_to_remove(act.SHAPE_CSV, keep="shape"),
-        after=prev,
-    )
+    prev = add.cleanup_pipe(nlp, name="shape_cleanup", after=prev)
 
     return prev

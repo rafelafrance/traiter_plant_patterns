@@ -8,6 +8,7 @@ def taxon_like_patterns():
     return Compiler(
         label="taxon_like",
         on_match=TAXON_LIKE_MATCH,
+        keep="taxon_like",
         decoder={
             "any": {},
             "prep": {"POS": {"IN": ["ADP", "CCONJ"]}},

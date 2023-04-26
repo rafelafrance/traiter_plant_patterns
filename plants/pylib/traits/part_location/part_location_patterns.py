@@ -32,6 +32,7 @@ def part_location_patterns():
             label="part_as_loc",
             on_match=act.PART_LOCATION_MATCH,
             decoder=decoder,
+            keep=LOCATION_ENTS,
             patterns=[
                 "missing? joined?  leader prep? part",
                 "missing? location leader       part",
@@ -41,6 +42,7 @@ def part_location_patterns():
         Compiler(
             label="subpart_as_loc",
             on_match=act.PART_LOCATION_MATCH,
+            keep=LOCATION_ENTS,
             decoder=decoder,
             patterns=[
                 "missing? joined?  leader subpart",
@@ -52,6 +54,7 @@ def part_location_patterns():
         Compiler(
             label="part_as_distance",
             on_match=act.PART_LOCATION_MATCH,
+            keep=LOCATION_ENTS,
             decoder=decoder,
             patterns=[
                 "missing? joined?  leader prep? part prep? 9.9 -/to* 9.9? cm",

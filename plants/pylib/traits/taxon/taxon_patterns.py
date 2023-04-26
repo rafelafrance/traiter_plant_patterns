@@ -26,6 +26,7 @@ def taxon_patterns():
         Compiler(
             label="singleton",
             on_match=act.SINGLE_TAXON_MATCH,
+            keep="taxon",
             decoder=decoder,
             patterns=[
                 "monomial",
@@ -36,6 +37,7 @@ def taxon_patterns():
         Compiler(
             label="species",
             on_match=act.TAXON_MATCH,
+            keep="taxon",
             decoder=decoder,
             patterns=[
                 "binomial{2}",
@@ -46,6 +48,7 @@ def taxon_patterns():
         Compiler(
             label="subspecies",
             on_match=act.TAXON_MATCH,
+            keep="taxon",
             decoder=decoder,
             patterns=[
                 "   binomial{2} subsp? monomial",
@@ -59,6 +62,7 @@ def taxon_patterns():
         Compiler(
             label="variety",
             on_match=act.TAXON_MATCH,
+            keep="taxon",
             decoder=decoder,
             patterns=[
                 "   binomial{2}                var monomial",
@@ -86,6 +90,7 @@ def taxon_patterns():
         Compiler(
             label="subvariety",
             on_match=act.TAXON_MATCH,
+            keep="taxon",
             decoder=decoder,
             patterns=[
                 "   binomial{2}                subvar monomial",
@@ -123,6 +128,7 @@ def taxon_patterns():
         Compiler(
             label="form",
             on_match=act.TAXON_MATCH,
+            keep="taxon",
             decoder=decoder,
             patterns=[
                 "   binomial{2}                f. monomial",
@@ -160,6 +166,7 @@ def taxon_patterns():
         Compiler(
             label="subform",
             on_match=act.TAXON_MATCH,
+            keep="taxon",
             decoder=decoder,
             patterns=[
                 "   binomial{2}                subf monomial",
@@ -217,6 +224,7 @@ def multi_taxon_patterns():
     return [
         Compiler(
             label="multi_taxon",
+            keep="multi_taxon",
             on_match=act.MULTI_TAXON_MATCH,
             decoder={
                 "and": {"LOWER": {"IN": act.AND}},
@@ -232,6 +240,7 @@ def multi_taxon_patterns():
 def taxon_rename_patterns():
     return Compiler(
         label="taxon",
+        keep="taxon",
         on_match=act.RENAME_TAXON_MATCH,
         decoder={
             "taxon": {"ENT_TYPE": {"IN": act.TAXON_LABELS_PLUS}},

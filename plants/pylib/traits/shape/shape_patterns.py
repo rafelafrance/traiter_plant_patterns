@@ -11,6 +11,7 @@ def shape_patterns():
         Compiler(
             label="shape",
             on_match=act.SHAPE_MATCH,
+            keep="shape",
             decoder={
                 "-": {"TEXT": {"IN": t_const.DASH}},
                 "-/to": {"LOWER": {"IN": t_const.DASH + ["to", "_"]}},

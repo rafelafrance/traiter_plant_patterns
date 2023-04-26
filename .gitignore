@@ -59,6 +59,7 @@ junk*
 .idea/
 .virtual_documents/
 .vscode/
+.ruff_cache/
 
 # Experiments
 rust/

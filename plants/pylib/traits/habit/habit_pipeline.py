@@ -2,7 +2,6 @@ from pathlib import Path
 
 from spacy import Language
 from traiter.pylib.traits import add_pipe as add
-from traiter.pylib.traits import trait_util
 
 from . import habit_patterns as pat
 
@@ -28,11 +27,6 @@ def build(nlp: Language, **kwargs):
         after=prev,
     )
 
-    prev = add.cleanup_pipe(
-        nlp,
-        name="habit_cleanup",
-        remove=trait_util.labels_to_remove(all_csvs, keep="habit"),
-        after=prev,
-    )
+    prev = add.cleanup_pipe(nlp, name="habit_cleanup", after=prev)
 
     return prev

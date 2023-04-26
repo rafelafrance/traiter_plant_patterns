@@ -9,6 +9,7 @@ def surface_patterns():
         Compiler(
             label="surface",
             on_match=SURFACE_MATCH,
+            keep="surface",
             decoder={
                 "-": {"TEXT": {"IN": t_const.DASH}},
                 "surface": {"ENT_TYPE": "surface"},

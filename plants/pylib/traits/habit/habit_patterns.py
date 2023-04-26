@@ -9,6 +9,7 @@ def habit_patterns():
         Compiler(
             label="habit",
             on_match=act.HABIT_MATCH,
+            keep="habit",
             decoder={
                 "-": {"TEXT": {"IN": t_const.DASH}, "OP": "+"},
                 "habit": {"ENT_TYPE": "habit"},

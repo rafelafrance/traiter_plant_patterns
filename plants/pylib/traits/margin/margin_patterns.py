@@ -9,6 +9,7 @@ def margin_patterns():
         Compiler(
             label="margin",
             on_match=act.MARGIN_MATCH,
+            keep="margin",
             decoder={
                 "-": {"TEXT": {"IN": t_const.DASH}},
                 "margin": {"ENT_TYPE": "margin"},
