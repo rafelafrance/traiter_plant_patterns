@@ -1,6 +1,6 @@
 from spacy import Language
 from traiter.pylib.traits import add_pipe as add
-from traiter.pylib.traits import trait_util
+from traiter.pylib.traits import pattern_compiler as comp
 
 from . import taxon_action as t_act
 from . import taxon_auth_patterns as a_pat
@@ -9,6 +9,8 @@ from . import taxon_patterns as t_pat
 
 
 def build(nlp: Language, extend=1, **kwargs):
+    keep = comp.ACCUMULATOR.keep  # Get them before we add to the list
+
     default_labels = {
         "binomial_terms": "binomial",
         "monomial_terms": "monomial",
@@ -29,6 +31,7 @@ def build(nlp: Language, extend=1, **kwargs):
         nlp,
         name="taxon_patterns",
         compiler=t_pat.taxon_patterns(),
+        keep=keep,
         merge=t_act.TAXON_LABELS,
         after=prev,
     )
@@ -37,6 +40,7 @@ def build(nlp: Language, extend=1, **kwargs):
         nlp,
         name="taxon_linnaeus_patterns",
         compiler=a_pat.taxon_linnaeus_patterns() + t_pat.multi_taxon_patterns(),
+        keep=keep,
         merge=t_act.TAXON_LABELS_PLUS,
         after=prev,
     )
@@ -46,7 +50,7 @@ def build(nlp: Language, extend=1, **kwargs):
         name="taxon_auth_patterns",
         compiler=a_pat.taxon_auth_patterns(),
         merge=t_act.TAXON_LABELS_PLUS,
-        keep=["singleton"],
+        keep=[*keep, "singleton"],
         after=prev,
     )
 
