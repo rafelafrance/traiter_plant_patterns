@@ -4,7 +4,7 @@ We are linking parts like "petal" or "leaf" to traits like color or size.
 For example: "with thick, woody rootstock" should link the "rootstock" part with
 the "woody" trait.
 """
-from spacy import Language
+from spacy.language import Language
 from traiter.pylib import const as t_const
 from traiter.pylib.traits import add_pipe as add
 

@@ -1,5 +1,6 @@
 import spacy
 from traiter.pylib.pipes import extensions
+from traiter.pylib.pipes import sentence
 from traiter.pylib.pipes import tokenizer
 
 from plants.pylib.traits.delete_missing import delete_missing_pipeline
@@ -28,6 +29,8 @@ def build(model_path=None):
     nlp = spacy.load("en_core_web_sm", exclude=["parser", "ner"])
 
     tokenizer.setup_tokenizer(nlp)
+
+    nlp.add_pipe(sentence.SENTENCES)
 
     taxon_pipeline.build(nlp, extend=2)
 

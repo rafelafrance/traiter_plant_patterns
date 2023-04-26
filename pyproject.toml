@@ -20,22 +20,14 @@ optional-dependencies.dev = [
     "ipyparallel",
     "ipython",
     "isort",
-    "jupyter",
-    "jupyter_nbextensions_configurator",
-    "jupyterlab",
-    "jupyterlab-code-formatter",
-    "jupyterlab-drawio",
-    "jupyterlab-git",
-    "jupyterlab-lsp",
-    "jupyterlab-spellchecker",
-    "nbdime",
     "neovim",
     "pre-commit",
     "pre-commit-hooks",
     "pydocstyle",
     "pylint",
+    "pyright",
     "python-lsp-server[all]",
-    "tensorboard",
+    "ruff",
     "yapf",
 ]
 
@@ -110,3 +102,5 @@ disable = [
 line-length = 88
 
 [tool.pyright]
+reportGeneralTypeIssues = "none"
+extraPaths = ["../traiter"]
