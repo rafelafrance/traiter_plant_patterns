@@ -18,4 +18,4 @@ def surface_match(ent):
             surface[word] = 1
     surface = " ".join(surface)
     surface = REPLACE.get(surface, surface)
-    ent._.data["surface"] = surface
+    ent._.data = {"surface": surface}

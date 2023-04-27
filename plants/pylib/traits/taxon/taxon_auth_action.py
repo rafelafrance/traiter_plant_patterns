@@ -33,7 +33,6 @@ def taxon_auth_match(ent):
         token._.flag = "taxon"
 
     ent._.data = data
-    # ent._.relabel = data["rank"]
 
     ent._.data["authority"] = " ".join(auth)
 

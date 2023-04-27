@@ -53,7 +53,7 @@ def part_match(ent):
     all_parts = [REPLACE.get(p, p) for p in all_parts]
 
     ent._.relabel = relabel
-    ent._.data["trait"] = relabel
+    ent._.data = {"trait": relabel}
     ent._.data[relabel] = all_parts[0] if len(all_parts) == 1 else all_parts
 
     ent[0]._.data = ent._.data  # Cache so we can use this in counts

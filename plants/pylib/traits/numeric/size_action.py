@@ -69,6 +69,8 @@ def scan_tokens(ent):
             dimensions[-1].range = token._.data
 
         elif token._.term in ("metric_length", "imperial_length"):
+            if dimensions[-1].units and token.lower_ in ("in",):
+                continue
             if word := REPLACE.get(token.lower_):
                 dimensions[-1].units += word
 
@@ -109,17 +111,17 @@ def fill_dimensions(dimensions):
 
 
 def fill_trait_data(dimensions, ent):
-    ent._.data["units"] = "cm"
+    data = {"units": "cm"}
 
     if sex := [d.sex for d in dimensions if d.sex]:
-        ent._.data["sex"] = sex[0]
+        data["sex"] = sex[0]
 
     if any(d.about for d in dimensions):
-        ent._.data["uncertain"] = True
+        data["uncertain"] = True
 
     # "dimensions" is used to link traits
     dims = sorted(d.dim for d in dimensions)
-    ent._.data["dimensions"] = dims if len(dims) > 1 else dims[0]
+    data["dimensions"] = dims if len(dims) > 1 else dims[0]
 
     # Build the key and value for the range's: min, low, high, max
     for dim in dimensions:
@@ -128,4 +130,6 @@ def fill_trait_data(dimensions, ent):
             factor = FACTORS_CM[dim.units]
             value = t_util.to_positive_float(value)
             value = round(value * factor, 3)
-            ent._.data[key] = value
+            data[key] = value
+
+    ent._.data = data

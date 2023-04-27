@@ -19,4 +19,4 @@ def margin_match(ent):
             margin[word] = 1
     margin = "-".join(margin.keys())
     margin = REPLACE.get(margin, margin)
-    ent._.data["margin"] = margin
+    ent._.data = {"margin": margin}

@@ -13,4 +13,4 @@ REPLACE = trait_util.term_data(HABIT_CSV, "replace")
 @registry.misc(HABIT_MATCH)
 def habit_match(ent):
     frags = [REPLACE.get(t.lower_, t.lower_) for t in ent]
-    ent._.data["habit"] = " ".join(frags)
+    ent._.data = {"habit": " ".join(frags)}

@@ -19,4 +19,4 @@ def part_location_match(ent):
     for token in ent:
         frag = REPLACE.get(token.lower_, token.lower_)
         frags.append(frag)
-    ent._.data[ent.label_] = " ".join(frags)
+    ent._.data = {ent.label_: " ".join(frags)}

@@ -12,10 +12,11 @@ REPLACE = trait_util.term_data(SHAPE_CSV, "replace")
 
 @registry.misc(SHAPE_MATCH)
 def shape_match(ent):
+    shape = ""
 
     # Handle 3-angular etc.
     if re.match(r"^\d", ent.text):
-        ent._.data["shape"] = "polygonal"
+        shape = "polygonal"
 
     # All other shapes
     else:
@@ -26,4 +27,4 @@ def shape_match(ent):
                 shape[word] = 1
         shape = "-".join(shape)
         shape = REPLACE.get(shape, shape)
-        ent._.data["shape"] = shape
+    ent._.data = {"shape": shape}
