@@ -17,7 +17,7 @@ def build(nlp: Language, **kwargs):
         nlp,
         name="range_patterns",
         compiler=r_pat.range_patterns(),
-        keep=pattern_compiler.ACCUMULATOR.keep + ["per_count"],
+        keep=pattern_compiler.ACCUMULATOR.keep + ["per_count", "lat_long", "date"],
         after=prev,
     )
 
