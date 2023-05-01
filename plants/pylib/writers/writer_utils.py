@@ -1,9 +1,9 @@
-from traiter.pylib.traits import trait_util
+from traiter.pylib import term_util
 
 from plants.pylib.traits.part.part_action import PART_LABELS
 from plants.pylib.traits.part_location.part_location_action import PART_LOCATION_CSV
 
-LOCATION_ENTS = trait_util.get_labels(PART_LOCATION_CSV)
+LOCATION_ENTS = term_util.get_labels(PART_LOCATION_CSV)
 
 TITLE_SKIPS = ["start", "end"]
 FIELD_SKIPS = TITLE_SKIPS + ["trait", "dimensions"]

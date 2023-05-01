@@ -16,17 +16,9 @@ import regex
 from pylib import const
 from tqdm import tqdm
 from traiter.pylib import log
-from traiter.pylib.traits import color
-from traiter.pylib.traits import habitat
-from traiter.pylib.traits import terms
-from traiter.pylib.traits import trait_util as tu
+from traiter.pylib import term_util as tu
 
-from plants.pylib.traits import habit
-from plants.pylib.traits import numeric
-from plants.pylib.traits import part
-from plants.pylib.traits import shape
-from plants.pylib.traits import surface
-from plants.pylib.traits import taxon
+from plants.pylib.traits import terms
 
 ITIS_SPECIES_ID = 220
 
@@ -40,7 +32,7 @@ class Record:
 
 class Ranks:
     def __init__(self):
-        rank_csv = Path(taxon.__file__).parent / "rank_terms.csv"
+        rank_csv = Path(__file__).parent / "terms" / "rank_terms.csv"
         with open(rank_csv) as term_file:
             reader = csv.DictReader(term_file)
             self.ranks = list(reader)
@@ -95,14 +87,14 @@ class Taxa:
         new = {}
 
         all_csvs = [
-            Path(color.__file__).parent / "color_terms.csv",
-            Path(habit.__file__).parent / "habit_terms.csv",
-            Path(habitat.__file__).parent / "habitat_terms.csv",
-            Path(numeric.__file__).parent / "numeric_terms.csv",
-            Path(part.__file__).parent / "part_terms.csv",
-            Path(taxon.__file__).parent / "rank_terms.csv",
-            Path(shape.__file__).parent / "shape_terms.csv",
-            Path(surface.__file__).parent / "surface_terms.csv",
+            Path(terms.__file__).parent / "color_terms.csv",
+            Path(terms.__file__).parent / "habit_terms.csv",
+            Path(terms.__file__).parent / "habitat_terms.csv",
+            Path(terms.__file__).parent / "numeric_terms.csv",
+            Path(terms.__file__).parent / "part_terms.csv",
+            Path(terms.__file__).parent / "rank_terms.csv",
+            Path(terms.__file__).parent / "shape_terms.csv",
+            Path(terms.__file__).parent / "surface_terms.csv",
             Path(terms.__file__).parent / "us_location_terms.csv",
         ]
 
@@ -218,8 +210,8 @@ def build_records(taxa):
 def write_csv(rows):
     monomial_csv = const.DATA_DIR / "monomial_terms.csv"
     binomial_csv = const.DATA_DIR / "binomial_terms.csv"
-    monomial_zip = Path(taxon.__file__).parent / "monomial_terms.zip"
-    binomial_zip = Path(taxon.__file__).parent / "binomial_terms.zip"
+    monomial_zip = Path(terms.__file__).parent / "monomial_terms.zip"
+    binomial_zip = Path(terms.__file__).parent / "binomial_terms.zip"
 
     with open(monomial_csv, "w") as out_csv:
         writer = csv.writer(out_csv)

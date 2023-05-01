@@ -48,7 +48,7 @@ class HtmlWriter:
     def format_text(self, row):
         """Wrap traits in the text with <spans> that can be formatted with CSS."""
         frags = []
-        prev = 0
+        0
 
         for trait in row.traits:
             start = trait["start"]
@@ -69,7 +69,7 @@ class HtmlWriter:
             frags.append(f'<span class="{cls}" title="{title}">')
             frags.append(html.escape(row.text[start:end]))
             frags.append("</span>")
-            prev = end
+            end
 
         if len(row.text) > prev:
             frags.append(html.escape(row.text[prev:]))
