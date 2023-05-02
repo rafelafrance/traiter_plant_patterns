@@ -26,10 +26,10 @@ def margin_patterns():
             keep="margin",
             decoder={
                 "-": {"TEXT": {"IN": t_const.DASH}},
-                "margin": {"ENT_TYPE": "margin"},
+                "margin": {"ENT_TYPE": "margin_term"},
                 "shape": {"ENT_TYPE": "shape"},
                 "leader": {"ENT_TYPE": {"IN": ["shape", "margin_leader"]}},
-                "follower": {"ENT_TYPE": {"IN": ["margin", "margin_follower"]}},
+                "follower": {"ENT_TYPE": {"IN": ["margin_term", "margin_follower"]}},
             },
             patterns=[
                 "leader* -* margin+",
@@ -45,7 +45,7 @@ def margin_patterns():
 def margin_match(ent):
     margin = {}  # Dicts preserve order sets do not
     for token in ent:
-        if token._.term in ["margin", "shape"] and token.text != "-":
+        if token._.term in ["margin_term", "shape"] and token.text != "-":
             word = REPLACE.get(token.lower_, token.lower_)
             margin[word] = 1
     margin = "-".join(margin.keys())

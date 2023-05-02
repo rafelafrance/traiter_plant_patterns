@@ -5,9 +5,9 @@ from pathlib import Path
 from spacy import Language
 from spacy import registry
 from traiter.pylib import const as t_const
-from traiter.pylib import pattern_compiler as comp
 from traiter.pylib import taxon_util
 from traiter.pylib import term_util
+from traiter.pylib.pattern_compiler import ACCUMULATOR
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.pipes import reject_match
@@ -56,13 +56,9 @@ MAYBE = """ PROPN NOUN """.split()
 MONOMIAL_RANKS = term_util.term_data(ALL_CSVS["monomial_terms"], "ranks")
 RANK_ABBREV = term_util.term_data(ALL_CSVS["rank_terms"], "abbrev")
 RANK_REPLACE = term_util.term_data(ALL_CSVS["rank_terms"], "replace")
-TAXON_LABELS = "singleton species subspecies variety subvariety form subform".split()
-TAXON_LABELS_PLUS = TAXON_LABELS + ["linnaeus", "not_linnaeus", "taxon", "auth1"]
 
 
 def build(nlp: Language, extend=1):
-    keep = comp.ACCUMULATOR.keep  # Get them before we add to the list
-
     default_labels = {
         "binomial_terms": "binomial",
         "monomial_terms": "monomial",
@@ -82,24 +78,25 @@ def build(nlp: Language, extend=1):
         nlp,
         name="taxon_patterns",
         compiler=taxon_patterns(),
-        keep=keep,
-        merge=TAXON_LABELS,
+        merge=["taxon", "singleton"],
+        overwrite=["taxon"],
     )
 
     add.trait_pipe(
         nlp,
         name="taxon_linnaeus_patterns",
         compiler=taxon_linnaeus_patterns() + multi_taxon_patterns(),
-        keep=keep,
-        merge=TAXON_LABELS_PLUS,
+        merge=["linnaeus", "not_linnaeus"],
+        overwrite=["taxon"],
     )
 
     add.trait_pipe(
         nlp,
         name="taxon_auth_patterns",
         compiler=taxon_auth_patterns(),
-        merge=TAXON_LABELS_PLUS,
-        keep=[*keep, "singleton"],
+        merge=["taxon"],
+        keep=[*ACCUMULATOR.keep, "singleton"],
+        overwrite=["taxon"],
     )
 
     for i in range(1, extend + 1):
@@ -108,14 +105,17 @@ def build(nlp: Language, extend=1):
             nlp,
             name=name,
             compiler=taxon_extend_patterns(),
-            merge=TAXON_LABELS_PLUS,
+            merge=["taxon"],
+            overwrite=["taxon", "linnaeus", "not_linnaeus"],
         )
 
     add.trait_pipe(
         nlp,
         name="taxon_rename",
         compiler=taxon_rename_patterns(),
+        overwrite=["taxon", "linnaeus", "not_linnaeus", "singleton"],
     )
+    # add.debug_tokens(nlp)  # ############################################
 
     add.cleanup_pipe(nlp, name="taxon_cleanup")
 
@@ -142,7 +142,6 @@ def taxon_patterns():
         Compiler(
             label="singleton",
             on_match="single_taxon_match",
-            keep="taxon",
             decoder=decoder,
             patterns=[
                 "monomial",
@@ -152,8 +151,9 @@ def taxon_patterns():
         ),
         Compiler(
             label="species",
-            on_match="taxon_match",
+            id="taxon",
             keep="taxon",
+            on_match="taxon_match",
             decoder=decoder,
             patterns=[
                 "binomial{2}",
@@ -163,8 +163,9 @@ def taxon_patterns():
         ),
         Compiler(
             label="subspecies",
-            on_match="taxon_match",
+            id="taxon",
             keep="taxon",
+            on_match="taxon_match",
             decoder=decoder,
             patterns=[
                 "   binomial{2} subsp? monomial",
@@ -177,8 +178,9 @@ def taxon_patterns():
         ),
         Compiler(
             label="variety",
-            on_match="taxon_match",
+            id="taxon",
             keep="taxon",
+            on_match="taxon_match",
             decoder=decoder,
             patterns=[
                 "   binomial{2}                var monomial",
@@ -205,8 +207,9 @@ def taxon_patterns():
         ),
         Compiler(
             label="subvariety",
-            on_match="taxon_match",
+            id="taxon",
             keep="taxon",
+            on_match="taxon_match",
             decoder=decoder,
             patterns=[
                 "   binomial{2}                subvar monomial",
@@ -243,8 +246,9 @@ def taxon_patterns():
         ),
         Compiler(
             label="form",
-            on_match="taxon_match",
+            id="taxon",
             keep="taxon",
+            on_match="taxon_match",
             decoder=decoder,
             patterns=[
                 "   binomial{2}                f. monomial",
@@ -281,8 +285,9 @@ def taxon_patterns():
         ),
         Compiler(
             label="subform",
-            on_match="taxon_match",
+            id="taxon",
             keep="taxon",
+            on_match="taxon_match",
             decoder=decoder,
             patterns=[
                 "   binomial{2}                subf monomial",
@@ -319,6 +324,8 @@ def taxon_patterns():
         ),
         Compiler(
             label="bad_taxon",
+            id="taxon",
+            keep="taxon",
             decoder=decoder,
             on_match=reject_match.REJECT_MATCH,
             patterns=[
@@ -344,7 +351,7 @@ def multi_taxon_patterns():
             on_match="multi_taxon_match",
             decoder={
                 "and": {"LOWER": {"IN": AND}},
-                "taxon": {"ENT_TYPE": {"IN": TAXON_LABELS}},
+                "taxon": {"ENT_TYPE": "taxon"},
             },
             patterns=[
                 "taxon and taxon",
@@ -353,30 +360,14 @@ def multi_taxon_patterns():
     ]
 
 
-def taxon_rename_patterns():
-    return Compiler(
-        label="taxon",
-        keep="taxon",
-        on_match="rename_taxon_match",
-        decoder={
-            "taxon": {"ENT_TYPE": {"IN": TAXON_LABELS_PLUS}},
-            "rank": {"ENT_TYPE": {"IN": ANY_RANK}},
-        },
-        patterns=[
-            "rank* taxon",
-        ],
-    )
-
-
 def taxon_auth_patterns():
     decoder = {
         "(": {"TEXT": {"IN": t_const.OPEN}},
         ")": {"TEXT": {"IN": t_const.CLOSE}},
         "and": {"LOWER": {"IN": AND}},
         "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
-        "is_auth": {"ENT_TYPE": "is_auth"},
         "linnaeus": {"ENT_TYPE": "linnaeus"},
-        "taxon": {"ENT_TYPE": {"IN": TAXON_LABELS}},
+        "taxon": {"ENT_TYPE": "taxon"},
         "_": {"TEXT": {"IN": list(":._;,")}},
     }
 
@@ -392,9 +383,9 @@ def taxon_auth_patterns():
                 "taxon ( auth+ and   auth+ _? )",
                 "taxon ( auth+             _? ) auth",
                 "taxon ( auth+ and   auth+ _? ) auth auth",
-                "taxon   auth                  ",
-                "taxon   auth        auth      ",
-                "taxon   auth+ and   auth      ",
+                "taxon   auth ",
+                "taxon   auth        auth ",
+                "taxon   auth+ and   auth ",
             ],
         ),
     ]
@@ -408,14 +399,13 @@ def taxon_linnaeus_patterns():
         "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
         "L.": {"TEXT": {"REGEX": r"^L[.,_]$"}},
         "linnaeus": {"LOWER": {"IN": LINNAEUS}},
-        "taxon": {"ENT_TYPE": {"IN": TAXON_LABELS}},
+        "taxon": {"ENT_TYPE": "taxon"},
     }
 
     return [
         Compiler(
             label="linnaeus",
             on_match="taxon_linnaeus_match",
-            keep="taxon",
             decoder=decoder,
             patterns=[
                 "taxon ( linnaeus )",
@@ -425,7 +415,6 @@ def taxon_linnaeus_patterns():
         Compiler(
             label="not_linnaeus",
             on_match="taxon_not_linnaeus_match",
-            keep="taxon",
             decoder=decoder,
             patterns=[
                 "taxon L. .? auth",
@@ -447,7 +436,7 @@ def taxon_extend_patterns():
                 "and": {"LOWER": {"IN": AND}},
                 "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
                 "maybe": {"POS": {"IN": MAYBE}},
-                "taxon": {"ENT_TYPE": {"IN": TAXON_LABELS_PLUS}},
+                "taxon": {"ENT_TYPE": {"IN": ["taxon", "linnaeus", "not_linnaeus"]}},
                 "lower_rank": {"ENT_TYPE": {"IN": LOWER_RANK}},
             },
             patterns=[
@@ -472,6 +461,22 @@ def taxon_extend_patterns():
             ],
         ),
     ]
+
+
+def taxon_rename_patterns():
+    return Compiler(
+        label="taxon",
+        keep="taxon",
+        on_match="rename_taxon_match",
+        decoder={
+            "taxon": {"ENT_TYPE": {"IN": ["singleton", "linnaeus", "not_linnaeus"]}},
+            "rank": {"ENT_TYPE": {"IN": ANY_RANK}},
+        },
+        patterns=[
+            "taxon",
+            "rank taxon",
+        ],
+    )
 
 
 @registry.misc("taxon_match")
@@ -578,36 +583,17 @@ def multi_taxon_match(ent):
     ent._.data["taxon"] = taxa
 
 
-@registry.misc("rename_taxon_match")
-def rename_taxon_match(ent):
-    rank = ""
-
-    for token in ent:
-
-        if token._.flag == "taxon_data":
-            ent._.data = token._.data
-
-        elif token._.term in ANY_RANK:
-            rank = RANK_REPLACE.get(token.lower_, token.lower_)
-
-    if rank:
-        ent._.data["rank"] = rank
-
-    ent._.relabel = "taxon"
-
-
 @registry.misc("taxon_auth_match")
 def taxon_auth_match(ent):
     auth = []
+    prev_auth = None
     data = {}
 
     for token in ent:
 
         if token._.flag == "taxon_data":
             data = token._.data
-
-        elif token._.flag == "taxon":
-            pass
+            prev_auth = token._.data.get("authority")
 
         elif auth and token.lower_ in AND:
             auth.append("and")
@@ -622,7 +608,8 @@ def taxon_auth_match(ent):
 
     ent._.data = data
 
-    ent._.data["authority"] = " ".join(auth)
+    auth = " ".join(auth)
+    ent._.data["authority"] = [prev_auth, auth] if prev_auth else auth
 
     ent[0]._.data = ent._.data
     ent[0]._.flag = "taxon_data"
@@ -634,8 +621,6 @@ def taxon_linnaeus_match(ent):
 
         if token._.flag == "taxon_data":
             ent._.data = token._.data
-
-        token._.flag = "taxon"
 
     ent._.data["authority"] = "Linnaeus"
 
@@ -673,7 +658,6 @@ def taxon_extend_match(ent):
     next_is_lower_taxon = False
 
     for token in ent:
-
         if token._.flag == "taxon_data":
             ent._.data = token._.data
             taxon.append(ent._.data["taxon"])
@@ -706,6 +690,27 @@ def taxon_extend_match(ent):
     ent._.data["taxon"] = " ".join(taxon)
     ent._.data["rank"] = rank
     ent._.data["authority"] = auth
+    ent._.relabel = "taxon"
+
+    ent[0]._.data = ent._.data
+    ent[0]._.flag = "taxon_data"
+
+
+@registry.misc("rename_taxon_match")
+def rename_taxon_match(ent):
+    rank = ""
+
+    for token in ent:
+
+        if token._.flag == "taxon_data":
+            ent._.data = token._.data
+
+        elif token._.term in ANY_RANK:
+            rank = RANK_REPLACE.get(token.lower_, token.lower_)
+
+    if rank:
+        ent._.data["rank"] = rank
+
     ent._.relabel = "taxon"
 
     ent[0]._.data = ent._.data

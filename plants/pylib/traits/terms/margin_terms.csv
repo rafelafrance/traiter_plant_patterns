@@ -1,40 +1,40 @@
 label,pattern,replace
-margin,biseriate,uniseriate
-margin,ciliata,ciliate
-margin,corrugated,corrugated
-margin,crenata,crenate
-margin,crenate,crenate
-margin,crenulate,crenulate
-margin,dentata,dentate
-margin,dentate,dentate
-margin,denticulata,denticulate
-margin,denticulate,denticulate
-margin,doubly serrate,doubly serrate
-margin,duplicato dentata,doubly serrate
-margin,duplicato-dentata,doubly serrate
-margin,entire,entire
-margin,forma integra,entire
-margin,lobata,lobate
-margin,lobate,lobate
-margin,lobulate,lobulate
-margin,palmately lobed,palmately lobed
-margin,pinnately lobed,pinnately lobed
-margin,pluriseriate,pluriseriate
-margin,pungent,pungent
-margin,scalloped,scalloped
-margin,serrata,serrate
-margin,serrate,serrate
-margin,serrulata,serrulate
-margin,serrulate,serrulate
-margin,sinuate,sinuate
-margin,sinuosa,sinuate
-margin,spiculata,spiny
-margin,spiny,spiny
-margin,tooth,tooth
-margin,toothed,toothed
-margin,undulata,undulate
-margin,undulate,undulate
-margin,uniseriate,uniseriate
+margin_term,biseriate,uniseriate
+margin_term,ciliata,ciliate
+margin_term,corrugated,corrugated
+margin_term,crenata,crenate
+margin_term,crenate,crenate
+margin_term,crenulate,crenulate
+margin_term,dentata,dentate
+margin_term,dentate,dentate
+margin_term,denticulata,denticulate
+margin_term,denticulate,denticulate
+margin_term,doubly serrate,doubly serrate
+margin_term,duplicato dentata,doubly serrate
+margin_term,duplicato-dentata,doubly serrate
+margin_term,entire,entire
+margin_term,forma integra,entire
+margin_term,lobata,lobate
+margin_term,lobate,lobate
+margin_term,lobulate,lobulate
+margin_term,palmately lobed,palmately lobed
+margin_term,pinnately lobed,pinnately lobed
+margin_term,pluriseriate,pluriseriate
+margin_term,pungent,pungent
+margin_term,scalloped,scalloped
+margin_term,serrata,serrate
+margin_term,serrate,serrate
+margin_term,serrulata,serrulate
+margin_term,serrulate,serrulate
+margin_term,sinuate,sinuate
+margin_term,sinuosa,sinuate
+margin_term,spiculata,spiny
+margin_term,spiny,spiny
+margin_term,tooth,tooth
+margin_term,toothed,toothed
+margin_term,undulata,undulate
+margin_term,undulate,undulate
+margin_term,uniseriate,uniseriate
 margin_follower,constricted,constricted
 margin_follower,crisped,crisped
 margin_follower,margined,margined

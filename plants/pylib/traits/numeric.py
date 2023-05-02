@@ -10,7 +10,7 @@ from traiter.pylib import term_util
 from traiter.pylib import util as t_util
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
-from traiter.pylib.pipes.reject_match import REJECT_MATCH
+from traiter.pylib.pipes import reject_match
 from traiter.pylib.traits import terms as t_terms
 
 from .part import PART_LABELS
@@ -58,12 +58,12 @@ def build(nlp: Language):
         nlp,
         name="range_patterns",
         compiler=range_patterns(),
-        keep=comp.ACCUMULATOR.keep + ["per_count", "lat_long", "date"],
     )
     add.trait_pipe(
         nlp,
         name="numeric_patterns",
         compiler=count_patterns() + size_patterns(),
+        overwrite=[*ALL_PARTS, "sex"],
     )
     comp.ACCUMULATOR.delete("not_numeric")
     add.cleanup_pipe(nlp, name="numeric_cleanup")
@@ -198,7 +198,7 @@ def range_patterns():
         ),
         Compiler(
             label="not_a_range",
-            on_match=REJECT_MATCH,
+            on_match=reject_match.REJECT_MATCH,
             decoder=decoder,
             patterns=[
                 "9.9 bad_symbol",
@@ -282,7 +282,7 @@ def count_patterns():
         ),
         Compiler(
             label="not_a_count",
-            on_match=REJECT_MATCH,
+            on_match=reject_match.REJECT_MATCH,
             decoder=decoder,
             patterns=[
                 "not_numeric [.,]? 99-99",
@@ -303,6 +303,8 @@ def count_patterns():
 
 def size_patterns():
     decoder = {
+        "(": {"TEXT": {"IN": t_const.OPEN}},
+        ")": {"TEXT": {"IN": t_const.CLOSE}},
         "99.9": {"TEXT": {"REGEX": t_const.FLOAT_TOKEN_RE}},
         "99-99": {"ENT_TYPE": "range", "OP": "+"},
         ",": {"TEXT": {"IN": t_const.COMMA}},
@@ -327,6 +329,7 @@ def size_patterns():
             keep="size",
             decoder=decoder,
             patterns=[
+                "about* 99-99                    about*       cm+ in? sex/dim*",
                 "about* 99-99                    about*       cm+ in? sex/dim*",
                 "about* 99-99 cm* sex/dim* x to? about* 99-99 cm+ in? sex/dim*",
                 (
@@ -360,7 +363,7 @@ def size_patterns():
         ),
         Compiler(
             label="not_a_size",
-            on_match=REJECT_MATCH,
+            on_match=reject_match.REJECT_MATCH,
             decoder=decoder,
             patterns=[
                 "not_numeric about* 99-99 cm+",
@@ -375,6 +378,10 @@ def size_patterns():
 def range_match(ent):
     nums = []
     for token in ent:
+
+        if token._.term == "per_count":
+            raise reject_match.RejectMatch
+
         token._.flag = "range"
         nums += re.findall(r"\d*\.?\d+", token.text)
 

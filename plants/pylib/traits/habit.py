@@ -28,7 +28,7 @@ def habit_patterns():
             keep="habit",
             decoder={
                 "-": {"TEXT": {"IN": t_const.DASH}, "OP": "+"},
-                "habit": {"ENT_TYPE": "habit"},
+                "habit": {"ENT_TYPE": "habit_term"},
                 "shape": {"ENT_TYPE": "shape"},
                 "tree": {"ENT_TYPE": "habit_tree"},
             },

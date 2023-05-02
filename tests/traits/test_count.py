@@ -296,7 +296,7 @@ class TestCount(unittest.TestCase):
     def test_count_16(self):
         self.assertEqual(
             test("plants weigh up to 200 pounds"),
-            [{"end": 6, "part": "plant", "start": 0, "trait": "part"}],
+            [{"end": 6, "plant_part": "plant", "start": 0, "trait": "plant_part"}],
         )
 
     def test_count_17(self):
@@ -360,7 +360,7 @@ class TestCount(unittest.TestCase):
         self.assertEqual(
             test("stems (11–16) pairs"),
             [
-                {"part": "stem", "trait": "part", "start": 0, "end": 5},
+                {"plant_part": "stem", "trait": "plant_part", "start": 0, "end": 5},
                 {
                     "low": 11,
                     "high": 16,
@@ -368,7 +368,7 @@ class TestCount(unittest.TestCase):
                     "start": 6,
                     "end": 19,
                     "count_group": "pairs",
-                    "part": "stem",
+                    "plant_part": "stem",
                 },
             ],
         )
@@ -498,7 +498,7 @@ class TestCount(unittest.TestCase):
     def test_count_30(self):
         self.assertEqual(
             test("stem thereon is ticketed 490d"),
-            [{"part": "stem", "trait": "part", "start": 0, "end": 4}],
+            [{"plant_part": "stem", "trait": "plant_part", "start": 0, "end": 4}],
         )
 
     def test_count_31(self):
@@ -697,7 +697,7 @@ class TestCount(unittest.TestCase):
         self.assertEqual(
             test("stems (11–16) pairs"),
             [
-                {"part": "stem", "trait": "part", "start": 0, "end": 5},
+                {"plant_part": "stem", "trait": "plant_part", "start": 0, "end": 5},
                 {
                     "low": 11,
                     "high": 16,
@@ -705,7 +705,7 @@ class TestCount(unittest.TestCase):
                     "trait": "count",
                     "start": 6,
                     "end": 19,
-                    "part": "stem",
+                    "plant_part": "stem",
                 },
             ],
         )
@@ -819,7 +819,7 @@ class TestCount(unittest.TestCase):
     def test_count_48(self):
         self.assertEqual(
             test("(see Chapter 2 — Wood and Bark Anatomy)"),
-            [{"part": "bark", "trait": "part", "start": 26, "end": 30}],
+            [{"plant_part": "bark", "trait": "plant_part", "start": 26, "end": 30}],
         )
 
     def test_count_49(self):
@@ -831,11 +831,11 @@ class TestCount(unittest.TestCase):
     def test_count_50(self):
         self.assertEqual(
             test("plant, !-17 Neto "),
-            [{"end": 5, "part": "plant", "start": 0, "trait": "part"}],
+            [{"end": 5, "plant_part": "plant", "start": 0, "trait": "plant_part"}],
         )
 
     def test_count_51(self):
         self.assertEqual(
             test("plant RO-173"),
-            [{"end": 5, "part": "plant", "start": 0, "trait": "part"}],
+            [{"end": 5, "plant_part": "plant", "start": 0, "trait": "plant_part"}],
         )

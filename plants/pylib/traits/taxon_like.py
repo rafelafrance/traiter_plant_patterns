@@ -20,8 +20,8 @@ def build(nlp: Language):
         nlp,
         name="taxon_like_patterns",
         compiler=taxon_like_patterns(),
+        overwrite=[*TAXON_LABELS, "similar"],
     )
-
     add.cleanup_pipe(nlp, name="taxon_like_cleanup")
 
 

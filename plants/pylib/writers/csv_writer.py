@@ -3,7 +3,7 @@ from collections import defaultdict
 import pandas as pd
 
 from . import writer_utils as w_utils
-from plants.pylib.traits.part.part_action import PART_LABELS
+from plants.pylib.traits.part import PART_LABELS
 
 PARTS_SET = set(PART_LABELS + ["multiple_parts"])
 

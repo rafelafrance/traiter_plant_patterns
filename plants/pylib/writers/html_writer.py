@@ -48,7 +48,7 @@ class HtmlWriter:
     def format_text(self, row):
         """Wrap traits in the text with <spans> that can be formatted with CSS."""
         frags = []
-        0
+        prev = 0
 
         for trait in row.traits:
             start = trait["start"]
@@ -69,7 +69,7 @@ class HtmlWriter:
             frags.append(f'<span class="{cls}" title="{title}">')
             frags.append(html.escape(row.text[start:end]))
             frags.append("</span>")
-            end
+            prev = end
 
         if len(row.text) > prev:
             frags.append(html.escape(row.text[prev:]))
@@ -85,8 +85,6 @@ class HtmlWriter:
         for trait in row.traits:
             label = w_utils.get_label(trait)
             title = row.text[trait["start"] : trait["end"]]
-            # if trait["trait"] not in w_utils.TRAIT_SKIPS:
-            #     sortable.append(SortableTrait(label, trait["start"], trait, title))
             sortable.append(SortableTrait(label, trait["start"], trait, title))
 
         sortable = sorted(sortable)

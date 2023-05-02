@@ -11,11 +11,16 @@ class TestPart(unittest.TestCase):
                 {
                     "woodiness": "woody",
                     "trait": "woodiness",
-                    "part": "rootstock",
+                    "plant_part": "rootstock",
                     "start": 12,
                     "end": 17,
                 },
-                {"part": "rootstock", "trait": "part", "start": 18, "end": 27},
+                {
+                    "plant_part": "rootstock",
+                    "trait": "plant_part",
+                    "start": 18,
+                    "end": 27,
+                },
             ],
         )
 

@@ -8,7 +8,7 @@ class TestHabit(unittest.TestCase):
         self.assertEqual(
             test("Stems often caespitose"),
             [
-                {"part": "stem", "trait": "part", "start": 0, "end": 5},
+                {"plant_part": "stem", "trait": "plant_part", "start": 0, "end": 5},
                 {
                     "habit": "cespitose",
                     "trait": "habit",
@@ -27,7 +27,7 @@ class TestHabit(unittest.TestCase):
                     "trait": "woodiness",
                     "start": 0,
                     "end": 5,
-                    "part": "shrub",
+                    "plant_part": "shrub",
                 },
                 {
                     "plant_duration": "perennial",
@@ -35,7 +35,7 @@ class TestHabit(unittest.TestCase):
                     "start": 6,
                     "end": 15,
                 },
-                {"part": "shrub", "trait": "part", "start": 19, "end": 28},
+                {"plant_part": "shrub", "trait": "plant_part", "start": 19, "end": 28},
                 {
                     "habit": "epiphytic",
                     "trait": "habit",

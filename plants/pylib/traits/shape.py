@@ -9,13 +9,15 @@ from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 
 SHAPE_CSV = Path(__file__).parent / "terms" / "shape_terms.csv"
-SHAPE_LOC = ["shape", "shape_leader", "location"]
+SHAPE_LOC = ["shape_term", "shape_leader", "location"]
 REPLACE = term_util.term_data(SHAPE_CSV, "replace")
 
 
 def build(nlp: Language):
     add.term_pipe(nlp, name="shape_terms", path=SHAPE_CSV)
-    add.trait_pipe(nlp, name="shape_patterns", compiler=shape_patterns())
+    add.trait_pipe(
+        nlp, name="shape_patterns", compiler=shape_patterns(), overwrite=["count"]
+    )
     add.cleanup_pipe(nlp, name="shape_cleanup")
 
 
@@ -30,10 +32,10 @@ def shape_patterns():
                 "-/to": {"LOWER": {"IN": t_const.DASH + ["to", "_"]}},
                 "9": {"IS_DIGIT": True},
                 "angular": {"LOWER": {"IN": ["angular", "angulate"]}},
-                "shape": {"ENT_TYPE": "shape"},
+                "shape": {"ENT_TYPE": "shape_term"},
                 "shape_leader": {"ENT_TYPE": "shape_leader"},
                 "shape_loc": {"ENT_TYPE": {"IN": SHAPE_LOC}},
-                "shape_word": {"ENT_TYPE": {"IN": ["shape", "shape_leader"]}},
+                "shape_word": {"ENT_TYPE": {"IN": ["shape_term", "shape_leader"]}},
             },
             patterns=[
                 "shape_loc*   -*    shape+",
@@ -48,7 +50,6 @@ def shape_patterns():
 
 @registry.misc("shape_match")
 def shape_match(ent):
-    shape = ""
 
     # Handle 3-angular etc.
     if re.match(r"^\d", ent.text):
@@ -58,9 +59,10 @@ def shape_match(ent):
     else:
         shape = {}  # Dicts preserve order sets do not
         for token in ent:
-            if token._.term == "shape" and token.text != "-":
+            if token._.term == "shape_term" and token.text != "-":
                 word = REPLACE.get(token.lower_, token.lower_)
                 shape[word] = 1
         shape = "-".join(shape)
         shape = REPLACE.get(shape, shape)
+
     ent._.data = {"shape": shape}

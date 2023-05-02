@@ -244,6 +244,8 @@ leaf_part,petiolule,petiolule
 leaf_part,petiolules,petiolule
 leaf_part,phyllode,phyllode
 leaf_part,phyllodes,phyllode
+leaf_part,pinna,pinna
+leaf_part,pinnae,pinnae
 leaf_part,pinnule,pinnule
 leaf_part,pinnules,pinnule
 leaf_part,pulvini,pulvini
@@ -292,89 +294,87 @@ male_flower_part,tetradynamous,tetradynamous
 male_flower_part,translator,translator
 male_flower_part,trinucleate,trinucleate
 male_flower_part,versatile,versatile
-part,acutangular,acutangular
-part,bark,bark
-part,beltian bodies,beltian body
-part,beltian body,beltian body
-part,brachyblast,brachyblast
-part,branch,branch
-part,branches,branch
-part,branchlet,branch
-part,branchlets,branch
-part,bud,bud
-part,buds,bud
-part,caudex,caudex
-part,caudices,caudex
-part,cladode,cladode
-part,cladophyll,cladophyll
-part,column,column
-part,columned,column
-part,corm,corm
-part,cortex,
-part,craspedium,craspedium
-part,endodermis,
-part,epidermis,
-part,fascicle,fascicle
-part,indumenta,indumentum
-part,indumentum,indumentum
-part,indumentums,indumentum
-part,interfoliolar segment,interfoliolar segment
-part,interfoliolar segments,interfoliolar segment
-part,interpetiolar segments,interpetiolar segment
-part,interpinnal segment,interpinnal segment
-part,interpinnal segments,interpinnal segment
-part,lenticel,lenticel
-part,lenticels,lenticel
-part,mid-stem,
-part,non-flowering branch,branch
-part,non-flowering branches,branch
-part,non-flowering stem,stem
-part,non-flowering stems,stem
-part,pachycaul,
-part,paraphyllidia,paraphyllidia
-part,pinna,pinna
-part,pinna-rachis,pinna-rachis
-part,pinna-rachises,pinna-rachis
-part,pinnae,pinnae
-part,pith,pith
-part,plant,plant
-part,plants,plant
-part,rachis,rachis
-part,root,root
-part,roots,root
-part,rootstock,rootstock
-part,rootstocks,rootstock
-part,runner,runner
-part,runners,runner
-part,set(ul)ae,set(ul)ae
-part,setae,setae
-part,setulae,setulae
-part,shrub,shrub
-part,shrubs,shrub
-part,spicule,spicule
-part,spicules,spicule
-part,spur,spur
-part,spurs,spur
-part,stalk,stalk
-part,stalks,stalk
-part,stem,stem
-part,stems,stem
-part,stipe,stipe
-part,stipes,stipe
-part,stk,stalk
-part,stks,stalk
-part,stock,rootstock
-part,stolon,stolon
-part,stolons,stolons
-part,subshrub,shrub
-part,subshrubs,shrub
-part,tree,tree
-part,trees,tree
-part,trunk,trunk
-part,trunks,trunk
-part,twig,twig
-part,twigs,twig
-part,underbark,underbark
+plant_part,acutangular,acutangular
+plant_part,bark,bark
+plant_part,beltian bodies,beltian body
+plant_part,beltian body,beltian body
+plant_part,brachyblast,brachyblast
+plant_part,branch,branch
+plant_part,branches,branch
+plant_part,branchlet,branch
+plant_part,branchlets,branch
+plant_part,bud,bud
+plant_part,buds,bud
+plant_part,caudex,caudex
+plant_part,caudices,caudex
+plant_part,cladode,cladode
+plant_part,cladophyll,cladophyll
+plant_part,column,column
+plant_part,columned,column
+plant_part,corm,corm
+plant_part,cortex,
+plant_part,craspedium,craspedium
+plant_part,endodermis,
+plant_part,epidermis,
+plant_part,fascicle,fascicle
+plant_part,indumenta,indumentum
+plant_part,indumentum,indumentum
+plant_part,indumentums,indumentum
+plant_part,interfoliolar segment,interfoliolar segment
+plant_part,interfoliolar segments,interfoliolar segment
+plant_part,interpetiolar segments,interpetiolar segment
+plant_part,interpinnal segment,interpinnal segment
+plant_part,interpinnal segments,interpinnal segment
+plant_part,lenticel,lenticel
+plant_part,lenticels,lenticel
+plant_part,mid-stem,
+plant_part,non-flowering branch,branch
+plant_part,non-flowering branches,branch
+plant_part,non-flowering stem,stem
+plant_part,non-flowering stems,stem
+plant_part,pachycaul,
+plant_part,paraphyllidia,paraphyllidia
+plant_part,pinna-rachis,pinna-rachis
+plant_part,pinna-rachises,pinna-rachis
+plant_part,pith,pith
+plant_part,plant,plant
+plant_part,plants,plant
+plant_part,rachis,rachis
+plant_part,root,root
+plant_part,roots,root
+plant_part,rootstock,rootstock
+plant_part,rootstocks,rootstock
+plant_part,runner,runner
+plant_part,runners,runner
+plant_part,set(ul)ae,set(ul)ae
+plant_part,setae,setae
+plant_part,setulae,setulae
+plant_part,shrub,shrub
+plant_part,shrubs,shrub
+plant_part,spicule,spicule
+plant_part,spicules,spicule
+plant_part,spur,spur
+plant_part,spurs,spur
+plant_part,stalk,stalk
+plant_part,stalks,stalk
+plant_part,stem,stem
+plant_part,stems,stem
+plant_part,stipe,stipe
+plant_part,stipes,stipe
+plant_part,stk,stalk
+plant_part,stks,stalk
+plant_part,stock,rootstock
+plant_part,stolon,stolon
+plant_part,stolons,stolons
+plant_part,subshrub,shrub
+plant_part,subshrubs,shrub
+plant_part,tree,tree
+plant_part,trees,tree
+plant_part,trunk,trunk
+plant_part,trunks,trunk
+plant_part,twig,twig
+plant_part,twigs,twig
+plant_part,underbark,underbark
 part_and,&,
 part_and,and,
 part_and,et,

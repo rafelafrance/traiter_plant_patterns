@@ -25,7 +25,7 @@ def surface_patterns():
             keep="surface",
             decoder={
                 "-": {"TEXT": {"IN": t_const.DASH}},
-                "surface": {"ENT_TYPE": "surface"},
+                "surface": {"ENT_TYPE": "surface_term"},
                 "surface_leader": {"ENT_TYPE": "surface_leader"},
             },
             patterns=[
@@ -40,7 +40,7 @@ def surface_patterns():
 def surface_match(ent):
     surface = {}  # Dicts preserve order sets do not
     for token in ent:
-        if token._.term == "surface" and token.text != "-":
+        if token._.term == "surface_term" and token.text != "-":
             word = REPLACE.get(token.lower_, token.lower_)
             surface[word] = 1
     surface = " ".join(surface)

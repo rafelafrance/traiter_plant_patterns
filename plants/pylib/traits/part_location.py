@@ -27,7 +27,10 @@ REPLACE = term_util.term_data(PART_LOCATION_CSV, "replace")
 def build(nlp: Language):
     add.term_pipe(nlp, name="part_location_terms", path=ALL_CSVS)
     add.trait_pipe(
-        nlp, name="part_location_patterns", compiler=part_location_patterns()
+        nlp,
+        name="part_location_patterns",
+        compiler=part_location_patterns(),
+        overwrite=[*PART_LABELS, "subpart"],
     )
     add.cleanup_pipe(nlp, name="part_location_cleanup")
 

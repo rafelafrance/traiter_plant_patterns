@@ -27,7 +27,7 @@ class TestPartLinker(unittest.TestCase):
                 attaining 2-4 m in height with trunk"""
             ),
             [
-                {"part": "tree", "trait": "part", "start": 0, "end": 5},
+                {"plant_part": "tree", "trait": "plant_part", "start": 0, "end": 5},
                 {
                     "dimensions": "height",
                     "height_low": 200.0,
@@ -36,9 +36,9 @@ class TestPartLinker(unittest.TestCase):
                     "start": 59,
                     "end": 74,
                     "units": "cm",
-                    "part": "trunk",
+                    "plant_part": "trunk",
                 },
-                {"part": "trunk", "trait": "part", "start": 80, "end": 85},
+                {"plant_part": "trunk", "trait": "plant_part", "start": 80, "end": 85},
             ],
         )
 

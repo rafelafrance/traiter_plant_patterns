@@ -1,4 +1,5 @@
 import spacy
+from traiter.pylib.pipes import debug
 from traiter.pylib.pipes import extensions
 from traiter.pylib.pipes import sentence
 from traiter.pylib.pipes import tokenizer
@@ -19,8 +20,6 @@ from plants.pylib.traits import surface
 from plants.pylib.traits import taxon
 from plants.pylib.traits import taxon_like
 
-
-# from traiter.pylib.pipes import debug
 # debug.tokens(nlp)  # #############################################
 
 
@@ -41,8 +40,8 @@ def build(model_path=None):
     numeric.build(nlp)
 
     habit.build(nlp)
-    margin.build(nlp)
     shape.build(nlp)
+    margin.build(nlp)
     surface.build(nlp)
 
     part_location.build(nlp)
@@ -57,9 +56,6 @@ def build(model_path=None):
 
     if model_path:
         nlp.to_disk(model_path)
-
-    # for name in nlp.pipe_names:
-    #     print(name)
 
     return nlp
 

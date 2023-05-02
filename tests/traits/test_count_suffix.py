@@ -243,7 +243,7 @@ class TestCountSuffix(unittest.TestCase):
         self.assertEqual(
             test("""pinnae 16-29-jug."""),
             [
-                {"part": "pinnae", "trait": "part", "start": 0, "end": 6},
+                {"leaf_part": "pinnae", "trait": "leaf_part", "start": 0, "end": 6},
                 {
                     "low": 16,
                     "high": 29,
@@ -251,7 +251,7 @@ class TestCountSuffix(unittest.TestCase):
                     "start": 7,
                     "end": 17,
                     "count_group": "pairs",
-                    "part": "pinnae",
+                    "leaf_part": "pinnae",
                 },
             ],
         )

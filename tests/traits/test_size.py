@@ -726,14 +726,14 @@ class TestSize(unittest.TestCase):
         self.assertEqual(
             test("Shrubs, 0.5–1[–2.5] m."),
             [
-                {"part": "shrub", "trait": "part", "start": 0, "end": 6},
+                {"plant_part": "shrub", "trait": "plant_part", "start": 0, "end": 6},
                 {
                     "dimensions": "length",
                     "length_low": 50.0,
                     "length_high": 100.0,
                     "length_max": 250.0,
                     "trait": "size",
-                    "part": "shrub",
+                    "plant_part": "shrub",
                     "start": 8,
                     "end": 22,
                     "units": "cm",
@@ -745,7 +745,7 @@ class TestSize(unittest.TestCase):
         self.assertEqual(
             test("trunk to 3(?) cm d.b.h.;"),
             [
-                {"part": "trunk", "trait": "part", "start": 0, "end": 5},
+                {"plant_part": "trunk", "trait": "plant_part", "start": 0, "end": 5},
                 {
                     "dimensions": "dbh",
                     "dbh_high": 3.0,
@@ -753,7 +753,7 @@ class TestSize(unittest.TestCase):
                     "trait": "size",
                     "start": 6,
                     "end": 23,
-                    "part": "trunk",
+                    "plant_part": "trunk",
                     "units": "cm",
                 },
             ],
@@ -763,17 +763,17 @@ class TestSize(unittest.TestCase):
         self.assertEqual(
             test("Trees to 25 m tall; bark yellow-brown, fissured."),
             [
-                {"part": "tree", "trait": "part", "start": 0, "end": 5},
+                {"plant_part": "tree", "trait": "plant_part", "start": 0, "end": 5},
                 {
                     "dimensions": "height",
                     "height_high": 2500.0,
                     "trait": "size",
                     "start": 6,
                     "end": 18,
-                    "part": "tree",
+                    "plant_part": "tree",
                     "units": "cm",
                 },
-                {"part": "bark", "trait": "part", "start": 20, "end": 24},
+                {"plant_part": "bark", "trait": "plant_part", "start": 20, "end": 24},
             ],
         )
 
@@ -781,8 +781,8 @@ class TestSize(unittest.TestCase):
         self.assertEqual(
             test("Shrubs or trees , 3-50 m. Bark light to dark gray"),
             [
-                {"part": "shrub", "trait": "part", "start": 0, "end": 6},
-                {"part": "tree", "trait": "part", "start": 10, "end": 15},
+                {"plant_part": "shrub", "trait": "plant_part", "start": 0, "end": 6},
+                {"plant_part": "tree", "trait": "plant_part", "start": 10, "end": 15},
                 {
                     "dimensions": "length",
                     "length_low": 300.0,
@@ -790,10 +790,10 @@ class TestSize(unittest.TestCase):
                     "trait": "size",
                     "start": 18,
                     "end": 25,
-                    "part": "bark",
+                    "plant_part": "bark",
                     "units": "cm",
                 },
-                {"part": "bark", "trait": "part", "start": 26, "end": 30},
+                {"plant_part": "bark", "trait": "plant_part", "start": 26, "end": 30},
             ],
         )
 
@@ -863,7 +863,7 @@ class TestSize(unittest.TestCase):
         self.assertEqual(
             test("trunk to 8(-?) cm diam."),
             [
-                {"part": "trunk", "trait": "part", "start": 0, "end": 5},
+                {"plant_part": "trunk", "trait": "plant_part", "start": 0, "end": 5},
                 {
                     "dimensions": "diameter",
                     "diameter_low": 8.0,
@@ -871,7 +871,7 @@ class TestSize(unittest.TestCase):
                     "start": 9,
                     "end": 23,
                     "uncertain": True,
-                    "part": "trunk",
+                    "plant_part": "trunk",
                     "units": "cm",
                 },
             ],
@@ -884,7 +884,7 @@ class TestSize(unittest.TestCase):
                 non-secretory setulae"""
             ),
             [
-                {"part": "setae", "trait": "part", "start": 0, "end": 5},
+                {"plant_part": "setae", "trait": "plant_part", "start": 0, "end": 5},
                 {
                     "dimensions": "length",
                     "length_low": 0.2,
@@ -892,7 +892,7 @@ class TestSize(unittest.TestCase):
                     "trait": "size",
                     "start": 9,
                     "end": 15,
-                    "part": "setae",
+                    "plant_part": "setae",
                     "units": "cm",
                 },
                 {
@@ -902,7 +902,7 @@ class TestSize(unittest.TestCase):
                     "trait": "size",
                     "start": 23,
                     "end": 39,
-                    "part": "setae",
+                    "plant_part": "setae",
                     "subpart_as_loc": "at base",
                     "units": "cm",
                 },
@@ -912,7 +912,12 @@ class TestSize(unittest.TestCase):
                     "start": 40,
                     "end": 47,
                 },
-                {"part": "setulae", "trait": "part", "start": 80, "end": 87},
+                {
+                    "plant_part": "setulae",
+                    "trait": "plant_part",
+                    "start": 80,
+                    "end": 87,
+                },
             ],
         )
 
@@ -920,7 +925,7 @@ class TestSize(unittest.TestCase):
         self.assertEqual(
             test("""setae (3.5-)4-7 x (1.5_)2- 2.8 mm"""),
             [
-                {"part": "setae", "trait": "part", "start": 0, "end": 5},
+                {"plant_part": "setae", "trait": "plant_part", "start": 0, "end": 5},
                 {
                     "dimensions": ["length", "width"],
                     "length_min": 0.35,
@@ -932,7 +937,7 @@ class TestSize(unittest.TestCase):
                     "trait": "size",
                     "start": 6,
                     "end": 33,
-                    "part": "setae",
+                    "plant_part": "setae",
                     "units": "cm",
                 },
             ],

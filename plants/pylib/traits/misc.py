@@ -15,7 +15,6 @@ ALL_CSVS = [
     Path(__file__).parent / "terms" / "formula_terms.csv",
     Path(__file__).parent / "terms" / "leaf_duration_terms.csv",
     Path(__file__).parent / "terms" / "leaf_folding_terms.csv",
-    Path(__file__).parent / "terms" / "missing_terms.csv",
     Path(__file__).parent / "terms" / "morphology_terms.csv",
     Path(__file__).parent / "terms" / "odor_terms.csv",
     Path(__file__).parent / "terms" / "plant_duration_terms.csv",
@@ -31,8 +30,10 @@ LABELS = term_util.get_labels(ALL_CSVS)
 
 def build(nlp: Language):
     add.term_pipe(nlp, name="misc_terms", path=ALL_CSVS)
-    add.trait_pipe(nlp, name="misc_patterns", compiler=misc_patterns())
-    # No cleanup here, we want the traits to hang around for build other traits.
+    add.trait_pipe(
+        nlp, name="misc_patterns", compiler=misc_patterns(), overwrite=LABELS
+    )
+    # No cleanup here, we want the traits to hang around to help build other traits
 
 
 def misc_patterns():
