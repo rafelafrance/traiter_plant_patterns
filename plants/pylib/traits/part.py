@@ -31,7 +31,6 @@ def build(nlp: Language):
     add.trait_pipe(
         nlp, name="subpart_patterns", compiler=subpart_patterns(), overwrite=overwrite
     )
-    # add.debug_tokens(nlp)  # ###################################
     ACCUMULATOR.keep += ALL_LABELS
     add.cleanup_pipe(nlp, name="part_cleanup")
 

@@ -1,5 +1,4 @@
 import spacy
-from traiter.pylib.pipes import debug
 from traiter.pylib.pipes import extensions
 from traiter.pylib.pipes import sentence
 from traiter.pylib.pipes import tokenizer
@@ -19,8 +18,6 @@ from plants.pylib.traits import shape
 from plants.pylib.traits import surface
 from plants.pylib.traits import taxon
 from plants.pylib.traits import taxon_like
-
-# debug.tokens(nlp)  # #############################################
 
 
 def build(model_path=None):

@@ -47,12 +47,12 @@ RANK_TERMS = term_util.read_terms(ALL_CSVS["rank_terms"])
 ABBREV_RE = r"^[A-Z][.,_]$"
 AND = ["&", "and", "et"]
 ANY_RANK = sorted({r["label"] for r in RANK_TERMS})
+AUTH3 = [s for s in t_const.NAME_SHAPES if len(s) > 2 and s[-1] != "."]
 BINOMIAL_ABBREV = taxon_util.abbrev_binomial_term(ALL_CSVS["binomial_terms"])
 HIGHER_RANK = sorted({r["label"] for r in RANK_TERMS if r["level"] == "higher"})
 LEVEL = term_util.term_data(ALL_CSVS["rank_terms"], "level")
 LINNAEUS = ["l", "l.", "lin", "lin.", "linn", "linn.", "linnaeus"]
 LOWER_RANK = sorted({r["label"] for r in RANK_TERMS if r["level"] == "lower"})
-MAYBE = """ PROPN NOUN """.split()
 MONOMIAL_RANKS = term_util.term_data(ALL_CSVS["monomial_terms"], "ranks")
 RANK_ABBREV = term_util.term_data(ALL_CSVS["rank_terms"], "abbrev")
 RANK_REPLACE = term_util.term_data(ALL_CSVS["rank_terms"], "replace")
@@ -99,6 +99,7 @@ def build(nlp: Language, extend=1):
         overwrite=["taxon"],
     )
 
+    # add.debug_tokens(nlp)  # ###############################
     for i in range(1, extend + 1):
         name = f"taxon_extend_{i}"
         add.trait_pipe(
@@ -106,7 +107,7 @@ def build(nlp: Language, extend=1):
             name=name,
             compiler=taxon_extend_patterns(),
             merge=["taxon"],
-            overwrite=["taxon", "linnaeus", "not_linnaeus"],
+            overwrite=["taxon", "linnaeus", "not_linnaeus", "singleton"],
         )
 
     add.trait_pipe(
@@ -115,7 +116,6 @@ def build(nlp: Language, extend=1):
         compiler=taxon_rename_patterns(),
         overwrite=["taxon", "linnaeus", "not_linnaeus", "singleton"],
     )
-    # add.debug_tokens(nlp)  # ############################################
 
     add.cleanup_pipe(nlp, name="taxon_cleanup")
 
@@ -366,14 +366,16 @@ def taxon_auth_patterns():
         ")": {"TEXT": {"IN": t_const.CLOSE}},
         "and": {"LOWER": {"IN": AND}},
         "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
+        "auth3": {"SHAPE": {"IN": AUTH3}},
         "linnaeus": {"ENT_TYPE": "linnaeus"},
         "taxon": {"ENT_TYPE": "taxon"},
         "_": {"TEXT": {"IN": list(":._;,")}},
+        "id_no": {"LOWER": {"REGEX": r"^(\w*\d+\w*|[A-Za-z])$"}},
     }
 
     return [
         Compiler(
-            label="auth1",
+            label="auth",
             id="taxon",
             on_match="taxon_auth_match",
             keep="taxon",
@@ -381,11 +383,21 @@ def taxon_auth_patterns():
             patterns=[
                 "taxon ( auth+             _? )",
                 "taxon ( auth+ and   auth+ _? )",
-                "taxon ( auth+             _? ) auth",
-                "taxon ( auth+ and   auth+ _? ) auth auth",
-                "taxon   auth ",
-                "taxon   auth        auth ",
-                "taxon   auth+ and   auth ",
+                "taxon ( auth+             _? )      auth3",
+                "taxon ( auth+ and   auth+ _? ) auth auth3",
+                "taxon   auth3",
+                "taxon   auth        auth3",
+                "taxon   auth+ and   auth3",
+            ],
+        ),
+        Compiler(
+            label="not_auth",
+            id="taxon",
+            on_match=reject_match.REJECT_MATCH,
+            decoder=decoder,
+            patterns=[
+                "taxon auth      id_no",
+                "taxon auth auth id_no",
             ],
         ),
     ]
@@ -396,7 +408,7 @@ def taxon_linnaeus_patterns():
         "(": {"TEXT": {"IN": t_const.OPEN}},
         ")": {"TEXT": {"IN": t_const.CLOSE}},
         ".": {"TEXT": {"IN": t_const.DOT}},
-        "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
+        "auth3": {"SHAPE": {"IN": AUTH3}},
         "L.": {"TEXT": {"REGEX": r"^L[.,_]$"}},
         "linnaeus": {"LOWER": {"IN": LINNAEUS}},
         "taxon": {"ENT_TYPE": "taxon"},
@@ -417,7 +429,7 @@ def taxon_linnaeus_patterns():
             on_match="taxon_not_linnaeus_match",
             decoder=decoder,
             patterns=[
-                "taxon L. .? auth",
+                "taxon L. .? auth3",
             ],
         ),
     ]
@@ -435,29 +447,19 @@ def taxon_extend_patterns():
                 ")": {"TEXT": {"IN": t_const.CLOSE}},
                 "and": {"LOWER": {"IN": AND}},
                 "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
-                "maybe": {"POS": {"IN": MAYBE}},
+                "auth3": {"SHAPE": {"IN": AUTH3}},
+                "singleton": {"ENT_TYPE": "singleton"},
                 "taxon": {"ENT_TYPE": {"IN": ["taxon", "linnaeus", "not_linnaeus"]}},
                 "lower_rank": {"ENT_TYPE": {"IN": LOWER_RANK}},
             },
             patterns=[
-                "taxon lower_rank+ taxon",
-                "taxon lower_rank+ taxon ( auth+                       )",
-                "taxon lower_rank+ taxon ( auth+ maybe auth+           )",
-                "taxon lower_rank+ taxon ( auth+             and auth+ )",
-                "taxon lower_rank+ taxon ( auth+ maybe auth+ and auth+ )",
-                "taxon lower_rank+ taxon   auth                         ",
-                "taxon lower_rank+ taxon   auth  maybe auth             ",
-                "taxon lower_rank+ taxon   auth+            and auth    ",
-                "taxon lower_rank+ taxon   auth  maybe auth and auth    ",
-                "taxon lower_rank+ maybe",
-                "taxon lower_rank+ maybe ( auth+                       )",
-                "taxon lower_rank+ maybe ( auth+ maybe auth+           )",
-                "taxon lower_rank+ maybe ( auth+             and auth+ )",
-                "taxon lower_rank+ maybe ( auth+ maybe auth+ and auth+ )",
-                "taxon lower_rank+ maybe   auth                         ",
-                "taxon lower_rank+ maybe   auth  maybe auth             ",
-                "taxon lower_rank+ maybe   auth+             and auth    ",
-                "taxon lower_rank+ maybe   auth  maybe auth and auth    ",
+                "taxon lower_rank+ singleton",
+                "taxon lower_rank+ singleton ( auth+           )",
+                "taxon lower_rank+ singleton ( auth+ and auth+ )",
+                "taxon lower_rank+ singleton ( auth+ and auth+ )",
+                "taxon lower_rank+ singleton   auth3            ",
+                "taxon lower_rank+ singleton   auth+ auth3      ",
+                "taxon lower_rank+ singleton   auth+ and auth3  ",
             ],
         ),
     ]

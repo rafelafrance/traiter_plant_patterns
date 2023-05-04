@@ -68,12 +68,11 @@ class TestTaxon(unittest.TestCase):
             test("""A. pachyphloia Bamehy 184."""),
             [
                 {
-                    "authority": "Bamehy",
                     "rank": "species",
                     "taxon": "Acacia pachyphloia",
                     "trait": "taxon",
                     "start": 0,
-                    "end": 21,
+                    "end": 14,
                 }
             ],
         )
@@ -428,5 +427,20 @@ class TestTaxon(unittest.TestCase):
                     "start": 0,
                     "end": 45,
                 }
+            ],
+        )
+
+    def test_taxon_26(self):
+        """It handles a taxon next to a name with a trailing ID number."""
+        self.assertEqual(
+            test("""Associated species: Neptunia gracilis G. Rink 7075"""),
+            [
+                {
+                    "trait": "taxon",
+                    "taxon": "Neptunia gracilis",
+                    "rank": "species",
+                    "start": 20,
+                    "end": 37,
+                },
             ],
         )
