@@ -48,6 +48,7 @@ ABBREV_RE = r"^[A-Z][.,_]$"
 AND = ["&", "and", "et"]
 ANY_RANK = sorted({r["label"] for r in RANK_TERMS})
 AUTH3 = [s for s in t_const.NAME_SHAPES if len(s) > 2 and s[-1] != "."]
+AUTH3_UPPER = [s for s in t_const.NAME_AND_UPPER if len(s) > 2 and s[-1] != "."]
 BINOMIAL_ABBREV = taxon_util.abbrev_binomial_term(ALL_CSVS["binomial_terms"])
 HIGHER_RANK = sorted({r["label"] for r in RANK_TERMS if r["level"] == "higher"})
 LEVEL = term_util.term_data(ALL_CSVS["rank_terms"], "level")
@@ -544,7 +545,7 @@ def single_taxon_match(ent):
             if not rank and rank_:
                 rank_ = rank_.split()[0]
                 level = LEVEL[rank_]
-                if level == "higher" and token.shape_ in t_const.NAME_SHAPES:
+                if level == "higher" and token.shape_ in t_const.NAME_AND_UPPER:
                     rank = rank_
                 elif (
                     level in ("lower", "species")
@@ -560,11 +561,11 @@ def single_taxon_match(ent):
             taxon = token.lower_
 
     if not rank:
-        raise reject_match.RejectMatch()
+        raise reject_match.RejectMatch
 
     taxon = taxon.title() if LEVEL[rank] == "higher" else taxon.lower()
     if len(taxon) < const.MIN_TAXON_LEN:
-        raise reject_match.RejectMatch()
+        raise reject_match.RejectMatch
 
     ent._.data = {
         "taxon": taxon.title() if LEVEL[rank] == "higher" else taxon.lower(),

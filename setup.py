@@ -43,7 +43,7 @@ setup(
     description=SETTINGS["project"]["description"],
     long_description=readme(),
     license=license_(),
-    url="https://github.com/rafelafrance/traiter",
+    url="https://github.com/rafelafrance/traiter_plants",
     python_requires=">=3.10",
     scripts=[],
 )
