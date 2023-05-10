@@ -959,3 +959,11 @@ class TestSize(unittest.TestCase):
                 },
             ],
         )
+
+    def test_size_43(self):
+        self.assertEqual(
+            test("""Tree Cc. 650 m;"""),
+            [
+                {"plant_part": "tree", "trait": "plant_part", "start": 0, "end": 4},
+            ],
+        )

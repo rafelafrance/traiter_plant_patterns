@@ -545,6 +545,8 @@ def fill_trait_data(dimensions, ent):
             key = f"{dim.dim}_{key}"
             factor = FACTORS_CM[dim.units]
             value = t_util.to_positive_float(value)
+            if dim.units == "m" and value > 100.0:
+                raise reject_match.RejectMatch
             value = round(value * factor, 3)
             data[key] = value
 

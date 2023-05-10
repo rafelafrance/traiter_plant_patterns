@@ -59,7 +59,9 @@ RANK_ABBREV = term_util.term_data(ALL_CSVS["rank_terms"], "abbrev")
 RANK_REPLACE = term_util.term_data(ALL_CSVS["rank_terms"], "replace")
 
 
-def build(nlp: Language, extend=1):
+def build(nlp: Language, extend=1, overwrite: list[str] = None):
+    overwrite = overwrite if overwrite else []
+
     default_labels = {
         "binomial_terms": "binomial",
         "monomial_terms": "monomial",
@@ -91,13 +93,14 @@ def build(nlp: Language, extend=1):
         overwrite=["taxon"],
     )
 
+    overwrite = ["taxon", *overwrite]
     add.trait_pipe(
         nlp,
         name="taxon_auth_patterns",
         compiler=taxon_auth_patterns(),
         merge=["taxon"],
         keep=[*ACCUMULATOR.keep, "singleton"],
-        overwrite=["taxon"],
+        overwrite=overwrite,
     )
 
     # add.debug_tokens(nlp)  # ###############################
