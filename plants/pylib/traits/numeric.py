@@ -65,7 +65,7 @@ def build(nlp: Language):
         compiler=count_patterns() + size_patterns(),
         overwrite=[*ALL_PARTS, "sex"],
     )
-    comp.ACCUMULATOR.delete("not_numeric")
+    comp.ACCUMULATOR.delete(NOT_NUMERIC)
     add.cleanup_pipe(nlp, name="numeric_cleanup")
 
 

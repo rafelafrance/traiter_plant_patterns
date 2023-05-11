@@ -268,7 +268,6 @@ class TestSize(unittest.TestCase):
         self.assertEqual(
             test("terminal leaflet 3–5 cm, blade petiolule 3–12 mm,"),
             [
-                {"location": "terminal", "trait": "location", "start": 0, "end": 8},
                 {
                     "leaf_part": "leaflet",
                     "trait": "leaf_part",

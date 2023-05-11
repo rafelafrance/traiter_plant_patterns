@@ -87,7 +87,6 @@ class TestPartLocation(unittest.TestCase):
         self.assertEqual(
             test("the short terminal pseudoraceme"),
             [
-                {"location": "terminal", "trait": "location", "start": 10, "end": 18},
                 {
                     "inflorescence": "pseudoraceme",
                     "trait": "inflorescence",
@@ -125,7 +124,6 @@ class TestPartLocation(unittest.TestCase):
                 "capitula immersed in foliage."
             ),
             [
-                {"location": "terminal", "trait": "location", "start": 10, "end": 18},
                 {
                     "inflorescence": "pseudoraceme",
                     "trait": "inflorescence",

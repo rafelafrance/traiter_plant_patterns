@@ -17,6 +17,7 @@ from pylib import const
 from tqdm import tqdm
 from traiter.pylib import log
 from traiter.pylib import term_util as tu
+from traiter.pylib.traits import terms as t_terms
 
 from plants.pylib.traits import terms
 
@@ -32,7 +33,7 @@ class Record:
 
 class Ranks:
     def __init__(self):
-        rank_csv = Path(__file__).parent / "terms" / "rank_terms.csv"
+        rank_csv = Path(terms.__file__).parent / "rank_terms.csv"
         with open(rank_csv) as term_file:
             reader = csv.DictReader(term_file)
             self.ranks = list(reader)
@@ -87,22 +88,22 @@ class Taxa:
         new = {}
 
         all_csvs = [
-            Path(terms.__file__).parent / "color_terms.csv",
+            Path(t_terms.__file__).parent / "color_terms.csv",
+            Path(t_terms.__file__).parent / "habitat_terms.csv",
+            Path(t_terms.__file__).parent / "us_location_terms.csv",
             Path(terms.__file__).parent / "habit_terms.csv",
-            Path(terms.__file__).parent / "habitat_terms.csv",
             Path(terms.__file__).parent / "numeric_terms.csv",
             Path(terms.__file__).parent / "part_terms.csv",
             Path(terms.__file__).parent / "rank_terms.csv",
             Path(terms.__file__).parent / "shape_terms.csv",
             Path(terms.__file__).parent / "surface_terms.csv",
-            Path(terms.__file__).parent / "us_location_terms.csv",
         ]
 
         problem_words = {"dummy", "name", "temp", "uncertain", "unknown"}
 
         rows = tu.read_terms(all_csvs)
 
-        problem_taxa = {"erica", "flora", "floral", "harms", "lake", "may", "side"}
+        problem_taxa = set("end erica flora floral harms lake may side".split())
         problem_taxa |= {t["pattern"].lower() for t in rows}
 
         taxa = sorted(self.taxon.items())

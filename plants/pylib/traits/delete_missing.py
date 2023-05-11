@@ -10,7 +10,7 @@ from .part import PART_LABELS
 
 def build(nlp: Language):
     config = {
-        "check": ["count", "size"],
+        "check": ["count", "size", "location"],
         "missing": PART_LABELS + ["subpart"],
     }
     add.custom_pipe(nlp, "delete_missing", config=config)
