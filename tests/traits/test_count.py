@@ -839,3 +839,9 @@ class TestCount(unittest.TestCase):
             test("plant RO-173"),
             [{"end": 5, "plant_part": "plant", "start": 0, "trait": "plant_part"}],
         )
+
+    def test_count_52(self):
+        self.assertEqual(
+            test("""7.5’ shrubs."""),
+            [{"end": 11, "plant_part": "shrub", "start": 5, "trait": "plant_part"}],
+        )

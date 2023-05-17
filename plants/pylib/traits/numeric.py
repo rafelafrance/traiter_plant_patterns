@@ -65,6 +65,7 @@ def build(nlp: Language):
         compiler=count_patterns() + size_patterns(),
         overwrite=[*ALL_PARTS, "sex"],
     )
+    # add.debug_tokens(nlp)  # #########################################
     comp.ACCUMULATOR.delete(NOT_NUMERIC)
     add.cleanup_pipe(nlp, name="numeric_cleanup")
 
@@ -401,7 +402,10 @@ def count_match(ent):
 
         if token._.flag == "range_data":
             for key, value in token._.data.items():
-                data[key] = t_util.to_positive_int(value)
+                value = t_util.to_positive_int(value)
+                if value is None:
+                    raise reject_match.RejectMatch
+                data[key] = value
 
         elif token._.term == "number_word":
             value = REPLACE.get(token.lower_, token.lower_)
@@ -434,6 +438,7 @@ def count_match(ent):
         key = SUFFIX_TERM.get(suffix)
         if key:
             data[key] = value
+
     ent._.data = data
 
 

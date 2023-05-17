@@ -2,6 +2,9 @@ label,pattern
 bad_taxon_prefix,col
 bad_taxon_prefix,coll
 bad_taxon_prefix,collector
+bad_taxon_prefix,collector:
+bad_taxon_prefix,collectors
+bad_taxon_prefix,collectors:
 bad_taxon_prefix,costa
 bad_taxon_prefix,de
 bad_taxon_prefix,el
