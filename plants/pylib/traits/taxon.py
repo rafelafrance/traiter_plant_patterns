@@ -52,6 +52,7 @@ ANY_RANK = sorted({r["label"] for r in RANK_TERMS})
 AUTH3 = [s for s in t_const.NAME_SHAPES if len(s) > 2 and s[-1] != "."]
 AUTH3_UPPER = [s for s in t_const.NAME_AND_UPPER if len(s) > 2 and s[-1] != "."]
 BINOMIAL_ABBREV = taxon_util.abbrev_binomial_term(ALL_CSVS["binomial_terms"])
+AMBIGUOUS = ["us_county", "color"]
 HIGHER_RANK = sorted({r["label"] for r in RANK_TERMS if r["level"] == "higher"})
 LEVEL = term_util.term_data(ALL_CSVS["rank_terms"], "level")
 LINNAEUS = ["l", "l.", "lin", "lin.", "linn", "linn.", "linnaeus"]
@@ -100,7 +101,7 @@ def build(
     )
     # add.debug_tokens(nlp)  # ###############################
 
-    auth_keep = auth_keep + ACCUMULATOR.keep + ["singleton"]
+    auth_keep = auth_keep + ACCUMULATOR.keep + ["singleton", "not_name"]
     add.trait_pipe(
         nlp,
         name="taxon_auth_patterns",
@@ -378,6 +379,7 @@ def taxon_auth_patterns():
         "and": {"LOWER": {"IN": AND}},
         "auth": {"SHAPE": {"IN": t_const.NAME_SHAPES}},
         "auth3": {"SHAPE": {"IN": AUTH3}},
+        "ambig": {"ENT_TYPE": {"IN": AMBIGUOUS}},
         "linnaeus": {"ENT_TYPE": "linnaeus"},
         "taxon": {"ENT_TYPE": "taxon"},
         "_": {"TEXT": {"IN": list(":._;,")}},
@@ -393,8 +395,10 @@ def taxon_auth_patterns():
             decoder=decoder,
             patterns=[
                 "taxon ( auth+             _? )",
+                "taxon ( ambig+            _? )",
                 "taxon ( auth+ and   auth+ _? )",
                 "taxon ( auth+             _? )      auth3",
+                "taxon ( ambig+            _? )      auth3",
                 "taxon ( auth+ and   auth+ _? ) auth auth3",
                 "taxon   auth3",
                 "taxon   auth        auth3",
