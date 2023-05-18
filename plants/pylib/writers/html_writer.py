@@ -42,15 +42,19 @@ class HtmlWriter:
         self.css_classes = CssClasses()
         self.formatted = []
 
-    def write(self, rows, in_file_name=""):
+    def write(self, rows, args=None):
         raise NotImplementedError()
 
-    def format_text(self, row):
+    def format_text(self, row, exclude=None):
         """Wrap traits in the text with <spans> that can be formatted with CSS."""
+        exclude = exclude if exclude else []
         frags = []
         prev = 0
 
         for trait in row.traits:
+            if trait["trait"] in exclude:
+                continue
+
             start = trait["start"]
             end = trait["end"]
 

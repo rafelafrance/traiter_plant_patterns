@@ -99,7 +99,7 @@ class Taxa:
             Path(terms.__file__).parent / "surface_terms.csv",
         ]
 
-        problem_words = {"dummy", "name", "temp", "uncertain", "unknown"}
+        problem_words = {"dummy", "mosaic", "name", "temp", "uncertain", "unknown"}
 
         rows = tu.read_terms(all_csvs)
 

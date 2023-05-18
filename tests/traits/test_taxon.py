@@ -444,3 +444,9 @@ class TestTaxon(unittest.TestCase):
                 },
             ],
         )
+
+    def test_taxon_27(self):
+        self.assertEqual(
+            test(""" Cerrado mosaic"""),
+            [],
+        )
