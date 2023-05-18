@@ -447,6 +447,21 @@ class TestTaxon(unittest.TestCase):
 
     def test_taxon_27(self):
         self.assertEqual(
-            test(""" Cerrado mosaic"""),
+            test("""Cerrado mosaic"""),
             [],
+        )
+
+    def test_taxon_28(self):
+        self.assertEqual(
+            test(""" Name Neptunia gracilis Geyser Locality Vernal, """),
+            [
+                {
+                    "authority": "Geyser",
+                    "trait": "taxon",
+                    "taxon": "Neptunia gracilis",
+                    "rank": "species",
+                    "start": 5,
+                    "end": 29,
+                },
+            ],
         )

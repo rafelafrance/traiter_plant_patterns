@@ -103,7 +103,7 @@ class Taxa:
 
         rows = tu.read_terms(all_csvs)
 
-        problem_taxa = set("end erica flora floral harms lake may side".split())
+        problem_taxa = set("end erica flora floral harms lake may phoenix side".split())
         problem_taxa |= {t["pattern"].lower() for t in rows}
 
         taxa = sorted(self.taxon.items())
