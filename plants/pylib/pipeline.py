@@ -2,7 +2,6 @@ import spacy
 from traiter.pylib.pipes import extensions
 from traiter.pylib.pipes import sentence
 from traiter.pylib.pipes import tokenizer
-from traiter.pylib.traits import color
 
 from plants.pylib.traits import delete_missing
 from plants.pylib.traits import habit
@@ -29,8 +28,6 @@ def build(model_path=None):
     tokenizer.setup_tokenizer(nlp)
 
     nlp.add_pipe(sentence.SENTENCES)
-
-    color.build(nlp)
 
     taxon.build(nlp, extend=2, overwrite=["color"])
 
