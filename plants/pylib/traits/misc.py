@@ -64,4 +64,4 @@ def misc_match(ent):
         if token.text not in "[]()":
             frags.append(REPLACE.get(token.lower_, token.lower_))
     ent._.relabel = relabel
-    ent._.data[relabel] = " ".join(frags)
+    ent._.data = {relabel: " ".join(frags)}
