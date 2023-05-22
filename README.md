@@ -6,7 +6,7 @@ This repository contains rule-based parsers common to various plant parsing proj
 - [traiter_mimosa](https://github.com/rafelafrance/traiter_mimosa)
 
 ## Install
-You will need to have Python3.11+ installed, as well as pip, a package manager for Python.
+You will need to have Python3.10+ installed, as well as pip, a package manager for Python.
 You can install the requirements into your python environment like so:
 ```bash
 git clone https://github.com/rafelafrance/traiter_plants.git
@@ -21,8 +21,7 @@ I build a taxon database from 5 sources. The 3 primary sources have various issu
 1. [ITIS sqlite database located](https://www.itis.gov/downloads/index.html)
 2. [The WFO Plant List](https://wfoplantlist.org/plant-list/classifications)
 3. [Plant of the World Online](http://sftp.kew.org/pub/data-repositories/WCVP/)
-4. [An older version of the taxa database.](./plants/pylib/vocabulary/old_plant_taxa.sqlite)
-5. [Some miscellaneous taxa not found in the other sources.](./plants/pylib/vocabulary/other_taxa.csv)
+4. [Some miscellaneous taxa not found in the other sources.](./plants/pylib/vocabulary/other_taxa.csv)
 
 You can use the `add_taxa.py` script to extract the taxa and put them into a form the parsers can use.
 
