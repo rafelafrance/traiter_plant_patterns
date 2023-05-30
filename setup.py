@@ -44,6 +44,6 @@ setup(
     long_description=readme(),
     license=license_(),
     url="https://github.com/rafelafrance/traiter_plants",
-    python_requires=">=3.10",
+    python_requires=">=3.9",
     scripts=[],
 )

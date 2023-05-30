@@ -75,13 +75,12 @@ def build(
         "mock_monomial_terms": "monomial",
     }
 
-    with nlp.select_pipes(enable="tokenizer"):
-        add.term_pipe(
-            nlp,
-            name="taxon_terms",
-            path=list(ALL_CSVS.values()),
-            default_labels=default_labels,
-        )
+    add.term_pipe(
+        nlp,
+        name="taxon_terms",
+        path=list(ALL_CSVS.values()),
+        default_labels=default_labels,
+    )
 
     add.trait_pipe(
         nlp,
